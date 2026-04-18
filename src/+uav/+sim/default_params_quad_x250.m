@@ -60,5 +60,9 @@ params.demo.initial_state = [zeros(6, 1); 1.0; 0.0; 0.0; 0.0; zeros(3, 1)];
 params.demo.dt_s = 0.01;
 params.demo.motor_spool_t_final_s = 0.5;
 params.demo.openloop_hover_t_final_s = 2.0;
+params.demo.case_hover_t_final_s = 2.0;
+params.demo.case_yaw_step_t_final_s = 2.0;
+params.demo.yaw_step_time_s = 0.60;
+params.demo.yaw_step_moment_Nm = 0.02;
 params.demo.initial_state_plant = [params.demo.initial_state; zeros(4, 1)];
 end

@@ -10,27 +10,46 @@
 - дискретная модель `ESC + motor` первого порядка
 - агрегатор суммарных сил и моментов от роторов
 - минимальный `plant_step` без Simulink shell
+- канонический API состояния `state_validate/state_pack/state_unpack`
+- struct-wrapper `plant_step_struct`
+- единый сценарный runner `run_case`
 - baseline preset `quad-X 250 mm`
-- demo-сценарии для раскрутки роторов и открытого hover
+- demo-сценарии для раскрутки роторов, открытого hover и yaw-step case
 - unit tests и raw logs MATLAB-прогонов
 
 ## Уровни состояния
 
 Жесткое тело в `uav.core.eom6dof_quat` использует 13-мерное состояние:
 
-`x_rigid = [p_ned_m; v_b_mps; q_nb; w_b_rps]`
+`x_rigid = [p_ned_m; v_b_mps; q_nb; w_b_radps]`
 
-Минимальное расчетное ядро `Stage-1.5` использует 17-мерное состояние:
+Канонический внешний API `Stage-1.5` использует struct состояния:
 
-`x_plant = [p_ned_m(3); v_b_mps(3); q_nb(4); w_b_rps(3); omega_m_radps(4)]`
+```text
+state.p_ned_m
+state.v_b_mps
+state.q_nb
+state.w_b_radps
+state.omega_m_radps
+```
+
+Packed-форма для совместимости с kernel:
+
+`x_plant = [p_ned_m(3); v_b_mps(3); q_nb(4); w_b_radps(3); omega_m_radps(4)]`
 
 где:
 
 - `p_ned_m` - положение в земной системе координат `NED`
 - `v_b_mps` - линейная скорость в связанной системе координат
 - `q_nb` - scalar-first кватернион поворота из body в `NED`
-- `w_b_rps` - угловая скорость в связанной системе координат
+- `w_b_radps` - угловая скорость в связанной системе координат
 - `omega_m_radps` - скорости четырех роторов
+
+Преобразования выполняются функциями:
+
+- `uav.core.state_validate`
+- `uav.core.state_pack`
+- `uav.core.state_unpack`
 
 ## Геометрия и параметры ВМГ
 
@@ -53,7 +72,7 @@
 
 `motor_cmd_radps = [omega_1; omega_2; omega_3; omega_4]`
 
-Обновление состояния двигателей выполняется функцией `uav.vmg.motor_esc_step`, после чего силы и моменты агрегируются через `uav.core.forces_moments_sum`, а жесткое тело интегрируется в `uav.sim.plant_step`.
+Обновление состояния двигателей выполняется функцией `uav.vmg.motor_esc_step`, после чего силы и моменты агрегируются через `uav.core.forces_moments_sum`, а жесткое тело интегрируется в `uav.sim.plant_step`. Для внешнего API добавлен wrapper `uav.sim.plant_step_struct`, а для временных сценариев - `uav.sim.run_case`.
 
 ## Быстрый старт
 
@@ -61,8 +80,8 @@
 
 ```matlab
 run('scripts/bootstrap_project.m');
-run('scripts/run_motor_spool_demo.m');
-run('scripts/run_openloop_hover_demo.m');
+run('scripts/run_case_hover.m');
+run('scripts/run_case_yaw_step.m');
 results = runtests('tests');
 table(results)
 ```
@@ -92,4 +111,5 @@ artifacts/reports/
 
 - `docs/00_scope_ru.md`
 - `docs/10_frames_and_conventions_ru.md`
+- `docs/20_plant_api_ru.md`
 - `TASK_03_RU.md`

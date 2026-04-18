@@ -1,0 +1,78 @@
+Project paths added from repository root.
+
+Next MATLAB commands:
+  params = uav.sim.default_params_quad_x250();
+  run('scripts/run_case_hover.m');
+  run('scripts/run_case_yaw_step.m');
+  results = runtests('tests');
+  table(results)
+Running test_forces_moments_sum
+.
+Done test_forces_moments_sum
+__________
+
+Running test_hover_balance
+.
+Done test_hover_balance
+__________
+
+Running test_mixer_quad_x
+....
+Done test_mixer_quad_x
+__________
+
+Running test_motor_esc_step
+..
+Done test_motor_esc_step
+__________
+
+Running test_plant_step
+.
+Done test_plant_step
+__________
+
+Running test_plant_step_struct
+.
+Done test_plant_step_struct
+__________
+
+Running test_quat_tools
+..
+Done test_quat_tools
+__________
+
+Running test_run_case_hover
+.
+Done test_run_case_hover
+__________
+
+Running test_run_case_yaw_step
+.
+Done test_run_case_yaw_step
+__________
+
+Running test_state_pack_unpack
+..
+Done test_state_pack_unpack
+__________
+
+                                       Name                                       Passed    Failed    Incomplete    Duration       Details   
+    __________________________________________________________________________    ______    ______    __________    _________    ____________
+
+    {'test_forces_moments_sum/testEqualRotorSpeedsProducePureNegativeZForce' }    true      false       false         0.82995    {11 struct}
+    {'test_hover_balance/testBaselineHoverThrustBalancesWeight'              }    true      false       false         0.21421    {11 struct}
+    {'test_mixer_quad_x/testHoverMixDistributesThrustEqually'                }    true      false       false        0.060747    {11 struct}
+    {'test_mixer_quad_x/testMixerGeometryMatchesPresetParameters'            }    true      false       false         0.04197    {11 struct}
+    {'test_mixer_quad_x/testMixerReproducesRequestedMoments'                 }    true      false       false         0.01244    {11 struct}
+    {'test_mixer_quad_x/testPureRollCommandIsSymmetricAcrossFrontAndRear'    }    true      false       false       0.0090462    {11 struct}
+    {'test_motor_esc_step/testMotorEscStepConvergesMonotonically'            }    true      false       false        0.098437    {11 struct}
+    {'test_motor_esc_step/testMotorEscStepSaturatesAtMaximum'                }    true      false       false       0.0033964    {11 struct}
+    {'test_plant_step/testTrimLikeHoverAccelerationIsNearZeroAfterSpool'     }    true      false       false         0.11334    {11 struct}
+    {'test_plant_step_struct/testPlantStepStructMatchesPackedPlantStep'      }    true      false       false        0.069511    {11 struct}
+    {'test_quat_tools/testQuatNormalizeReturnsUnitNorm'                      }    true      false       false        0.060602    {11 struct}
+    {'test_quat_tools/testQuatToDcmProducesProperRotation'                   }    true      false       false        0.020785    {11 struct}
+    {'test_run_case_hover/testHoverCaseKeepsQuatNormAndNearZeroVerticalAccel'}    true      false       false        0.094615    {11 struct}
+    {'test_run_case_yaw_step/testYawStepProducesPositiveYawRate'             }    true      false       false        0.082414    {11 struct}
+    {'test_state_pack_unpack/testPackUnpackRoundTripIsConsistent'            }    true      false       false        0.086495    {11 struct}
+    {'test_state_pack_unpack/testStateValidateRejectsWrongQuaternionSize'    }    true      false       false         0.41846    {11 struct}
+

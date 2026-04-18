@@ -1,0 +1,16 @@
+Project paths added from repository root.
+
+Next MATLAB commands:
+  params = uav.sim.default_params_quad_x250();
+  run('scripts/run_case_hover.m');
+  run('scripts/run_case_yaw_step.m');
+  results = runtests('tests');
+  table(results)
+Run-case yaw-step diagnostics:
+  step time         : 0.600 s
+  final yaw moment  : 0.020000 N*m
+  final yaw rate    : 3.022337 rad/s
+  final rotor speeds: [590.109 514.680 590.109 514.680] rad/s
+  total thrust      : 9.810000 N
+  hover weight      : 9.810000 N
+  final quat norm   : 1.000000000000
