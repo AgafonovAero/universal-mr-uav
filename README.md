@@ -1,56 +1,59 @@
 # Universal MR UAV
 
-Минимальное кодо-ориентированное ядро `Stage-1` для универсального многороторного БПЛА в MATLAB.
+Минимальное code-centric ядро `Stage-1 / Stage-1.5` для универсального многороторного БПЛА в MATLAB.
 
-## Что есть в Stage-1
+## Что есть в репозитории
 
 - математическая модель движения 6DOF на кватернионах
 - простая модель ВМГ `T = kT * omega^2`, `Q = kQ * omega^2`
-- микшер только для схемы `quad-X`
-- модель среды только с гравитацией
-- минимальный каркас ПИД-регулятора угловых скоростей
+- геометрически корректный микшер `quad-X`
+- дискретная модель `ESC + motor` первого порядка
+- агрегатор суммарных сил и моментов от роторов
+- минимальный `plant_step` без Simulink shell
 - baseline preset `quad-X 250 mm`
-- базовый hover demo
-- unit tests для кватернионов, hover-баланса и микшера
+- demo-сценарии для раскрутки роторов и открытого hover
+- unit tests и raw logs MATLAB-прогонов
 
-## Соглашение по состоянию
+## Уровни состояния
 
-`uav.core.eom6dof_quat` использует упакованный 13-мерный вектор состояния:
+Жесткое тело в `uav.core.eom6dof_quat` использует 13-мерное состояние:
 
-`x = [p_ned_m; v_b_mps; q_nb; w_b_rps]`
+`x_rigid = [p_ned_m; v_b_mps; q_nb; w_b_rps]`
 
-- `p_ned_m` - положение в системе `NED`, м
-- `v_b_mps` - линейная скорость в связанной системе координат, м/с
+Минимальное расчетное ядро `Stage-1.5` использует 17-мерное состояние:
+
+`x_plant = [p_ned_m(3); v_b_mps(3); q_nb(4); w_b_rps(3); omega_m_radps(4)]`
+
+где:
+
+- `p_ned_m` - положение в земной системе координат `NED`
+- `v_b_mps` - линейная скорость в связанной системе координат
 - `q_nb` - scalar-first кватернион поворота из body в `NED`
-- `w_b_rps` - угловая скорость в связанной системе координат, рад/с
+- `w_b_rps` - угловая скорость в связанной системе координат
+- `omega_m_radps` - скорости четырех роторов
 
-## Геометрия quad-X
+## Геометрия и параметры ВМГ
 
-В baseline preset явно разведены три геометрических величины:
+В baseline preset явно используются:
 
 - `wheelbase_m` - диагональ motor-to-motor между противоположными роторами
-- `motor_radius_m` - расстояние от центра аппарата до каждого ротора
-- `motor_xy_m` - матрица `4x2` координат роторов в связанной системе координат, каждая строка имеет вид `[x_i, y_i]`
+- `motor_radius_m` - расстояние от центра аппарата до ротора
+- `motor_xy_m` - матрица `4x2` координат роторов `[x_i, y_i]`
+- `params.motor.*` - параметры динамики двигателя и ограничений
+- `params.rotor.*` - коэффициенты тяги и реактивного момента
 
-Для текущего `quad-X` с нумерацией роторов `1` front-left, `2` front-right, `3` rear-right, `4` rear-left:
+Для обратной совместимости сохранены и legacy-поля:
 
-```text
-motor_xy_m =
-[
- +x  -y
- +x  +y
- -x  +y
- -x  -y
-]
-```
+- `kT_N_per_radps2`
+- `kQ_Nm_per_radps2`
 
-В матрице микширования используются физические плечи:
+## Команды двигателя
 
-- по крену: `-y_i`
-- по тангажу: `x_i`
-- по рысканью: `(kQ / kT) * spin_dir(i)`
+В `Stage-1.5` команда двигателя задается как вектор целевых угловых скоростей роторов:
 
-Это убирает прежнюю двусмысленность и исключает повторное деление на `sqrt(2)`.
+`motor_cmd_radps = [omega_1; omega_2; omega_3; omega_4]`
+
+Обновление состояния двигателей выполняется функцией `uav.vmg.motor_esc_step`, после чего силы и моменты агрегируются через `uav.core.forces_moments_sum`, а жесткое тело интегрируется в `uav.sim.plant_step`.
 
 ## Быстрый старт
 
@@ -58,10 +61,17 @@ motor_xy_m =
 
 ```matlab
 run('scripts/bootstrap_project.m');
-demo = uav.sim.run_hover_demo();
+run('scripts/run_motor_spool_demo.m');
+run('scripts/run_openloop_hover_demo.m');
 results = runtests('tests');
 table(results)
 ```
+
+## Архитектурная граница Stage-1.5
+
+- управление и модель остаются text-first и code-centric
+- Simulink shell на этом этапе не используется
+- `.slx`, `.mlapp`, `.sldd`, `.prj` не создаются
 
 ## Структура
 
@@ -73,7 +83,6 @@ src/+uav/+vmg/
 src/+uav/+env/
 src/+uav/+ctrl/
 src/+uav/+sim/
-data/presets/
 tests/
 artifacts/logs/
 artifacts/reports/
@@ -83,4 +92,4 @@ artifacts/reports/
 
 - `docs/00_scope_ru.md`
 - `docs/10_frames_and_conventions_ru.md`
-- `artifacts/reports/task_02_summary_ru.md`
+- `TASK_03_RU.md`

@@ -1,7 +1,7 @@
 %% BOOTSTRAP_PROJECT Add repository paths and print next MATLAB commands.
 % Description:
-%   Adds the Stage-1 source, script, and test folders to the MATLAB path
-%   without creating a binary project file.
+%   Adds the Stage-1 / Stage-1.5 source, script, and test folders to the
+%   MATLAB path without creating a binary project file.
 %
 % Inputs:
 %   none
@@ -24,6 +24,7 @@ addpath(fullfile(repoRoot, 'tests'));
 fprintf('Project paths added from:\n  %s\n\n', repoRoot);
 fprintf('Next MATLAB commands:\n');
 fprintf('  params = uav.sim.default_params_quad_x250();\n');
-fprintf('  demo = uav.sim.run_hover_demo();\n');
+fprintf('  run(''scripts/run_motor_spool_demo.m'');\n');
+fprintf('  run(''scripts/run_openloop_hover_demo.m'');\n');
 fprintf('  results = runtests(''tests'');\n');
 fprintf('  table(results)\n');
