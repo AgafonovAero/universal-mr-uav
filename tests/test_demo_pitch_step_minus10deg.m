@@ -24,7 +24,8 @@ verifyLessThan(testCase, abs(demo.metrics.final_pitch_deg - ...
     demo.profile.pitch_cmd_deg), 4.0);
 verifyLessThan(testCase, abs(demo.metrics.final_estimated_pitch_deg - ...
     demo.profile.pitch_cmd_deg), 4.0);
-verifyLessThan(testCase, abs(demo.metrics.final_pitch_estimation_error_deg), 3.0);
+verifyLessThan(testCase, ...
+    abs(demo.metrics.final_pitch_estimation_error_deg), 3.0);
 verifyLessThan(testCase, demo.metrics.max_pitch_estimation_error_deg, 6.0);
 verifyLessThan(testCase, demo.metrics.min_accel_correction_weight, 0.2);
 verifyLessThan(testCase, abs(demo.metrics.final_true_quat_norm - 1.0), 1.0e-9);

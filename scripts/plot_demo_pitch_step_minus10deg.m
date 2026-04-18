@@ -35,7 +35,8 @@ demo = loaded_data.demo;
 series = demo.series;
 
 pitch_png = fullfile(figures_dir, 'demo_pitch_angle.png');
-pitch_true_vs_est_png = fullfile(figures_dir, 'demo_pitch_true_vs_estimated.png');
+pitch_true_vs_est_png = ...
+    fullfile(figures_dir, 'demo_pitch_true_vs_estimated.png');
 pitch_error_png = fullfile(figures_dir, 'demo_pitch_estimation_error.png');
 altitude_png = fullfile(figures_dir, 'demo_pitch_altitude.png');
 motor_png = fullfile(figures_dir, 'demo_pitch_motor_cmd.png');
@@ -55,7 +56,8 @@ local_export_figure(fig, pitch_png);
 fig = figure('Visible', 'off', 'Color', 'w');
 plot(series.time_s, series.true_vs_est_pitch_deg(:, 1), 'LineWidth', 1.6);
 hold on;
-plot(series.time_s, series.true_vs_est_pitch_deg(:, 2), '--', 'LineWidth', 1.4);
+plot(series.time_s, series.true_vs_est_pitch_deg(:, 2), ...
+    '--', 'LineWidth', 1.4);
 grid on;
 xlabel('Time, s');
 ylabel('Pitch, deg');

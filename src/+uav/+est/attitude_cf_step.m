@@ -41,7 +41,8 @@ gravity_ned_mps2 = uav.env.gravity_ned(params.gravity_mps2);
 q_pred = local_integrate_quaternion(est_prev.q_nb, gyro_b_radps, dt_s);
 euler_pred = local_quat_to_euler_rpy(q_pred);
 
-[roll_meas_rad, pitch_meas_rad, acc_valid] = local_accel_attitude(accel_b_mps2);
+[roll_meas_rad, pitch_meas_rad, acc_valid] = ...
+    local_accel_attitude(accel_b_mps2);
 if acc_valid
     accel_consistency_metric = local_accel_consistency_metric( ...
         q_pred, accel_b_mps2, gravity_ned_mps2);
@@ -174,7 +175,8 @@ function alpha = local_complementary_alpha(gain_per_s, dt_s)
 alpha = min(max(gain_per_s * dt_s, 0.0), 1.0);
 end
 
-function metric_mps2 = local_accel_consistency_metric(q_pred, accel_b_mps2, gravity_ned_mps2)
+function metric_mps2 = local_accel_consistency_metric( ...
+        q_pred, accel_b_mps2, gravity_ned_mps2)
 %LOCAL_ACCEL_CONSISTENCY_METRIC Compare measured and gravity-only specific force.
 
 c_nb_pred = uav.core.quat_to_dcm(q_pred);
@@ -185,8 +187,10 @@ end
 function weight = local_specific_force_weight(metric_mps2, params)
 %LOCAL_SPECIFIC_FORCE_WEIGHT Gate accelerometer correction by consistency.
 
-full_weight_mps2 = params.estimator.attitude.accel_consistency_full_weight_mps2;
-zero_weight_mps2 = params.estimator.attitude.accel_consistency_zero_weight_mps2;
+full_weight_mps2 = ...
+    params.estimator.attitude.accel_consistency_full_weight_mps2;
+zero_weight_mps2 = ...
+    params.estimator.attitude.accel_consistency_zero_weight_mps2;
 
 if metric_mps2 <= full_weight_mps2
     weight = 1.0;

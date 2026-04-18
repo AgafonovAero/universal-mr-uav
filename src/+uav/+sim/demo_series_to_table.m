@@ -22,18 +22,22 @@ demo_table.time_s = series.time_s(:);
 demo_table.altitude_ref_m = series.altitude_ref_m(:);
 demo_table.altitude_m = series.altitude_m(:);
 demo_table.altitude_est_m = series.altitude_est_m(:);
+
 demo_table.vertical_speed_ref_mps = series.vertical_speed_ref_mps(:);
 demo_table.vertical_speed_mps = series.vertical_speed_mps(:);
 demo_table.vertical_speed_est_mps = series.vertical_speed_est_mps(:);
+
 demo_table.pitch_ref_rad = series.pitch_ref_rad(:);
 demo_table.pitch_rad = series.pitch_rad(:);
 demo_table.pitch_est_rad = series.pitch_est_rad(:);
 demo_table.pitch_ref_deg = rad2deg(series.pitch_ref_rad(:));
 demo_table.pitch_deg = rad2deg(series.pitch_rad(:));
 demo_table.pitch_est_deg = rad2deg(series.pitch_est_rad(:));
+
 demo_table.pitch_estimation_error_deg = series.pitch_estimation_error_deg(:);
 demo_table.accel_correction_weight = series.accel_correction_weight(:);
 demo_table.accel_consistency_metric = series.accel_consistency_metric(:);
+
 demo_table.quat_norm_true = series.quat_norm_true(:);
 demo_table.quat_norm_est = series.quat_norm_est(:);
 

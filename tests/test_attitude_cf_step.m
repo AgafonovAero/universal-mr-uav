@@ -30,7 +30,8 @@ sens = local_static_sensor_sample([0.0; 0.0; 20.0 * pi / 180.0], params);
 
 quat_norm_hist = zeros(300, 1);
 for k = 1:numel(quat_norm_hist)
-    [att_est, diag] = uav.est.attitude_cf_step(att_est, sens, params.demo.dt_s, params);
+    [att_est, diag] = uav.est.attitude_cf_step( ...
+        att_est, sens, params.demo.dt_s, params);
     quat_norm_hist(k) = diag.quat_norm;
 end
 
@@ -48,7 +49,8 @@ sens = uav.sensors.sensors_step(state, diag, params);
 att_est = uav.est.attitude_cf_init(params);
 
 for k = 1:200
-    [att_est, diag] = uav.est.attitude_cf_step(att_est, sens, params.demo.dt_s, params);
+    [att_est, diag] = uav.est.attitude_cf_step( ...
+        att_est, sens, params.demo.dt_s, params);
 end
 
 verifyLessThan(testCase, abs(att_est.euler_rpy_rad(1)), 1.0e-9);
@@ -65,7 +67,8 @@ att_est.euler_rpy_rad = [0.0; pitch_rad; 0.0];
 sens = local_accelerated_pitch_sensor_sample(pitch_rad, params);
 
 for k = 1:200
-    [att_est, diag] = uav.est.attitude_cf_step(att_est, sens, params.demo.dt_s, params);
+    [att_est, diag] = uav.est.attitude_cf_step( ...
+        att_est, sens, params.demo.dt_s, params);
 end
 
 verifyLessThan(testCase, abs(att_est.euler_rpy_rad(2) - pitch_rad), deg2rad(0.5));

@@ -54,7 +54,8 @@ local_export_figure(fig, altitude_png);
 fig = figure('Visible', 'off', 'Color', 'w');
 plot(series.time_s, series.altitude_ref_m - series.altitude_m, 'LineWidth', 1.6);
 hold on;
-plot(series.time_s, series.altitude_ref_m - series.altitude_est_m, '--', 'LineWidth', 1.4);
+plot(series.time_s, series.altitude_ref_m - series.altitude_est_m, ...
+    '--', 'LineWidth', 1.4);
 yline(0.0, ':', 'LineWidth', 1.2);
 grid on;
 xlabel('Time, s');

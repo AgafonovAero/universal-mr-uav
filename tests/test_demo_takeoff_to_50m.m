@@ -19,7 +19,8 @@ demo = evalin('base', 'demo_takeoff_to_50m');
 verifyGreaterThan(testCase, numel(demo.series.time_s), 0);
 verifyTrue(testCase, isfield(demo.log, 'reference'));
 verifyTrue(testCase, isfield(demo.log, 'controller_diag'));
-verifyEqual(testCase, demo.series.altitude_ref_m(end), 50.0, 'AbsTol', 1.0e-12);
+verifyEqual(testCase, demo.series.altitude_ref_m(end), 50.0, ...
+    'AbsTol', 1.0e-12);
 verifyGreaterThan(testCase, demo.metrics.final_altitude_m, 45.0);
 verifyLessThan(testCase, demo.metrics.final_altitude_m, 55.0);
 verifyLessThan(testCase, abs(demo.metrics.final_estimated_altitude_m - ...

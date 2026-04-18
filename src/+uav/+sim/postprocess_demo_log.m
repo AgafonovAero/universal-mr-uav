@@ -31,10 +31,12 @@ n_samples = numel(time_s);
 
 series = struct();
 series.time_s = time_s;
-series.altitude_ref_m = local_ref_or_default(refs, 'altitude_ref_m', n_samples, 0.0);
+series.altitude_ref_m = ...
+    local_ref_or_default(refs, 'altitude_ref_m', n_samples, 0.0);
 series.vertical_speed_ref_mps = local_ref_or_default(refs, ...
     'vertical_speed_ref_mps', n_samples, 0.0);
-series.pitch_ref_rad = local_ref_or_default(refs, 'pitch_ref_rad', n_samples, 0.0);
+series.pitch_ref_rad = ...
+    local_ref_or_default(refs, 'pitch_ref_rad', n_samples, 0.0);
 
 series.altitude_m = zeros(n_samples, 1);
 series.vertical_speed_mps = zeros(n_samples, 1);
@@ -102,7 +104,8 @@ for k = 1:n_samples
     end
 end
 
-series.pitch_estimation_error_deg = rad2deg(series.pitch_rad - series.pitch_est_rad);
+series.pitch_estimation_error_deg = ...
+    rad2deg(series.pitch_rad - series.pitch_est_rad);
 series.true_vs_est_pitch_deg = [ ...
     rad2deg(series.pitch_rad), rad2deg(series.pitch_est_rad)];
 end
@@ -141,7 +144,8 @@ refs.pitch_ref_rad = local_hist_field_or_default(reference_hist, ...
     'pitch_ref_rad', n_samples, 0.0);
 end
 
-function values = local_hist_field_or_default(hist, field_name, n_samples, default_value)
+function values = local_hist_field_or_default( ...
+        hist, field_name, n_samples, default_value)
 %LOCAL_HIST_FIELD_OR_DEFAULT Read one scalar field from a struct-array history.
 
 if isempty(hist) || ~isfield(hist, field_name)

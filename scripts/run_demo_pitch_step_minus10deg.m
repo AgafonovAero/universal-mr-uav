@@ -25,16 +25,18 @@ end
 
 params = uav.sim.make_deterministic_demo_params();
 profile = local_make_pitch_profile(params);
+controller_cfg = profile.controller_cfg;
 
 case_cfg = struct();
 case_cfg.params = params;
 case_cfg.state0 = uav.core.state_unpack(params.demo.initial_state_plant);
 case_cfg.dt_s = params.demo.dt_s;
 case_cfg.t_final_s = profile.t_final_s;
-case_cfg.reference_fun = @(t_s, ~, ~, ~) local_reference_at_time(t_s, profile);
+case_cfg.reference_fun = ...
+    @(t_s, ~, ~, ~) local_reference_at_time(t_s, profile);
 case_cfg.controller_fun = @(ctrl_input, ctrl_state, dt_s, params_local) ...
     uav.ctrl.demo_pitch_hold_controller( ...
-        ctrl_input, ctrl_state, dt_s, params_local, profile.controller_cfg);
+        ctrl_input, ctrl_state, dt_s, params_local, controller_cfg);
 
 log = uav.sim.run_case_closed_loop_with_estimator(case_cfg);
 refs = local_make_reference_history(log.time_s, profile);
@@ -63,12 +65,15 @@ assignin('base', 'demo_pitch_step_minus10deg', demo);
 
 fprintf('Demo pitch step -10 deg diagnostics:\n');
 fprintf('  final pitch [deg]             : %.6f\n', metrics.final_pitch_deg);
-fprintf('  final estimated pitch [deg]   : %.6f\n', metrics.final_estimated_pitch_deg);
+fprintf('  final estimated pitch [deg]   : %.6f\n', ...
+    metrics.final_estimated_pitch_deg);
 fprintf('  final pitch estimation err [deg]: %.6f\n', ...
     metrics.final_pitch_estimation_error_deg);
 fprintf('  peak pitch tracking err [deg] : %.6f\n', metrics.peak_pitch_error_deg);
-fprintf('  min accel weight [-]          : %.6f\n', metrics.min_accel_correction_weight);
-fprintf('  max consistency metric [m/s^2]: %.6f\n', metrics.max_accel_consistency_metric);
+fprintf('  min accel weight [-]          : %.6f\n', ...
+    metrics.min_accel_correction_weight);
+fprintf('  max consistency metric [m/s^2]: %.6f\n', ...
+    metrics.max_accel_consistency_metric);
 fprintf('  final altitude [m]            : %.6f\n', metrics.final_altitude_m);
 fprintf('  quat norms [-]                : true=%.12f est=%.12f\n', ...
     metrics.final_true_quat_norm, metrics.final_estimated_quat_norm);
@@ -169,13 +174,16 @@ end
 metrics = struct();
 metrics.final_pitch_deg = rad2deg(series.pitch_rad(end));
 metrics.final_estimated_pitch_deg = rad2deg(series.pitch_est_rad(end));
-metrics.final_pitch_estimation_error_deg = series.pitch_estimation_error_deg(end);
+metrics.final_pitch_estimation_error_deg = ...
+    series.pitch_estimation_error_deg(end);
 metrics.peak_pitch_error_deg = rad2deg(max(abs( ...
     series.pitch_ref_rad(step_indices) - series.pitch_rad(step_indices))));
 metrics.max_pitch_estimation_error_deg = max(abs( ...
     series.pitch_estimation_error_deg(step_indices)));
-metrics.min_accel_correction_weight = min(series.accel_correction_weight(step_indices));
-metrics.max_accel_consistency_metric = max(series.accel_consistency_metric(step_indices));
+metrics.min_accel_correction_weight = ...
+    min(series.accel_correction_weight(step_indices));
+metrics.max_accel_consistency_metric = ...
+    max(series.accel_consistency_metric(step_indices));
 metrics.final_altitude_m = series.altitude_m(end);
 metrics.final_true_quat_norm = series.quat_norm_true(end);
 metrics.final_estimated_quat_norm = series.quat_norm_est(end);

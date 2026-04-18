@@ -150,7 +150,8 @@ if ~isstruct(cfg) || ~isscalar(cfg)
 end
 
 cfg.altitude_kp_per_s2 = local_get_scalar(cfg, 'altitude_kp_per_s2', 0.0);
-cfg.vertical_speed_kp_per_s = local_get_scalar(cfg, 'vertical_speed_kp_per_s', 0.0);
+cfg.vertical_speed_kp_per_s = ...
+    local_get_scalar(cfg, 'vertical_speed_kp_per_s', 0.0);
 cfg.up_accel_limit_mps2 = local_get_scalar(cfg, 'up_accel_limit_mps2', 1.0e6);
 cfg.min_body_z_up_gain = local_get_scalar(cfg, 'min_body_z_up_gain', 0.35);
 cfg.total_thrust_min_N = local_get_scalar(cfg, 'total_thrust_min_N', 0.0);
@@ -204,7 +205,8 @@ if ~isfield(data, field_name)
 end
 
 vec = data.(field_name);
-validateattributes(vec, {'numeric'}, {'real', 'finite', 'numel', expected_len}, ...
+validateattributes( ...
+    vec, {'numeric'}, {'real', 'finite', 'numel', expected_len}, ...
     mfilename, label_name);
 vec = vec(:);
 end

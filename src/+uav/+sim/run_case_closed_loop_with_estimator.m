@@ -132,16 +132,19 @@ if ~isa(case_cfg.controller_fun, 'function_handle')
         'Expected case_cfg.controller_fun to be a function handle.');
 end
 
-if ~isfield(case_cfg, 'reference_fun') || isempty(case_cfg.reference_fun)
+if ~isfield(case_cfg, 'reference_fun') || ...
+        isempty(case_cfg.reference_fun)
     case_cfg.reference_fun = @local_default_reference_fun;
 elseif ~isa(case_cfg.reference_fun, 'function_handle')
     error('uav:sim:run_case_closed_loop_with_estimator:ReferenceFunType', ...
         'Expected case_cfg.reference_fun to be a function handle.');
 end
 
-if ~isfield(case_cfg, 'controller_state0') || isempty(case_cfg.controller_state0)
+if ~isfield(case_cfg, 'controller_state0') || ...
+        isempty(case_cfg.controller_state0)
     case_cfg.controller_state0 = struct();
-elseif ~isstruct(case_cfg.controller_state0) || ~isscalar(case_cfg.controller_state0)
+elseif ~isstruct(case_cfg.controller_state0) || ...
+        ~isscalar(case_cfg.controller_state0)
     error('uav:sim:run_case_closed_loop_with_estimator:ControllerStateType', ...
         'Expected case_cfg.controller_state0 to be a scalar struct.');
 end

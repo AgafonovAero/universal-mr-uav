@@ -25,16 +25,18 @@ end
 
 params = uav.sim.make_deterministic_demo_params();
 profile = local_make_takeoff_profile(params);
+controller_cfg = profile.controller_cfg;
 
 case_cfg = struct();
 case_cfg.params = params;
 case_cfg.state0 = uav.core.state_unpack(params.demo.initial_state_plant);
 case_cfg.dt_s = params.demo.dt_s;
 case_cfg.t_final_s = profile.t_final_s;
-case_cfg.reference_fun = @(t_s, ~, ~, ~) local_reference_at_time(t_s, profile);
+case_cfg.reference_fun = ...
+    @(t_s, ~, ~, ~) local_reference_at_time(t_s, profile);
 case_cfg.controller_fun = @(ctrl_input, ctrl_state, dt_s, params_local) ...
     uav.ctrl.demo_takeoff_hold_controller( ...
-        ctrl_input, ctrl_state, dt_s, params_local, profile.controller_cfg);
+        ctrl_input, ctrl_state, dt_s, params_local, controller_cfg);
 
 log = uav.sim.run_case_closed_loop_with_estimator(case_cfg);
 refs = local_make_reference_history(log.time_s, profile);
@@ -64,8 +66,10 @@ assignin('base', 'demo_takeoff_to_50m', demo);
 fprintf('Demo takeoff to 50 m diagnostics:\n');
 fprintf('  final altitude [m]          : %.6f\n', metrics.final_altitude_m);
 fprintf('  peak altitude error [m]     : %.6f\n', metrics.peak_altitude_error_m);
-fprintf('  final estimated altitude [m]: %.6f\n', metrics.final_estimated_altitude_m);
-fprintf('  final accel weight [-]      : %.6f\n', metrics.final_accel_correction_weight);
+fprintf('  final estimated altitude [m]: %.6f\n', ...
+    metrics.final_estimated_altitude_m);
+fprintf('  final accel weight [-]      : %.6f\n', ...
+    metrics.final_accel_correction_weight);
 fprintf('  final quat norms [-]        : true=%.12f est=%.12f\n', ...
     metrics.final_true_quat_norm, metrics.final_estimated_quat_norm);
 fprintf('  saved MAT                   : %s\n', mat_file);
@@ -150,7 +154,8 @@ function metrics = local_make_metrics(series, profile)
 
 metrics = struct();
 metrics.final_altitude_m = series.altitude_m(end);
-metrics.peak_altitude_error_m = max(abs(series.altitude_ref_m - series.altitude_m));
+metrics.peak_altitude_error_m = ...
+    max(abs(series.altitude_ref_m - series.altitude_m));
 metrics.final_estimated_altitude_m = series.altitude_est_m(end);
 metrics.final_accel_correction_weight = series.accel_correction_weight(end);
 metrics.final_true_quat_norm = series.quat_norm_true(end);
