@@ -65,9 +65,10 @@ end
 function wrench = local_reconstruct_wrench(thrust_cmd_N, params)
 %LOCAL_RECONSTRUCT_WRENCH Rebuild thrust and moments from rotor thrusts.
 
+rotor = uav.vmg.rotor_coeffs(params);
 x_i_m = params.motor_xy_m(:, 1);
 y_i_m = params.motor_xy_m(:, 2);
-yaw_gain_m = params.kQ_Nm_per_radps2 / params.kT_N_per_radps2;
+yaw_gain_m = rotor.kQ_Nm_per_radps2 / rotor.kT_N_per_radps2;
 
 wrench = [ ...
     sum(thrust_cmd_N); ...

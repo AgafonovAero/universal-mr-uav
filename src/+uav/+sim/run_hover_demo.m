@@ -19,11 +19,12 @@ function demo = run_hover_demo()
 %   environment, and zero aerodynamic disturbance.
 
 params = uav.sim.default_params_quad_x250();
+rotor = uav.vmg.rotor_coeffs(params);
 targetThrust_N = params.mass_kg * params.gravity_mps2;
 
 [omega_cmd_radps, thrust_cmd_N] = uav.vmg.mixer_quad_x(targetThrust_N, [0.0; 0.0; 0.0], params);
 [rotorThrust_N, rotorTorque_Nm] = uav.vmg.rotor_simple( ...
-    omega_cmd_radps, params.kT_N_per_radps2, params.kQ_Nm_per_radps2);
+    omega_cmd_radps, rotor.kT_N_per_radps2, rotor.kQ_Nm_per_radps2);
 
 totalThrust_N = sum(rotorThrust_N);
 bodyForces_N = [0.0; 0.0; -totalThrust_N];

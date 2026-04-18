@@ -25,9 +25,9 @@ if numel(omega_radps) ~= 4
         'Expected omega_radps to have 4 elements.');
 end
 
-[kT_N_per_radps2, kQ_Nm_per_radps2] = local_get_rotor_coeffs(params);
+rotor = uav.vmg.rotor_coeffs(params);
 [rotor_thrust_N, rotor_torque_Nm] = uav.vmg.rotor_simple( ...
-    omega_radps, kT_N_per_radps2, kQ_Nm_per_radps2);
+    omega_radps, rotor.kT_N_per_radps2, rotor.kQ_Nm_per_radps2);
 
 x_i_m = params.motor_xy_m(:, 1);
 y_i_m = params.motor_xy_m(:, 2);
@@ -44,20 +44,4 @@ fm.rotor_thrust_N = rotor_thrust_N(:);
 fm.rotor_torque_Nm = rotor_torque_Nm(:);
 fm.forces_b_N = forces_b_N;
 fm.moments_b_Nm = moments_b_Nm;
-end
-
-function [kT_N_per_radps2, kQ_Nm_per_radps2] = local_get_rotor_coeffs(params)
-%LOCAL_GET_ROTOR_COEFFS Read rotor coefficients with Stage-1 compatibility.
-
-if isfield(params, 'rotor') && isfield(params.rotor, 'kT_N_per_radps2')
-    kT_N_per_radps2 = params.rotor.kT_N_per_radps2;
-else
-    kT_N_per_radps2 = params.kT_N_per_radps2;
-end
-
-if isfield(params, 'rotor') && isfield(params.rotor, 'kQ_Nm_per_radps2')
-    kQ_Nm_per_radps2 = params.rotor.kQ_Nm_per_radps2;
-else
-    kQ_Nm_per_radps2 = params.kQ_Nm_per_radps2;
-end
 end
