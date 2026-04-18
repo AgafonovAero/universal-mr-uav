@@ -109,34 +109,34 @@ __________
                                              Name                                              Passed    Failed    Incomplete    Duration       Details   
     _______________________________________________________________________________________    ______    ______    __________    _________    ____________
 
-    {'test_altitude_filter_step/testAltitudeEstimateConvergesToBaro'                      }    true      false       false         0.28412    {11 struct}
-    {'test_altitude_filter_step/testZeroVerticalAccelerationKeepsVzBounded'               }    true      false       false        0.054063    {11 struct}
-    {'test_attitude_cf_step/testIdentityZeroGyroPreservesOrientation'                     }    true      false       false         0.10824    {11 struct}
-    {'test_attitude_cf_step/testQuaternionNormRemainsNearUnity'                           }    true      false       false        0.030124    {11 struct}
-    {'test_attitude_cf_step/testLevelHoverKeepsRollPitchNearZero'                         }    true      false       false        0.030687    {11 struct}
-    {'test_baro_measure/testBaroAltitudeMatchesNegativeNedZ'                              }    true      false       false        0.057225    {11 struct}
-    {'test_baro_measure/testPressureDecreasesWithAltitude'                                }    true      false       false       0.0067935    {11 struct}
-    {'test_estimator_step/testEstimatorStepReturnsRequiredFields'                         }    true      false       false        0.063656    {11 struct}
-    {'test_forces_moments_sum/testEqualRotorSpeedsProducePureNegativeZForce'              }    true      false       false        0.055806    {11 struct}
-    {'test_gnss_measure/testGnssReturnsPositionAndRotatedVelocityInNed'                   }    true      false       false        0.059232    {11 struct}
-    {'test_hover_balance/testBaselineHoverThrustBalancesWeight'                           }    true      false       false        0.071618    {11 struct}
-    {'test_imu_measure/testLevelHoverSpecificForceAndGyro'                                }    true      false       false         0.06656    {11 struct}
-    {'test_mag_measure/testIdentityQuaternionKeepsNedField'                               }    true      false       false        0.061069    {11 struct}
-    {'test_mixer_quad_x/testHoverMixDistributesThrustEqually'                             }    true      false       false        0.060909    {11 struct}
-    {'test_mixer_quad_x/testMixerGeometryMatchesPresetParameters'                         }    true      false       false         0.01131    {11 struct}
-    {'test_mixer_quad_x/testMixerReproducesRequestedMoments'                              }    true      false       false       0.0033873    {11 struct}
-    {'test_mixer_quad_x/testPureRollCommandIsSymmetricAcrossFrontAndRear'                 }    true      false       false       0.0038207    {11 struct}
-    {'test_motor_esc_step/testMotorEscStepConvergesMonotonically'                         }    true      false       false        0.088689    {11 struct}
-    {'test_motor_esc_step/testMotorEscStepSaturatesAtMaximum'                             }    true      false       false       0.0030021    {11 struct}
-    {'test_plant_step/testTrimLikeHoverAccelerationIsNearZeroAfterSpool'                  }    true      false       false         0.06977    {11 struct}
-    {'test_plant_step_struct/testPlantStepStructMatchesPackedPlantStep'                   }    true      false       false        0.057292    {11 struct}
-    {'test_quat_tools/testQuatNormalizeReturnsUnitNorm'                                   }    true      false       false        0.053468    {11 struct}
-    {'test_quat_tools/testQuatToDcmProducesProperRotation'                                }    true      false       false         0.01767    {11 struct}
-    {'test_run_case_hover/testHoverCaseKeepsQuatNormAndNearZeroVerticalAccel'             }    true      false       false        0.077848    {11 struct}
-    {'test_run_case_with_estimator/testHoverCaseReturnsEstimatorHistoryAndBoundedAltitude'}    true      false       false         0.12253    {11 struct}
-    {'test_run_case_with_sensors/testHoverCaseReturnsSensorHistoryAndBoundedDrift'        }    true      false       false        0.085855    {11 struct}
-    {'test_run_case_yaw_step/testYawStepProducesPositiveYawRate'                          }    true      false       false        0.072213    {11 struct}
-    {'test_sensors_step/testAggregatorContainsAllSensorsAndMatchesIndividualCalls'        }    true      false       false        0.059968    {11 struct}
-    {'test_state_pack_unpack/testPackUnpackRoundTripIsConsistent'                         }    true      false       false        0.069095    {11 struct}
-    {'test_state_pack_unpack/testStateValidateRejectsWrongQuaternionSize'                 }    true      false       false         0.07208    {11 struct}
+    {'test_altitude_filter_step/testAltitudeEstimateConvergesToBaro'                      }    true      false       false         0.51232    {11 struct}
+    {'test_altitude_filter_step/testZeroVerticalAccelerationKeepsVzBounded'               }    true      false       false         0.15109    {11 struct}
+    {'test_attitude_cf_step/testIdentityZeroGyroPreservesOrientation'                     }    true      false       false         0.21883    {11 struct}
+    {'test_attitude_cf_step/testQuaternionNormRemainsNearUnity'                           }    true      false       false        0.073049    {11 struct}
+    {'test_attitude_cf_step/testLevelHoverKeepsRollPitchNearZero'                         }    true      false       false         0.07831    {11 struct}
+    {'test_baro_measure/testBaroAltitudeMatchesNegativeNedZ'                              }    true      false       false         0.10863    {11 struct}
+    {'test_baro_measure/testPressureDecreasesWithAltitude'                                }    true      false       false        0.011749    {11 struct}
+    {'test_estimator_step/testEstimatorStepReturnsRequiredFields'                         }    true      false       false         0.13338    {11 struct}
+    {'test_forces_moments_sum/testEqualRotorSpeedsProducePureNegativeZForce'              }    true      false       false        0.084782    {11 struct}
+    {'test_gnss_measure/testGnssReturnsPositionAndRotatedVelocityInNed'                   }    true      false       false        0.098167    {11 struct}
+    {'test_hover_balance/testBaselineHoverThrustBalancesWeight'                           }    true      false       false          0.1174    {11 struct}
+    {'test_imu_measure/testLevelHoverSpecificForceAndGyro'                                }    true      false       false         0.11081    {11 struct}
+    {'test_mag_measure/testIdentityQuaternionKeepsNedField'                               }    true      false       false         0.08963    {11 struct}
+    {'test_mixer_quad_x/testHoverMixDistributesThrustEqually'                             }    true      false       false         0.10777    {11 struct}
+    {'test_mixer_quad_x/testMixerGeometryMatchesPresetParameters'                         }    true      false       false        0.022771    {11 struct}
+    {'test_mixer_quad_x/testMixerReproducesRequestedMoments'                              }    true      false       false       0.0070113    {11 struct}
+    {'test_mixer_quad_x/testPureRollCommandIsSymmetricAcrossFrontAndRear'                 }    true      false       false       0.0092508    {11 struct}
+    {'test_motor_esc_step/testMotorEscStepConvergesMonotonically'                         }    true      false       false         0.17435    {11 struct}
+    {'test_motor_esc_step/testMotorEscStepSaturatesAtMaximum'                             }    true      false       false       0.0064079    {11 struct}
+    {'test_plant_step/testTrimLikeHoverAccelerationIsNearZeroAfterSpool'                  }    true      false       false         0.14134    {11 struct}
+    {'test_plant_step_struct/testPlantStepStructMatchesPackedPlantStep'                   }    true      false       false         0.15146    {11 struct}
+    {'test_quat_tools/testQuatNormalizeReturnsUnitNorm'                                   }    true      false       false        0.096553    {11 struct}
+    {'test_quat_tools/testQuatToDcmProducesProperRotation'                                }    true      false       false        0.029209    {11 struct}
+    {'test_run_case_hover/testHoverCaseKeepsQuatNormAndNearZeroVerticalAccel'             }    true      false       false          0.1671    {11 struct}
+    {'test_run_case_with_estimator/testHoverCaseReturnsEstimatorHistoryAndBoundedAltitude'}    true      false       false         0.28867    {11 struct}
+    {'test_run_case_with_sensors/testHoverCaseReturnsSensorHistoryAndBoundedDrift'        }    true      false       false         0.16287    {11 struct}
+    {'test_run_case_yaw_step/testYawStepProducesPositiveYawRate'                          }    true      false       false         0.13806    {11 struct}
+    {'test_sensors_step/testAggregatorContainsAllSensorsAndMatchesIndividualCalls'        }    true      false       false         0.11489    {11 struct}
+    {'test_state_pack_unpack/testPackUnpackRoundTripIsConsistent'                         }    true      false       false         0.10661    {11 struct}
+    {'test_state_pack_unpack/testStateValidateRejectsWrongQuaternionSize'                 }    true      false       false         0.12058    {11 struct}
 
