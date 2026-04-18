@@ -1,0 +1,16 @@
+*.asv
+*.autosave
+*.slxc
+*.mex*
+*.pdb
+*.obj
+*.o
+*.log
+*.tmp
+*.bak
+*.orig
+*.zip
+
+# MATLAB user/session junk
+resources/project/Root.type.Files/layout.json
+resources/project/*/labels.json

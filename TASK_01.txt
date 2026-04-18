@@ -1,0 +1,109 @@
+TASK-01
+
+Goal:
+Create the first minimal, code-centric repository skeleton for a universal multirotor UAV project in MATLAB.
+This is a kernel-first stage. No GUI. No Simulink models yet. No MLAPP. No SLX.
+
+What to create:
+
+1) Repository structure
+Create the following folders:
+- docs
+- scripts
+- src/+uav/+core
+- src/+uav/+vmg
+- src/+uav/+env
+- src/+uav/+ctrl
+- src/+uav/+sim
+- data/presets
+- tests
+
+2) Files to create
+Create these files:
+- README.md
+- docs/00_scope_ru.md
+- docs/10_frames_and_conventions_ru.md
+- scripts/bootstrap_project.m
+- src/+uav/+core/eom6dof_quat.m
+- src/+uav/+core/quat_normalize.m
+- src/+uav/+core/quat_to_dcm.m
+- src/+uav/+vmg/rotor_simple.m
+- src/+uav/+vmg/mixer_quad_x.m
+- src/+uav/+env/gravity_ned.m
+- src/+uav/+ctrl/rate_pid.m
+- src/+uav/+sim/default_params_quad_x250.m
+- src/+uav/+sim/run_hover_demo.m
+- tests/test_quat_tools.m
+- tests/test_hover_balance.m
+
+3) Functional intent
+- eom6dof_quat.m
+  Must implement a minimal rigid-body 6DOF equation set using quaternions.
+  State may be represented either as a struct or as a packed vector, but the choice must be clearly documented.
+  Include translational and rotational dynamics.
+  Use body forces/moments as inputs.
+
+- quat_normalize.m
+  Normalize quaternion safely.
+
+- quat_to_dcm.m
+  Convert quaternion to direction cosine matrix.
+
+- rotor_simple.m
+  Return thrust and torque from angular speed and coefficients:
+  T = kT * omega^2
+  Q = kQ * omega^2
+
+- mixer_quad_x.m
+  Convert total thrust and body moments into 4 rotor commands for a quad-X geometry.
+  Document assumptions.
+
+- gravity_ned.m
+  Return gravity vector in NED convention.
+
+- rate_pid.m
+  Minimal body-rate PID scaffold with integrator and output saturation hooks.
+
+- default_params_quad_x250.m
+  Return a parameter struct for a baseline quad-X 250 mm class vehicle.
+  Keep values simple and clearly marked as baseline/demo values.
+
+- run_hover_demo.m
+  Run a minimal hover or near-hover simulation using the baseline parameters.
+  It must be clear how the force balance is computed.
+  Produce simple plots or printed diagnostics.
+
+- bootstrap_project.m
+  Add project paths and print exact next commands to run.
+  Do not create a binary MATLAB project file in this task.
+
+4) Tests
+- test_quat_tools.m
+  Test quaternion normalization and quaternion-to-DCM consistency at a basic level.
+
+- test_hover_balance.m
+  Test that the baseline hover thrust approximately balances weight.
+
+5) Constraints
+- No SLX
+- No MLAPP
+- No SLDd
+- No binary project file
+- No fake claims about executed tests
+- No unnecessary complexity
+- No external dependencies
+
+6) Final output format from Codex
+At the end, provide:
+- list of created files
+- assumptions made
+- limitations of this stage
+- exact commands for local MATLAB verification
+
+Acceptance criteria:
+- repository tree exists
+- all requested files exist
+- code is consistent with AGENTS.md
+- local MATLAB commands are provided
+- there is a minimal runnable hover demo
+- there are at least two unit tests
