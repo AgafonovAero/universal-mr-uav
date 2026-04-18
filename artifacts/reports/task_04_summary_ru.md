@@ -11,6 +11,7 @@
 - Добавлены два demo-сценария на новом runner:
   - `scripts/run_case_hover.m`
   - `scripts/run_case_yaw_step.m`
+- В cleanup-follow-up обезличен вывод `scripts/bootstrap_project.m`, а raw logs TASK-04 пересохранены как обычные UTF-8 text files без binary-формата.
 - Добавлены четыре новых теста:
   - `tests/test_state_pack_unpack.m`
   - `tests/test_plant_step_struct.m`

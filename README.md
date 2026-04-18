@@ -21,7 +21,7 @@
 
 Жесткое тело в `uav.core.eom6dof_quat` использует 13-мерное состояние:
 
-`x_rigid = [p_ned_m; v_b_mps; q_nb; w_b_rps]`
+`x_rigid = [p_ned_m; v_b_mps; q_nb; w_b_radps]`
 
 Канонический внешний API `Stage-1.5` использует struct состояния:
 
@@ -35,7 +35,7 @@ state.omega_m_radps
 
 Packed-форма для совместимости с kernel:
 
-`x_plant = [p_ned_m(3); v_b_mps(3); q_nb(4); w_b_rps(3); omega_m_radps(4)]`
+`x_plant = [p_ned_m(3); v_b_mps(3); q_nb(4); w_b_radps(3); omega_m_radps(4)]`
 
 где:
 
