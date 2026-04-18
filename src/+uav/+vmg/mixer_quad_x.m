@@ -37,9 +37,10 @@ if ~isequal(size(motor_xy_m), [4, 2])
         'Expected params.motor_xy_m to have size 4x2.');
 end
 
+rotor = uav.vmg.rotor_coeffs(params);
 x_i_m = motor_xy_m(:, 1);
 y_i_m = motor_xy_m(:, 2);
-yaw_gain_m = params.kQ_Nm_per_radps2 ./ params.kT_N_per_radps2;
+yaw_gain_m = rotor.kQ_Nm_per_radps2 ./ rotor.kT_N_per_radps2;
 
 allocation = [ ...
     1.0,        1.0,        1.0,        1.0; ...
@@ -50,5 +51,5 @@ allocation = [ ...
 
 thrust_cmd_N = allocation \ [totalThrust_N; bodyMoments_Nm(:)];
 thrust_cmd_N = max(thrust_cmd_N, 0.0);
-omega_cmd_radps = sqrt(thrust_cmd_N ./ params.kT_N_per_radps2);
+omega_cmd_radps = sqrt(thrust_cmd_N ./ rotor.kT_N_per_radps2);
 end

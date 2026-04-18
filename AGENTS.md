@@ -102,3 +102,29 @@ A task is done only if:
 - tests are provided
 - local verification commands are provided
 - assumptions and limitations are written down
+
+## Git workflow
+
+- Для каждой инженерной задачи работать в отдельной ветке вида `task/NN-short-name`.
+- Основной режим работы Codex для этого репозитория: `Worktree`.
+- После завершения каждой задачи обязательно:
+  1. запустить `scripts/bootstrap_project.m`
+  2. запустить `runtests('tests')`
+  3. запустить task-specific demo scripts
+  4. сохранить сырые логи в `artifacts/logs/`
+  5. обновить `artifacts/reports/task_NN_summary_ru.md`
+  6. сделать commit
+  7. выполнить push ветки
+  8. открыть или обновить pull request
+- Никогда не утверждать, что MATLAB-прогоны выполнены успешно, если сырые логи не сохранены в репозитории.
+- Все task reports, summary files, review notes, commit messages и PR descriptions писать на русском языке.
+
+## Review guidelines
+
+- Считать ошибками уровня P1:
+  - ошибки знаков и систем координат,
+  - некорректную геометрию микширования,
+  - скрытые параметры вне preset/config файлов,
+  - отсутствие raw logs после заявленных прогонов,
+  - перенос физической логики в бинарные артефакты вместо `.m` кода.
+- Требовать минимальный scope изменений без лишнего функционала.
