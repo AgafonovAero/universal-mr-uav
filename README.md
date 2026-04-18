@@ -1,29 +1,22 @@
 # Universal MR UAV
 
-Минимальное code-centric ядро `Stage-1 / Stage-1.5` для универсального многороторного БПЛА в MATLAB.
+Минимальное code-centric ядро `Stage-1 / Stage-1.5` для универсального многороторного БПЛА в MATLAB. Источник истины в репозитории остаётся текстовым: `.m`-код, документы и raw logs локальных прогонов.
 
 ## Что есть в репозитории
 
-- математическая модель движения 6DOF на кватернионах
+- математическая модель движения `6DOF` на кватернионах
 - простая модель ВМГ `T = kT * omega^2`, `Q = kQ * omega^2`
 - геометрически корректный микшер `quad-X`
 - дискретная модель `ESC + motor` первого порядка
-- агрегатор суммарных сил и моментов от роторов
-- минимальный `plant_step` без Simulink shell
-- канонический API состояния `state_validate/state_pack/state_unpack`
-- struct-wrapper `plant_step_struct`
-- единый сценарный runner `run_case`
-- baseline preset `quad-X 250 mm`
-- demo-сценарии для раскрутки роторов, открытого hover и yaw-step case
-- unit tests и raw logs MATLAB-прогонов
+- прозрачный `plant_step` и struct-wrapper `plant_step_struct`
+- сценарные runner'ы `run_case` и `run_case_with_sensors`
+- code-centric sensor layer: `IMU`, `barometer`, `magnetometer`, `GNSS`
+- demo-сценарии и unit tests
+- raw logs локальных MATLAB-прогонов и task summary на русском языке
 
-## Уровни состояния
+## Каноническое состояние
 
-Жесткое тело в `uav.core.eom6dof_quat` использует 13-мерное состояние:
-
-`x_rigid = [p_ned_m; v_b_mps; q_nb; w_b_radps]`
-
-Канонический внешний API `Stage-1.5` использует struct состояния:
+Внешний API Stage-1.5 использует struct состояния:
 
 ```text
 state.p_ned_m
@@ -33,46 +26,44 @@ state.w_b_radps
 state.omega_m_radps
 ```
 
-Packed-форма для совместимости с kernel:
-
-`x_plant = [p_ned_m(3); v_b_mps(3); q_nb(4); w_b_radps(3); omega_m_radps(4)]`
-
-где:
+Где:
 
 - `p_ned_m` - положение в земной системе координат `NED`
 - `v_b_mps` - линейная скорость в связанной системе координат
-- `q_nb` - scalar-first кватернион поворота из body в `NED`
+- `q_nb` - scalar-first quaternion поворота из `body` в `NED`
 - `w_b_radps` - угловая скорость в связанной системе координат
-- `omega_m_radps` - скорости четырех роторов
+- `omega_m_radps` - угловые скорости четырёх роторов
 
-Преобразования выполняются функциями:
+Packed-представление для совместимости с kernel:
 
-- `uav.core.state_validate`
-- `uav.core.state_pack`
-- `uav.core.state_unpack`
+```text
+x_plant = [p_ned_m(3); v_b_mps(3); q_nb(4); w_b_radps(3); omega_m_radps(4)]
+```
 
-## Геометрия и параметры ВМГ
+## Sensor Layer Stage-1.5
 
-В baseline preset явно используются:
+Слой датчиков остаётся тонким и stateless. Он не меняет физическую модель объекта управления и не включает оцениватель состояния.
 
-- `wheelbase_m` - диагональ motor-to-motor между противоположными роторами
-- `motor_radius_m` - расстояние от центра аппарата до ротора
-- `motor_xy_m` - матрица `4x2` координат роторов `[x_i, y_i]`
-- `params.motor.*` - параметры динамики двигателя и ограничений
-- `params.rotor.*` - коэффициенты тяги и реактивного момента
+Доступные функции:
 
-Для обратной совместимости сохранены и legacy-поля:
+```matlab
+imu = uav.sensors.imu_measure(state, diag, params);
+baro = uav.sensors.baro_measure(state, params);
+mag = uav.sensors.mag_measure(state, params);
+gnss = uav.sensors.gnss_measure(state, params);
+sens = uav.sensors.sensors_step(state, diag, params);
+log = uav.sim.run_case_with_sensors(case_cfg);
+```
 
-- `kT_N_per_radps2`
-- `kQ_Nm_per_radps2`
+Ключевые соглашения:
 
-## Команды двигателя
+- `IMU accel` - `specific force` в `body`
+- `baro.alt_m = -p_ned_z + bias + noise`
+- `GNSS` возвращает позицию и скорость в `NED`
+- `magnetometer` использует `params.env.mag_ned_uT` и `q_nb`
+- все углы в коде задаются в радианах
 
-В `Stage-1.5` команда двигателя задается как вектор целевых угловых скоростей роторов:
-
-`motor_cmd_radps = [omega_1; omega_2; omega_3; omega_4]`
-
-Обновление состояния двигателей выполняется функцией `uav.vmg.motor_esc_step`, после чего силы и моменты агрегируются через `uav.core.forces_moments_sum`, а жесткое тело интегрируется в `uav.sim.plant_step`. Для внешнего API добавлен wrapper `uav.sim.plant_step_struct`, а для временных сценариев - `uav.sim.run_case`.
+Подробности: `docs/30_sensor_api_ru.md`
 
 ## Быстрый старт
 
@@ -80,17 +71,18 @@ Packed-форма для совместимости с kernel:
 
 ```matlab
 run('scripts/bootstrap_project.m');
-run('scripts/run_case_hover.m');
-run('scripts/run_case_yaw_step.m');
+run('scripts/run_sensor_sanity_demo.m');
+run('scripts/run_case_hover_with_sensors.m');
 results = runtests('tests');
 table(results)
 ```
 
 ## Архитектурная граница Stage-1.5
 
-- управление и модель остаются text-first и code-centric
+- реализация остаётся text-first и code-centric
 - Simulink shell на этом этапе не используется
 - `.slx`, `.mlapp`, `.sldd`, `.prj` не создаются
+- estimator layer пока отсутствует
 
 ## Структура
 
@@ -102,6 +94,7 @@ src/+uav/+vmg/
 src/+uav/+env/
 src/+uav/+ctrl/
 src/+uav/+sim/
+src/+uav/+sensors/
 tests/
 artifacts/logs/
 artifacts/reports/
@@ -112,4 +105,4 @@ artifacts/reports/
 - `docs/00_scope_ru.md`
 - `docs/10_frames_and_conventions_ru.md`
 - `docs/20_plant_api_ru.md`
-- `TASK_03_RU.md`
+- `docs/30_sensor_api_ru.md`
