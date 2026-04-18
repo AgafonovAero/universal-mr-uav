@@ -1,0 +1,16 @@
+﻿Project paths added from repository root.
+
+Next MATLAB commands:
+  params = uav.sim.default_params_quad_x250();
+  run('scripts/run_case_hover.m');
+  run('scripts/run_case_yaw_step.m');
+  results = runtests('tests');
+  table(results)
+Built thin MIL model: C:\Users\O.Agaphonov\.codex\worktrees\dfe3\universal-mr-uav\models\mil_top.slx
+Thin MIL hover diagnostics:
+  final position NED [m]      : [0.000000 0.000000 1.186404]
+  final altitude [m]          : -1.186404
+  final estimated altitude [m]: -1.159642
+  final estimated Euler [rad] : [0.000000 0.000000 0.000000]
+  final true quat norm [-]    : 1.000000000000
+  final estimated quat norm[-]: 1.000000000000

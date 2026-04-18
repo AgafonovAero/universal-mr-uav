@@ -4,13 +4,16 @@ Project: Universal multirotor UAV model for MATLAB/Simulink
 
 ## Current stage
 
-Stage-1 only.
+Stage-1.5+ with minimal thin Simulink MIL shell.
 
-Build a code-centric kernel-first repository.
+Build and extend a code-centric kernel-first repository.
+
+Sensor layer and estimator layer already exist in `.m` code.
+
+Simulink is allowed only as a thin orchestration shell over the existing
+code-centric kernel.
 
 Do NOT build GUI.
-
-Do NOT build SLX models in this task.
 
 Do NOT build MLAPP apps in this task.
 
@@ -18,9 +21,10 @@ Do NOT create binary-only artifacts as the main source of truth.
 
 ## Main engineering idea
 
-The source of truth must be MATLAB code and text files.
+The source of truth must remain MATLAB code and text files.
 
-Simulink will be added later as a thin orchestration shell.
+Simulink is allowed only as a thin orchestration shell that is generated
+and maintained through `.m` scripts and never becomes the source of truth.
 
 ## Domain language
 
@@ -60,14 +64,19 @@ If degrees are used anywhere, conversion must be explicit.
 ## Architectural rules
 
 1. Keep the implementation text-first.
-2. No `.slx`, `.mlapp`, `.sldd`, `.prj` creation in this task.
+2. No `.mlapp`, `.sldd`, `.prj` creation in this task. A minimal `.slx`
+   is allowed only when it is script-generated or script-maintained and
+   stays a thin shell over the `.m` kernel.
 3. Use MATLAB package folders under `/src/+uav/`.
 4. Separate code into:
    - `core`
    - `vmg`
    - `env`
    - `ctrl`
+   - `sensors`
+   - `est`
    - `sim`
+   - `sl`
 5. Every nontrivial function must include:
    - H1 line
    - description
@@ -88,9 +97,13 @@ If degrees are used anywhere, conversion must be explicit.
 - Propulsion model: simple rotor model `T = kT * omega^2`, `Q = kQ * omega^2`
 - Mixer: quad-X only for now
 - Control: minimal body-rate PID scaffold only
+- Sensor layer: code-centric and explicit
+- Estimator layer: code-centric and explicit
 - Environment: gravity only for now
 - One basic hover demo
 - Two basic unit tests minimum
+- MIL thin shell is allowed only as orchestration around existing `.m`
+  APIs for plant, sensors, and estimator
 
 ## Done criteria
 
@@ -126,5 +139,7 @@ A task is done only if:
   - некорректную геометрию микширования,
   - скрытые параметры вне preset/config файлов,
   - отсутствие raw logs после заявленных прогонов,
-  - перенос физической логики в бинарные артефакты вместо `.m` кода.
+  - перенос физической логики в бинарные артефакты вместо `.m` кода,
+  - перенос физики объекта, sensor layer или estimator layer внутрь
+    `.slx` как ручной block-diagram реализации.
 - Требовать минимальный scope изменений без лишнего функционала.
