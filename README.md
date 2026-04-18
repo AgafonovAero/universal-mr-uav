@@ -88,6 +88,39 @@ results = runtests('tests');
 table(results)
 ```
 
+## Как посмотреть, что модель действительно летает
+
+Из корня репозитория в MATLAB:
+
+```matlab
+run('scripts/bootstrap_project.m');
+
+run('scripts/run_demo_takeoff_to_50m.m');
+run('scripts/plot_demo_takeoff_to_50m.m');
+
+run('scripts/run_demo_pitch_step_minus10deg.m');
+run('scripts/plot_demo_pitch_step_minus10deg.m');
+```
+
+После этого в репозитории появятся воспроизводимые flight-demo артефакты:
+
+- PNG-графики в `artifacts/figures/`:
+  - `demo_takeoff_altitude.png`
+  - `demo_takeoff_vertical_speed.png`
+  - `demo_takeoff_motor_cmd.png`
+  - `demo_pitch_angle.png`
+  - `demo_pitch_altitude.png`
+  - `demo_pitch_motor_cmd.png`
+- численные результаты в `artifacts/reports/`:
+  - `demo_takeoff_to_50m.mat`
+  - `demo_takeoff_to_50m.csv`
+  - `demo_pitch_step_minus10deg.mat`
+  - `demo_pitch_step_minus10deg.csv`
+
+Эти сценарии не переносят физику в `.slx`: оба demo работают поверх
+существующего code-centric runner `uav.sim.run_case_with_estimator`, а plot
+scripts только читают сохраненные MAT-артефакты и строят PNG.
+
 ## TASK-08: что именно добавлено
 
 TASK-08 не интегрирует реальный flight stack. Он делает только подготовительный SIL interface layer:
@@ -118,6 +151,7 @@ src/+uav/+sl/
 models/
 tests/
 artifacts/logs/
+artifacts/figures/
 artifacts/reports/
 ```
 

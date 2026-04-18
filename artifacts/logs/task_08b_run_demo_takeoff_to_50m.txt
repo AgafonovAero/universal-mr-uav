@@ -1,0 +1,15 @@
+﻿Project paths added from repository root.
+
+Next MATLAB commands:
+  params = uav.sim.default_params_quad_x250();
+  run('scripts/run_case_hover.m');
+  run('scripts/run_case_yaw_step.m');
+  results = runtests('tests');
+  table(results)
+Demo takeoff to 50 m diagnostics:
+  final altitude [m]          : 50.002840
+  peak altitude error [m]     : 3.342529
+  final estimated altitude [m]: 50.003001
+  final quat norms [-]        : true=1.000000000000 est=1.000000000000
+  saved MAT                   : C:\Users\O.Agaphonov\.codex\worktrees\fb8e\universal-mr-uav\artifacts\reports\demo_takeoff_to_50m.mat
+  saved CSV                   : C:\Users\O.Agaphonov\.codex\worktrees\fb8e\universal-mr-uav\artifacts\reports\demo_takeoff_to_50m.csv

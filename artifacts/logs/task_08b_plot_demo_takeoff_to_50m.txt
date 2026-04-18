@@ -1,0 +1,11 @@
+﻿Project paths added from repository root.
+
+Next MATLAB commands:
+  params = uav.sim.default_params_quad_x250();
+  run('scripts/run_case_hover.m');
+  run('scripts/run_case_yaw_step.m');
+  results = runtests('tests');
+  table(results)
+Saved PNG: C:\Users\O.Agaphonov\.codex\worktrees\fb8e\universal-mr-uav\artifacts\figures\demo_takeoff_altitude.png
+Saved PNG: C:\Users\O.Agaphonov\.codex\worktrees\fb8e\universal-mr-uav\artifacts\figures\demo_takeoff_vertical_speed.png
+Saved PNG: C:\Users\O.Agaphonov\.codex\worktrees\fb8e\universal-mr-uav\artifacts\figures\demo_takeoff_motor_cmd.png
