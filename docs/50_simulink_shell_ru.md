@@ -1,129 +1,123 @@
 # Thin Simulink Shell Stage-1.5+
 
-## Зачем нужен thin Simulink shell
+## Зачем нужен thin shell
 
-На текущем этапе нужен не новый source-of-truth model, а минимальная orchestration-оболочка для `MIL` поверх уже существующего code-centric ядра:
+На текущем этапе Simulink нужен не как новый инженерный source of truth, а как минимальная orchestration-оболочка поверх уже существующего code-centric ядра.
 
-- математическая модель движения остаётся в `.m`-коде
-- sensor layer остаётся в `.m`-коде
-- estimator layer остаётся в `.m`-коде
-- Simulink нужен только как внешний дискретный scheduler, источник сигналов и слой логирования
+Это означает:
 
-Такой подход позволяет:
+- математическая модель движения остается в `.m`-коде
+- sensor layer остается в `.m`-коде
+- estimator layer остается в `.m`-коде
+- `.slx` используется только как тонкая оркестрация, логирование и фиксация boundary
 
-- сохранить текстовую верифицируемость репозитория
-- не переносить физику объекта управления в бинарный `.slx`
-- готовить будущие orchestration-сценарии без разрушения kernel-first архитектуры
+## Два shell-сценария после TASK-08
 
-## Почему source of truth не переносится в `.slx`
+После TASK-08 в репозитории существуют два script-generated shell-сценария:
 
-`models/mil_top.slx` не является основной инженерной моделью. Он считается thin shell, потому что:
+1. `models/mil_top.slx`
+2. `models/sil_top.slx`
+
+Их роли различаются:
+
+- `mil_top.slx` нужен для тонкого MIL orchestration поверх внутреннего code-centric API
+- `sil_top.slx` нужен для SIL-prep boundary между будущим внешним flight stack'ом и тем же code-centric ядром
+
+При этом ни один из `.slx` файлов не становится source of truth.
+
+## Почему `.slx` не переносит физику
+
+Любой thin shell в этом репозитории считается допустимым только если:
 
 - plant propagation выполняется через `uav.sim.plant_step_struct`
 - sensor sampling выполняется через `uav.sensors.sensors_step`
 - estimator propagation выполняется через `uav.est.estimator_step`
-- bus definitions создаются функцией `uav.sl.make_bus_defs`
-- сама top model регенерируется скриптом `scripts/build_mil_top.m`
+- bus definitions создаются через `.m`-функции
+- top model создается или пересоздается скриптом
 
-Иными словами, `.slx` не содержит ручной block-diagram реализации:
+То есть в `.slx` не должно быть ручной block-diagram реализации:
 
 - rigid-body 6DOF физики
 - модели ВМГ
 - sensor layer
 - estimator layer
 
-## Состав `uav.sl.Stage15MILSystem`
+## MIL shell
 
-`uav.sl.Stage15MILSystem` является `matlab.System` wrapper'ом с дискретным шагом `dt_s`.
+MIL shell остается минимальным и совместимым с TASK-07:
 
-Публичные свойства:
+- `uav.sl.Stage15MILSystem`
+- `uav.sl.make_bus_defs`
+- `scripts/build_mil_top.m`
+- `scripts/run_mil_top_hover.m`
+- `scripts/run_mil_top_yaw_step.m`
 
-- `dt_s` - шаг дискретизации
-- `state0` - начальное canonical state struct
-- `params` - параметрический preset/config struct
+TASK-08 не должен ломать этот сценарий.
 
-Внутреннее runtime-состояние:
+## SIL-prep shell
 
-- состояние объекта управления `state_internal`
-- состояние оценивателя `estimator_internal`
-- флаг инициализации estimator layer
+TASK-08 добавляет отдельный thin SIL-prep shell:
 
-На каждом такте блок:
+- `uav.sil.*` фиксирует канонический внешний интерфейс
+- `uav.sl.Stage15SILBridgeSystem` связывает внешний actuator packet с существующим plant/sensors/estimator ядром
+- `uav.sl.StubExternalFCSSystem` временно играет роль внешнего flight controller для smoke tests
+- `uav.sl.make_sil_bus_defs` создает bus objects без `.sldd`
+- `scripts/build_sil_top.m` script-generated создает `models/sil_top.slx`
 
-1. берет текущее canonical state struct
-2. формирует sampled plant diagnostics из rotor speeds
-3. вызывает `uav.sensors.sensors_step`
-4. инициализирует или продвигает `uav.est.estimator_step`
-5. отдает:
-   - `state_out`
-   - `sensors_out`
-   - `estimator_out`
-   - `diag_out`
-6. продвигает plant через `uav.sim.plant_step_struct`
+## Почему в `sil_top.slx` есть feedback delay
 
-Кватернион состояния не нормализуется внутри `.slx` вручную. Нормализация остаётся внутри существующего ядра `uav.sim.plant_step`.
+В `sil_top.slx` допускается один минимальный дискретный feedback delay на пути обратной связи sensor packet -> stub FCS.
 
-## Bus definitions
+Его роль:
 
-Функция `uav.sl.make_bus_defs()` создаёт `Simulink.Bus` objects в base workspace без использования `.sldd`.
+- разорвать algebraic loop
+- зафиксировать детерминированную дискретную boundary между внешним flight stack и kernel bridge
+- не переносить физику, sensor layer или estimator layer в block diagram
 
-Определяются bus'ы для:
+Этот delay не меняет архитектурный принцип: source of truth все равно остается в `.m`-коде.
 
-- canonical state
-- sensor layer
-- estimator layer
-- diag layer
+## Что именно делает TASK-08
 
-Вложенные sub-bus'ы повторяют структуру существующего API:
+TASK-08 делает только SIL-prep interface layer:
 
-- `imu`, `baro`, `mag`, `gnss`
-- `attitude`, `altitude`
-- `plant`, `estimator`
+- задает формат actuator command для внешнего flight stack
+- задает формат sensor packet для внешнего flight stack
+- задает прозрачный multi-rate scheduler packet boundary
+- показывает минимально замкнутую Simulink boundary через `sil_top.slx`
 
-## Как генерируется `models/mil_top.slx`
+TASK-08 не делает:
 
-Скрипт `scripts/build_mil_top.m` программно:
+- реальный ArduPilot runtime bridge
+- реальный PX4 runtime bridge
+- MAVLink/UDP transport layer
+- HIL integration
 
-- создаёт или пересоздаёт `models/mil_top.slx`
-- настраивает модель как `discrete`, `fixed-step`
-- добавляет `From Workspace` источник команд на моторы
-- добавляет один `MATLAB System` block на основе `uav.sl.Stage15MILSystem`
-- добавляет логирование `state_out`, `sensors_out`, `estimator_out`, `diag_out`
+## Приоритет следующего roadmap
 
-Цель скрипта — оставить `.slx` минимальным и воспроизводимым, а не редактируемым вручную как инженерный источник истины.
+После фиксации интерфейсной границы дальнейший приоритет такой:
 
-## Как запускать demo-сценарии
+1. ArduPilot SIL
+2. PX4 SIL
+3. PX4 HIL
 
-Из MATLAB из корня репозитория:
+Почему следующим шагом логично делать именно ArduPilot SIL:
+
+- boundary внешнего actuator/sensor interface уже зафиксирован
+- нужен первый реальный стек-специфичный adapter поверх готовой boundary
+- ArduPilot SIL дает ближайшую инженерную верификацию полезности нового interface layer
+
+## Запуск shell-сценариев
+
+Из MATLAB:
 
 ```matlab
 run('scripts/bootstrap_project.m');
+
 run('scripts/build_mil_top.m');
 run('scripts/run_mil_top_hover.m');
 run('scripts/run_mil_top_yaw_step.m');
+
+run('scripts/build_sil_top.m');
+run('scripts/run_sil_stub_hover.m');
+run('scripts/run_sil_stub_yaw_step.m');
 ```
-
-Профили команд создаются функцией:
-
-```matlab
-cmd = uav.sl.make_demo_command_profile('hover', params, dt_s, t_final_s);
-cmd = uav.sl.make_demo_command_profile('yaw_step', params, dt_s, t_final_s);
-```
-
-## Ограничения текущего MIL-shell
-
-- shell работает только как `MIL`, без `SIL/HIL`
-- top model остаётся минимальной и не покрывает route/control orchestration
-- нет асинхронных rate groups, scheduler logic и многочастотной архитектуры
-- нет ручной блочной реализации физики объекта, sensor layer или estimator layer
-- нет `.sldd` и model-based parameter governance
-- shell опирается на base workspace bus objects и script-generated model rebuild
-
-## Что логично делать следующим шагом
-
-После этого шага инженерно разумны два направления:
-
-1. расширять thin shell до orchestration-уровня `route/control`, оставляя physics/sensors/estimator в `.m`-ядре
-2. готовить hooks для `SIL/HIL`, если orchestration boundary уже достаточно стабилизирована
-
-Оба пути совместимы с текущим принципом: source of truth остаётся в MATLAB-коде и текстовых артефактах, а `.slx` остаётся thin shell.

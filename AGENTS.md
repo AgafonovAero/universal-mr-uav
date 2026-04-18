@@ -4,11 +4,18 @@ Project: Universal multirotor UAV model for MATLAB/Simulink
 
 ## Current stage
 
-Stage-1.5+ with minimal thin Simulink MIL shell.
+Stage-1.5+ with minimal thin Simulink MIL shell and TASK-08 SIL-prep
+interface layer.
 
 Build and extend a code-centric kernel-first repository.
 
 Sensor layer and estimator layer already exist in `.m` code.
+
+Current roadmap priority for external stack integration:
+
+1. ArduPilot SIL
+2. PX4 SIL
+3. PX4 HIL
 
 Simulink is allowed only as a thin orchestration shell over the existing
 code-centric kernel.
@@ -76,6 +83,7 @@ If degrees are used anywhere, conversion must be explicit.
    - `sensors`
    - `est`
    - `sim`
+   - `sil`
    - `sl`
 5. Every nontrivial function must include:
    - H1 line
@@ -104,6 +112,12 @@ If degrees are used anywhere, conversion must be explicit.
 - Two basic unit tests minimum
 - MIL thin shell is allowed only as orchestration around existing `.m`
   APIs for plant, sensors, and estimator
+- TASK-08 prepares only a SIL-prep interface layer between an external
+  flight stack boundary and the existing code-centric kernel
+- TASK-08 does NOT implement a real MAVLink, UDP, ArduPilot, or PX4
+  runtime bridge
+- `models/mil_top.slx` and existing TASK-07 scenarios must remain
+  available and must not be broken by TASK-08 changes
 
 ## Done criteria
 
