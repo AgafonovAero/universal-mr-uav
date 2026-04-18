@@ -1,0 +1,14 @@
+﻿Project paths added from repository root.
+
+Next MATLAB commands:
+  params = uav.sim.default_params_quad_x250();
+  run('scripts/run_case_hover.m');
+  run('scripts/run_case_yaw_step.m');
+  results = runtests('tests');
+  table(results)
+Run-case hover with sensors:
+  final rotor speeds [rad/s]  : [553.680865 553.680865 553.680865 553.680865]
+  final specific force [m/s^2]: [0.000000 0.000000 -9.810000]
+  final baro altitude [m]     : -1.186404
+  final GNSS position NED [m] : [0.000000 0.000000 1.186404]
+  final quat norm [-]         : 1.000000000000
