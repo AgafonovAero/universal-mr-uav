@@ -1,6 +1,6 @@
 # Universal MR UAV
 
-Минимальное code-centric ядро `Stage-1 / Stage-1.5` для универсального многороторного БПЛА в MATLAB. Источник истины в репозитории остаётся текстовым: `.m`-код, документы и raw logs локальных прогонов.
+Минимальное code-centric ядро `Stage-1 / Stage-1.5+` для универсального многороторного БПЛА в MATLAB. Источник истины в репозитории остаётся текстовым: `.m`-код, документы и raw logs локальных прогонов.
 
 ## Что есть в репозитории
 
@@ -8,15 +8,17 @@
 - простая модель ВМГ `T = kT * omega^2`, `Q = kQ * omega^2`
 - геометрически корректный микшер `quad-X`
 - дискретная модель `ESC + motor` первого порядка
-- прозрачный `plant_step` и struct-wrapper `plant_step_struct`
-- сценарные runner'ы `run_case` и `run_case_with_sensors`
+- прозрачный `plant_step`, `plant_step_struct` и сценарные runner'ы
 - code-centric sensor layer: `IMU`, `barometer`, `magnetometer`, `GNSS`
+- минимальный estimator layer:
+  - `attitude complementary filter` по `gyro + accel + mag`
+  - `altitude complementary filter` по `baro` с optional IMU prediction
 - demo-сценарии и unit tests
 - raw logs локальных MATLAB-прогонов и task summary на русском языке
 
-## Каноническое состояние
+## Каноническое состояние объекта управления
 
-Внешний API Stage-1.5 использует struct состояния:
+Внешний API использует struct состояния:
 
 ```text
 state.p_ned_m
@@ -42,7 +44,7 @@ x_plant = [p_ned_m(3); v_b_mps(3); q_nb(4); w_b_radps(3); omega_m_radps(4)]
 
 ## Sensor Layer Stage-1.5
 
-Слой датчиков остаётся тонким и stateless. Он не меняет физическую модель объекта управления и не включает оцениватель состояния.
+Слой датчиков остаётся тонким и stateless. Он не меняет физическую модель объекта управления и не содержит скрытого состояния.
 
 Доступные функции:
 
@@ -65,6 +67,45 @@ log = uav.sim.run_case_with_sensors(case_cfg);
 
 Подробности: `docs/30_sensor_api_ru.md`
 
+## Estimator Layer
+
+Estimator layer добавляет прозрачное оценивание состояния поверх sensor layer, не меняя физическую модель объекта управления и не переходя к Simulink shell.
+
+Доступные функции:
+
+```matlab
+attitude = uav.est.attitude_cf_init(params);
+[attitude, att_diag] = uav.est.attitude_cf_step(attitude, sens, dt_s, params);
+
+altitude = uav.est.altitude_filter_init(params);
+[altitude, alt_diag] = uav.est.altitude_filter_step(altitude, sens, attitude, dt_s, params);
+
+est = uav.est.estimator_init(params, sens0);
+[est, est_diag] = uav.est.estimator_step(est, sens, dt_s, params);
+
+log = uav.sim.run_case_with_estimator(case_cfg);
+```
+
+Итоговый estimator output содержит минимум:
+
+```matlab
+est.q_nb
+est.euler_rpy_rad
+est.alt_m
+est.vz_mps
+```
+
+Соглашения estimator layer:
+
+- внутренняя ориентация хранится в quaternion `q_nb`
+- `accelerometer` корректирует `roll/pitch`
+- `magnetometer` корректирует `yaw`
+- `alt_m` положительна вверх
+- `vz_mps` интерпретируется как вертикальная скорость по высоте, положительная вверх
+- `GNSS` пока не входит в navigation EKF и остаётся только в sensor layer
+
+Подробности: `docs/40_estimator_api_ru.md`
+
 ## Быстрый старт
 
 Из корня репозитория в MATLAB:
@@ -73,16 +114,19 @@ log = uav.sim.run_case_with_sensors(case_cfg);
 run('scripts/bootstrap_project.m');
 run('scripts/run_sensor_sanity_demo.m');
 run('scripts/run_case_hover_with_sensors.m');
+run('scripts/run_estimator_sanity_demo.m');
+run('scripts/run_case_hover_with_estimator.m');
 results = runtests('tests');
 table(results)
 ```
 
-## Архитектурная граница Stage-1.5
+## Архитектурная граница текущего этапа
 
 - реализация остаётся text-first и code-centric
 - Simulink shell на этом этапе не используется
 - `.slx`, `.mlapp`, `.sldd`, `.prj` не создаются
-- estimator layer пока отсутствует
+- estimator layer минимальный и прозрачный: без полного navigation EKF по `XYZ`
+- `GNSS` остаётся источником измерений sensor layer и пока не интегрируется в объединённый навигационный оцениватель
 
 ## Структура
 
@@ -93,8 +137,9 @@ src/+uav/+core/
 src/+uav/+vmg/
 src/+uav/+env/
 src/+uav/+ctrl/
-src/+uav/+sim/
 src/+uav/+sensors/
+src/+uav/+est/
+src/+uav/+sim/
 tests/
 artifacts/logs/
 artifacts/reports/
@@ -106,3 +151,4 @@ artifacts/reports/
 - `docs/10_frames_and_conventions_ru.md`
 - `docs/20_plant_api_ru.md`
 - `docs/30_sensor_api_ru.md`
+- `docs/40_estimator_api_ru.md`
