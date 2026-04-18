@@ -37,8 +37,13 @@ Simulink на текущем этапе разрешен только как thi
   - `magnetometer`
   - `GNSS`
 - estimator layer:
-  - complementary filter ориентации
+  - complementary filter ориентации с gating по consistency specific force
   - complementary filter высоты
+- estimator-driven demo controllers:
+  - `uav.ctrl.demo_takeoff_hold_controller`
+  - `uav.ctrl.demo_pitch_hold_controller`
+- estimator-driven closed-loop runner:
+  - `uav.sim.run_case_closed_loop_with_estimator`
 - thin MIL shell:
   - `uav.sl.Stage15MILSystem`
   - script-generated `models/mil_top.slx`
@@ -106,9 +111,12 @@ run('scripts/plot_demo_pitch_step_minus10deg.m');
 
 - PNG-графики в `artifacts/figures/`:
   - `demo_takeoff_altitude.png`
+  - `demo_takeoff_altitude_error.png`
   - `demo_takeoff_vertical_speed.png`
   - `demo_takeoff_motor_cmd.png`
   - `demo_pitch_angle.png`
+  - `demo_pitch_true_vs_estimated.png`
+  - `demo_pitch_estimation_error.png`
   - `demo_pitch_altitude.png`
   - `demo_pitch_motor_cmd.png`
 - численные результаты в `artifacts/reports/`:
@@ -118,8 +126,15 @@ run('scripts/plot_demo_pitch_step_minus10deg.m');
   - `demo_pitch_step_minus10deg.csv`
 
 Эти сценарии не переносят физику в `.slx`: оба demo работают поверх
-существующего code-centric runner `uav.sim.run_case_with_estimator`, а plot
-scripts только читают сохраненные MAT-артефакты и строят PNG.
+estimator-driven code-centric runner
+`uav.sim.run_case_closed_loop_with_estimator` по цепочке
+`объект управления -> sensor layer -> estimator layer -> demo controller -> ВМГ`,
+а plot scripts только читают сохраненные MAT-артефакты и строят PNG.
+
+Важно: demo controllers в TASK-09 больше не используют true-state feedback.
+Они получают только estimator outputs, reference signals и измеренные body
+rates IMU, что делает demos ближе к будущей внешней системе
+автоматического управления.
 
 ## TASK-08: что именно добавлено
 

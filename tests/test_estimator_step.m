@@ -24,6 +24,8 @@ verifySize(testCase, est.q_nb, [4, 1]);
 verifySize(testCase, est.euler_rpy_rad, [3, 1]);
 verifyTrue(testCase, isfield(diag, 'attitude'));
 verifyTrue(testCase, isfield(diag, 'altitude'));
+verifyTrue(testCase, isfield(diag.attitude, 'accel_correction_weight'));
+verifyTrue(testCase, isfield(diag.attitude, 'accel_consistency_metric'));
 end
 
 function params = local_zero_sensor_noise(params)

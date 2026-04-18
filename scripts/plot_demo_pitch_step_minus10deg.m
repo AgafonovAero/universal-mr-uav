@@ -1,7 +1,8 @@
 %% PLOT_DEMO_PITCH_STEP_MINUS10DEG Build and save the pitch-demo PNG figures.
 % Description:
 %   Loads the saved pitch-step demo MAT artifact and exports pitch,
-%   altitude, and motor-command plots into `artifacts/figures/`.
+%   true-vs-estimated pitch, pitch-estimation-error, altitude, and
+%   motor-command plots into `artifacts/figures/`.
 %
 % Inputs:
 %   none
@@ -34,6 +35,8 @@ demo = loaded_data.demo;
 series = demo.series;
 
 pitch_png = fullfile(figures_dir, 'demo_pitch_angle.png');
+pitch_true_vs_est_png = fullfile(figures_dir, 'demo_pitch_true_vs_estimated.png');
+pitch_error_png = fullfile(figures_dir, 'demo_pitch_estimation_error.png');
 altitude_png = fullfile(figures_dir, 'demo_pitch_altitude.png');
 motor_png = fullfile(figures_dir, 'demo_pitch_motor_cmd.png');
 
@@ -48,6 +51,28 @@ ylabel('Pitch, deg');
 title('Pitch step -10 deg: attitude response');
 legend({'True pitch', 'Estimated pitch', 'Reference'}, 'Location', 'best');
 local_export_figure(fig, pitch_png);
+
+fig = figure('Visible', 'off', 'Color', 'w');
+plot(series.time_s, series.true_vs_est_pitch_deg(:, 1), 'LineWidth', 1.6);
+hold on;
+plot(series.time_s, series.true_vs_est_pitch_deg(:, 2), '--', 'LineWidth', 1.4);
+grid on;
+xlabel('Time, s');
+ylabel('Pitch, deg');
+title('Pitch step -10 deg: true vs estimated pitch');
+legend({'True pitch', 'Estimated pitch'}, 'Location', 'best');
+local_export_figure(fig, pitch_true_vs_est_png);
+
+fig = figure('Visible', 'off', 'Color', 'w');
+plot(series.time_s, series.pitch_estimation_error_deg, 'LineWidth', 1.6);
+hold on;
+yline(0.0, ':', 'LineWidth', 1.2);
+grid on;
+xlabel('Time, s');
+ylabel('Pitch estimation error, deg');
+title('Pitch step -10 deg: pitch estimation error');
+legend({'True - estimated', 'Zero'}, 'Location', 'best');
+local_export_figure(fig, pitch_error_png);
 
 fig = figure('Visible', 'off', 'Color', 'w');
 plot(series.time_s, series.altitude_m, 'LineWidth', 1.6);
@@ -72,6 +97,8 @@ legend({'Motor 1', 'Motor 2', 'Motor 3', 'Motor 4'}, 'Location', 'best');
 local_export_figure(fig, motor_png);
 
 fprintf('Saved PNG: %s\n', pitch_png);
+fprintf('Saved PNG: %s\n', pitch_true_vs_est_png);
+fprintf('Saved PNG: %s\n', pitch_error_png);
 fprintf('Saved PNG: %s\n', altitude_png);
 fprintf('Saved PNG: %s\n', motor_png);
 

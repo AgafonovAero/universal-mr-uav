@@ -3,7 +3,9 @@ function [att_est, diag] = attitude_cf_step(est_prev, sens, dt_s, params)
 % Description:
 %   Propagates quaternion attitude with body gyro rates and applies
 %   complementary corrections from accelerometer roll/pitch and
-%   magnetometer yaw observations.
+%   magnetometer yaw observations. Accelerometer feedback is transparently
+%   weighted by a specific-force consistency check so sustained
+%   accelerated flight does not force pitch/roll back toward level.
 %
 % Inputs:
 %   est_prev - previous attitude estimator state
@@ -20,7 +22,8 @@ function [att_est, diag] = attitude_cf_step(est_prev, sens, dt_s, params)
 %
 % Assumptions:
 %   Accelerometer measurements are specific force in body axes and are
-%   used only as a low-frequency roll/pitch reference.
+%   used only as a low-frequency roll/pitch reference when the measured
+%   specific force remains consistent with gravity-only flight.
 
 est_prev = local_validate_attitude_state(est_prev);
 gyro_b_radps = local_validate_vec3(sens, {'imu', 'gyro_b_radps'}, ...
@@ -33,18 +36,26 @@ mag_b_uT = local_validate_vec3(sens, {'mag', 'field_b_uT'}, ...
 validateattributes(dt_s, {'numeric'}, ...
     {'real', 'scalar', 'finite', 'nonnegative'}, mfilename, 'dt_s');
 local_validate_attitude_params(params);
+gravity_ned_mps2 = uav.env.gravity_ned(params.gravity_mps2);
 
 q_pred = local_integrate_quaternion(est_prev.q_nb, gyro_b_radps, dt_s);
 euler_pred = local_quat_to_euler_rpy(q_pred);
 
 [roll_meas_rad, pitch_meas_rad, acc_valid] = local_accel_attitude(accel_b_mps2);
 if acc_valid
+    accel_consistency_metric = local_accel_consistency_metric( ...
+        q_pred, accel_b_mps2, gravity_ned_mps2);
+    accel_correction_weight = local_specific_force_weight( ...
+        accel_consistency_metric, params);
     acc_alpha = local_complementary_alpha(params.estimator.attitude.k_acc, dt_s);
+    acc_alpha = acc_alpha .* accel_correction_weight;
     acc_error_rad = [ ...
         local_wrap_angle_pi(roll_meas_rad - euler_pred(1)); ...
         local_wrap_angle_pi(pitch_meas_rad - euler_pred(2)); ...
         0.0];
 else
+    accel_consistency_metric = nan;
+    accel_correction_weight = 0.0;
     acc_alpha = 0.0;
     acc_error_rad = zeros(3, 1);
 end
@@ -71,6 +82,8 @@ att_est.euler_rpy_rad = euler_est;
 
 diag = struct();
 diag.quat_norm = norm(q_est);
+diag.accel_correction_weight = accel_correction_weight;
+diag.accel_consistency_metric = accel_consistency_metric;
 diag.acc_correction_norm = norm(acc_alpha .* acc_error_rad(1:2));
 diag.mag_correction_norm = abs(mag_alpha * mag_error_rad(3));
 end
@@ -104,6 +117,23 @@ validateattributes(params.estimator.attitude.k_acc, {'numeric'}, ...
 validateattributes(params.estimator.attitude.k_mag, {'numeric'}, ...
     {'real', 'scalar', 'finite', 'nonnegative'}, mfilename, ...
     'params.estimator.attitude.k_mag');
+validateattributes( ...
+    params.estimator.attitude.accel_consistency_full_weight_mps2, ...
+    {'numeric'}, {'real', 'scalar', 'finite', 'nonnegative'}, ...
+    mfilename, ...
+    'params.estimator.attitude.accel_consistency_full_weight_mps2');
+validateattributes( ...
+    params.estimator.attitude.accel_consistency_zero_weight_mps2, ...
+    {'numeric'}, {'real', 'scalar', 'finite', 'positive'}, ...
+    mfilename, ...
+    'params.estimator.attitude.accel_consistency_zero_weight_mps2');
+
+if params.estimator.attitude.accel_consistency_zero_weight_mps2 < ...
+        params.estimator.attitude.accel_consistency_full_weight_mps2
+    error('uav:est:attitude_cf_step:AccelConsistencyThresholdOrder', ...
+        ['Expected accel_consistency_zero_weight_mps2 to be greater than ' ...
+        'or equal to accel_consistency_full_weight_mps2.']);
+end
 end
 
 function value = local_validate_vec3(data, fields, label_name)
@@ -142,6 +172,31 @@ function alpha = local_complementary_alpha(gain_per_s, dt_s)
 %LOCAL_COMPLEMENTARY_ALPHA Convert a rate gain into a blend coefficient.
 
 alpha = min(max(gain_per_s * dt_s, 0.0), 1.0);
+end
+
+function metric_mps2 = local_accel_consistency_metric(q_pred, accel_b_mps2, gravity_ned_mps2)
+%LOCAL_ACCEL_CONSISTENCY_METRIC Compare measured and gravity-only specific force.
+
+c_nb_pred = uav.core.quat_to_dcm(q_pred);
+expected_accel_b_mps2 = -c_nb_pred.' * gravity_ned_mps2(:);
+metric_mps2 = norm(accel_b_mps2 - expected_accel_b_mps2);
+end
+
+function weight = local_specific_force_weight(metric_mps2, params)
+%LOCAL_SPECIFIC_FORCE_WEIGHT Gate accelerometer correction by consistency.
+
+full_weight_mps2 = params.estimator.attitude.accel_consistency_full_weight_mps2;
+zero_weight_mps2 = params.estimator.attitude.accel_consistency_zero_weight_mps2;
+
+if metric_mps2 <= full_weight_mps2
+    weight = 1.0;
+elseif metric_mps2 >= zero_weight_mps2
+    weight = 0.0;
+else
+    blend = (zero_weight_mps2 - metric_mps2) / ...
+        max(zero_weight_mps2 - full_weight_mps2, eps);
+    weight = blend * blend * (3.0 - 2.0 * blend);
+end
 end
 
 function q_next = local_integrate_quaternion(q_prev, gyro_b_radps, dt_s)

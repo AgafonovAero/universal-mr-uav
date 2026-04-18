@@ -19,7 +19,10 @@ function series = postprocess_demo_log(log, refs)
 %   The reference histories, when provided, are already sampled on the
 %   same time grid as `log.time_s`.
 
-if nargin < 2 || isempty(refs)
+if (nargin < 2 || isempty(refs)) && isfield(log, 'reference') && ...
+        isstruct(log.reference) && numel(log.reference) == numel(log.time_s)
+    refs = local_refs_from_log(log.reference);
+elseif nargin < 2 || isempty(refs)
     refs = struct();
 end
 
@@ -43,6 +46,8 @@ series.vertical_speed_est_mps = zeros(n_samples, 1);
 series.pitch_est_rad = zeros(n_samples, 1);
 series.roll_est_rad = zeros(n_samples, 1);
 series.yaw_est_rad = zeros(n_samples, 1);
+series.accel_correction_weight = nan(n_samples, 1);
+series.accel_consistency_metric = nan(n_samples, 1);
 series.motor_speed_radps = zeros(n_samples, 4);
 series.motor_cmd_radps = log.motor_cmd_radps;
 
@@ -78,6 +83,17 @@ for k = 1:n_samples
     series.yaw_est_rad(k) = est_k.euler_rpy_rad(3);
     series.motor_speed_radps(k, :) = state_k.omega_m_radps(:).';
 
+    if isfield(log, 'estimator_diag') && numel(log.estimator_diag) >= k && ...
+            isfield(log.estimator_diag(k), 'attitude')
+        att_diag_k = log.estimator_diag(k).attitude;
+        if isfield(att_diag_k, 'accel_correction_weight')
+            series.accel_correction_weight(k) = att_diag_k.accel_correction_weight;
+        end
+        if isfield(att_diag_k, 'accel_consistency_metric')
+            series.accel_consistency_metric(k) = att_diag_k.accel_consistency_metric;
+        end
+    end
+
     if ~isfield(log, 'quat_norm_true')
         series.quat_norm_true(k) = norm(state_k.q_nb);
     end
@@ -85,6 +101,10 @@ for k = 1:n_samples
         series.quat_norm_est(k) = norm(est_k.q_nb);
     end
 end
+
+series.pitch_estimation_error_deg = rad2deg(series.pitch_rad - series.pitch_est_rad);
+series.true_vs_est_pitch_deg = [ ...
+    rad2deg(series.pitch_rad), rad2deg(series.pitch_est_rad)];
 end
 
 function ref_hist = local_ref_or_default(refs, field_name, n_samples, default_value)
@@ -105,6 +125,33 @@ else
             'Expected refs.%s to have %d samples, got %d.', ...
             field_name, n_samples, numel(ref_hist));
     end
+end
+end
+
+function refs = local_refs_from_log(reference_hist)
+%LOCAL_REFS_FROM_LOG Extract numeric reference histories from log.reference.
+
+n_samples = numel(reference_hist);
+refs = struct();
+refs.altitude_ref_m = local_hist_field_or_default(reference_hist, ...
+    'altitude_ref_m', n_samples, 0.0);
+refs.vertical_speed_ref_mps = local_hist_field_or_default(reference_hist, ...
+    'vertical_speed_ref_mps', n_samples, 0.0);
+refs.pitch_ref_rad = local_hist_field_or_default(reference_hist, ...
+    'pitch_ref_rad', n_samples, 0.0);
+end
+
+function values = local_hist_field_or_default(hist, field_name, n_samples, default_value)
+%LOCAL_HIST_FIELD_OR_DEFAULT Read one scalar field from a struct-array history.
+
+if isempty(hist) || ~isfield(hist, field_name)
+    values = repmat(default_value, n_samples, 1);
+    return;
+end
+
+values = zeros(n_samples, 1);
+for k = 1:n_samples
+    values(k) = hist(k).(field_name);
 end
 end
 
