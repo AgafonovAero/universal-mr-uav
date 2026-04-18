@@ -10,6 +10,7 @@
 *.bak
 *.orig
 *.zip
+slprj/
 
 # MATLAB user/session junk
 resources/project/Root.type.Files/layout.json

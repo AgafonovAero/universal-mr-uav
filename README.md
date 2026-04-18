@@ -1,6 +1,6 @@
 # Universal MR UAV
 
-Минимальное code-centric ядро `Stage-1 / Stage-1.5+` для универсального многороторного БПЛА в MATLAB. Источник истины в репозитории остаётся текстовым: `.m`-код, документы и raw logs локальных прогонов.
+Минимальное code-centric ядро `Stage-1.5+` для универсального многороторного БПЛА в MATLAB/Simulink. Источник истины в репозитории остаётся текстовым: `.m`-код, документы и raw logs локальных прогонов. Simulink на текущем этапе разрешён только как thin orchestration shell поверх уже существующего `.m`-ядра.
 
 ## Что есть в репозитории
 
@@ -13,6 +13,10 @@
 - минимальный estimator layer:
   - `attitude complementary filter` по `gyro + accel + mag`
   - `altitude complementary filter` по `baro` с optional IMU prediction
+- thin Simulink MIL shell:
+  - `uav.sl.Stage15MILSystem`
+  - script-generated `models/mil_top.slx`
+  - bus definitions без `.sldd`
 - demo-сценарии и unit tests
 - raw logs локальных MATLAB-прогонов и task summary на русском языке
 
@@ -69,7 +73,7 @@ log = uav.sim.run_case_with_sensors(case_cfg);
 
 ## Estimator Layer
 
-Estimator layer добавляет прозрачное оценивание состояния поверх sensor layer, не меняя физическую модель объекта управления и не переходя к Simulink shell.
+Estimator layer добавляет прозрачное оценивание состояния поверх sensor layer, не меняя физическую модель объекта управления.
 
 Доступные функции:
 
@@ -106,6 +110,30 @@ est.vz_mps
 
 Подробности: `docs/40_estimator_api_ru.md`
 
+## Thin Simulink Shell Stage-1.5+
+
+`Simulink shell` на текущем этапе разрешён, но только в виде минимальной MIL-orchestration оболочки над существующим code-centric ядром.
+
+Состав thin shell:
+
+- `uav.sl.Stage15MILSystem`:
+  - принимает `motor_cmd_radps`
+  - внутри вызывает `uav.sim.plant_step_struct`
+  - затем формирует `uav.sensors.sensors_step`
+  - затем продвигает `uav.est.estimator_step`
+- `uav.sl.make_bus_defs` создаёт `Simulink.Bus` definitions в base workspace
+- `uav.sl.make_demo_command_profile` формирует дискретные профили команд на моторы
+- `scripts/build_mil_top.m` программно создаёт или перестраивает `models/mil_top.slx`
+
+Почему shell считается thin:
+
+- физика объекта управления остаётся в `src/+uav/+sim`, `src/+uav/+core`, `src/+uav/+vmg`
+- sensor layer остаётся в `src/+uav/+sensors`
+- estimator layer остаётся в `src/+uav/+est`
+- `.slx` не является source of truth и регенерируется из `.m`-скрипта
+
+Подробности: `docs/50_simulink_shell_ru.md`
+
 ## Быстрый старт
 
 Из корня репозитория в MATLAB:
@@ -116,6 +144,9 @@ run('scripts/run_sensor_sanity_demo.m');
 run('scripts/run_case_hover_with_sensors.m');
 run('scripts/run_estimator_sanity_demo.m');
 run('scripts/run_case_hover_with_estimator.m');
+run('scripts/build_mil_top.m');
+run('scripts/run_mil_top_hover.m');
+run('scripts/run_mil_top_yaw_step.m');
 results = runtests('tests');
 table(results)
 ```
@@ -123,10 +154,13 @@ table(results)
 ## Архитектурная граница текущего этапа
 
 - реализация остаётся text-first и code-centric
-- Simulink shell на этом этапе не используется
-- `.slx`, `.mlapp`, `.sldd`, `.prj` не создаются
+- sensor layer и estimator layer уже являются частью code-centric ядра
+- Simulink shell разрешён только как thin orchestration layer
+- `.slx` допускается только в минимальном виде и не становится source of truth
+- `.mlapp`, `.sldd`, `.prj` не создаются
 - estimator layer минимальный и прозрачный: без полного navigation EKF по `XYZ`
 - `GNSS` остаётся источником измерений sensor layer и пока не интегрируется в объединённый навигационный оцениватель
+- нет ручной блочной реализации физики объекта, sensor layer или estimator layer внутри `.slx`
 
 ## Структура
 
@@ -140,6 +174,8 @@ src/+uav/+ctrl/
 src/+uav/+sensors/
 src/+uav/+est/
 src/+uav/+sim/
+src/+uav/+sl/
+models/
 tests/
 artifacts/logs/
 artifacts/reports/
@@ -152,3 +188,4 @@ artifacts/reports/
 - `docs/20_plant_api_ru.md`
 - `docs/30_sensor_api_ru.md`
 - `docs/40_estimator_api_ru.md`
+- `docs/50_simulink_shell_ru.md`
