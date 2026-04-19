@@ -324,5 +324,5 @@ ans =
 
 Totals:
    72 Passed, 0 Failed, 0 Incomplete.
-   38.5781 seconds testing time.
+   37.5063 seconds testing time.
 

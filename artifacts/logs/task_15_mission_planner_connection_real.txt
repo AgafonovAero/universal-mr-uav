@@ -1,0 +1,9 @@
+Проверка Mission Planner и потока MAVLink
+  Mission Planner запущен                 : да
+  PID Mission Planner                     : 18752
+  ArduPilot SITL запущен                  : да
+  адрес MAVLink                           : udp:172.19.208.1:14550
+  локальный порт 14550 занят              : да
+  владелец порта 14550                    : PID 18752
+  MAVLink HEARTBEAT подтвержден           : нет
+  примечание                              : автоматически подтвержден запуск Mission Planner и занятость порта 14550; для подтверждения связи оператор должен выбрать UDP -> Connect -> port 14550.

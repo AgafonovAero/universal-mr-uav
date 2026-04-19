@@ -24,6 +24,7 @@ function Convert-ToWslPath {
     $fullPath = [System.IO.Path]::GetFullPath($WindowsPath)
     $drive = $fullPath.Substring(0, 1).ToLowerInvariant()
     $tail = $fullPath.Substring(2).Replace('\', '/')
+
     if ($tail.StartsWith('/')) {
         $tail = $tail.Substring(1)
     }
@@ -48,6 +49,25 @@ function Write-Utf8NoBomFile {
     [System.IO.File]::WriteAllText($Path, $Text, $encoding)
 }
 
+function Resolve-WindowsHostIpFromWsl {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$TargetDistro
+    )
+
+    try {
+        $resolved = & wsl.exe -d $TargetDistro -- bash -lc "ip -4 route list default | cut -d' ' -f3 | head -n 1" 2>$null
+        $resolved = ($resolved | Select-Object -First 1).Trim()
+        if (-not [string]::IsNullOrWhiteSpace($resolved)) {
+            return $resolved
+        }
+    }
+    catch {
+    }
+
+    return $null
+}
+
 $repoRoot = Get-RepoRoot
 if ([string]::IsNullOrWhiteSpace($LogPath)) {
     $logPath = Join-Path $repoRoot 'artifacts/logs/task_13_start_ardupilot_json_sitl.txt'
@@ -58,11 +78,19 @@ else {
 
 $scriptPath = Join-Path $repoRoot 'tools/ardupilot/wsl/start_arducopter_json_sitl.sh'
 $scriptPathWsl = Convert-ToWslPath -WindowsPath $scriptPath
+$effectiveIp = $Ip
+
+if ($effectiveIp -in @('127.0.0.1', 'localhost')) {
+    $resolvedIp = Resolve-WindowsHostIpFromWsl -TargetDistro $DistroName
+    if (-not [string]::IsNullOrWhiteSpace($resolvedIp)) {
+        $effectiveIp = $resolvedIp
+    }
+}
 
 $argList = New-Object System.Collections.Generic.List[string]
 $argList.Add($scriptPathWsl)
 $argList.Add('--ip')
-$argList.Add($Ip)
+$argList.Add($effectiveIp)
 $argList.Add('--mavlink-port')
 $argList.Add($MavlinkPort.ToString())
 
@@ -86,28 +114,51 @@ $lines = New-Object System.Collections.Generic.List[string]
 
 function Add-Line {
     param([string]$Text)
+
     $script:lines.Add($Text)
     Write-Host $Text
 }
 
-Add-Line 'Запуск ArduCopter JSON SITL через WSL'
-Add-Line ("  дистрибутив                         : {0}" -f $DistroName)
-Add-Line ("  Bash-сценарий                       : {0}" -f $scriptPathWsl)
-Add-Line ("  режим выполнения                    : {0}" -f $(if ($Execute) { 'execute' } else { 'check' }))
-Add-Line ("  порт MAVLink UDP                    : {0}" -f $MavlinkPort)
-Add-Line ("  параметры                           : {0}" -f $displayArgs)
+Add-Line 'Start ArduCopter JSON SITL through WSL'
+Add-Line ("  distro                         : {0}" -f $DistroName)
+Add-Line ("  bash script                    : {0}" -f $scriptPathWsl)
+Add-Line ("  mode                           : {0}" -f $(if ($Execute) { 'execute' } else { 'check' }))
+Add-Line ("  requested IP                   : {0}" -f $Ip)
+Add-Line ("  effective Windows host IP      : {0}" -f $effectiveIp)
+Add-Line ("  MAVLink UDP port               : {0}" -f $MavlinkPort)
+Add-Line ("  arguments                      : {0}" -f $displayArgs)
 
 if ($Execute) {
     Add-Line ''
-    Add-Line 'Выполняется команда запуска ArduCopter JSON SITL:'
-    & wsl.exe -d $DistroName -- bash @($argList.ToArray()) 2>&1 | ForEach-Object {
-        Add-Line ("  {0}" -f $_)
+    Add-Line 'Starting ArduCopter SITL in non-blocking mode.'
+
+    $wslArgs = @('-d', $DistroName, '--', 'bash') + $argList.ToArray()
+    $wslProcess = Start-Process -FilePath 'wsl.exe' -ArgumentList $wslArgs -WindowStyle Hidden -PassThru
+    Add-Line ("  wsl.exe process id             : {0}" -f $wslProcess.Id)
+
+    Start-Sleep -Seconds 6
+
+    $bashCheck = 'ps -eo pid,comm,args | grep arducopter | grep -v grep || true'
+    $processLines = @(
+        & wsl.exe -d $DistroName -- bash -lc $bashCheck
+    ) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+
+    if ($processLines.Count -gt 0) {
+        Add-Line '  SITL process confirmed         : yes'
+        Add-Line '  detected WSL processes:'
+        foreach ($line in $processLines) {
+            Add-Line ("    {0}" -f $line)
+        }
+    }
+    else {
+        Add-Line '  SITL process confirmed         : no'
+        Add-Line '  warning                        : arducopter was not confirmed inside WSL after launch.'
     }
 }
 else {
     Add-Line ''
-    Add-Line 'Режим проверки: сценарий запуска не выполнялся.'
-    Add-Line ("  Команда для ручного запуска: wsl.exe -d ""{0}"" -- bash {1}" -f $DistroName, $displayArgs)
+    Add-Line 'Dry-run mode: launch command was not executed.'
+    Add-Line ("  manual command                 : wsl.exe -d ""{0}"" -- bash {1}" -f $DistroName, $displayArgs)
 }
 
 $logText = ($lines -join [Environment]::NewLine) + [Environment]::NewLine
