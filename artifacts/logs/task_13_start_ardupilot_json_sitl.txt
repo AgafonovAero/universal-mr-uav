@@ -1,0 +1,8 @@
+ArduCopter JSON SITL launch through WSL
+  distro                               : Ubuntu
+  Bash script                          : /mnt/d/WORK/AI_SOLUTION/universal-mr-uav/tools/ardupilot/wsl/start_arducopter_json_sitl.sh
+  execution mode                       : check
+  parameters                           : /mnt/d/WORK/AI_SOLUTION/universal-mr-uav/tools/ardupilot/wsl/start_arducopter_json_sitl.sh --ip 127.0.0.1
+
+Check mode: launch script was not executed.
+  Manual command: wsl.exe -d "Ubuntu" -- bash /mnt/d/WORK/AI_SOLUTION/universal-mr-uav/tools/ardupilot/wsl/start_arducopter_json_sitl.sh --ip 127.0.0.1

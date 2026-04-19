@@ -1,0 +1,11 @@
+WSL preparation for ArduPilot SITL
+  execution mode                       : check
+  target distro                        : Ubuntu
+  preferred WSL version                : 2
+  administrator rights                 : no
+  wsl.exe available                    : yes
+  discovered distros                   : none
+  recommended commands:
+    wsl --install -d Ubuntu
+
+Check mode: no system changes were executed.
