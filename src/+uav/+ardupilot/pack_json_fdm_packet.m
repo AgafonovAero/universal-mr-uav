@@ -1,26 +1,27 @@
 function packet = pack_json_fdm_packet(state, sensors, estimator, time_s, params, cfg)
 %PACK_JSON_FDM_PACKET Сформировать канонический пакет данных для ArduPilot.
-% Description:
+% Назначение:
 %   Преобразует снимки состояния объекта управления, подсистемы датчиков и
 %   алгоритма оценивания состояния в явную структуру MATLAB, фиксирующую
 %   будущую границу JSON-обмена. Функция не выполняет сериализацию JSON и
 %   не осуществляет отправку по UDP.
 %
-% Inputs:
-%   state     - canonical plant state struct
-%   sensors   - current sensor sample struct
-%   estimator - current estimator sample struct
-%   time_s    - simulation time [s]
-%   params    - vehicle parameter struct
-%   cfg       - ArduPilot JSON adapter config
+% Входы:
+%   state     - каноническая структура состояния объекта управления
+%   sensors   - текущий снимок измерений подсистемы датчиков
+%   estimator - текущий снимок алгоритма оценивания состояния
+%   time_s    - время моделирования [s]
+%   params    - структура параметров летательного аппарата
+%   cfg       - структура конфигурации JSON-сопряжения с ArduPilot
 %
-% Outputs:
-%   packet - scalar struct with state and measurement channels
+% Выходы:
+%   packet - скалярная структура с каналами состояния и измерений
 %
-% Units:
-%   SI only, frames are NED for Earth and FRD for body vectors
+% Единицы измерения:
+%   используются единицы СИ; земная система координат - `NED`, связанная
+%   система координат - `FRD`
 %
-% Assumptions:
+% Допущения:
 %   `q_nb` задается в скалярно-первой форме и переводит векторы из
 %   связанной системы координат в земную систему координат `NED`.
 %   Скорость в `NED` и скорость в связанной системе координат сохраняются
@@ -120,11 +121,11 @@ sensors.gnss.vel_ned_mps = local_validate_vec( ...
 end
 
 function estimator = local_validate_estimator_snapshot(estimator)
-%LOCAL_VALIDATE_ESTIMATOR_SNAPSHOT Validate the canonical estimator sample.
+%LOCAL_VALIDATE_ESTIMATOR_SNAPSHOT Проверить снимок оценивания состояния.
 
 if ~isstruct(estimator) || ~isscalar(estimator)
     error('uav:ardupilot:pack_json_fdm_packet:EstimatorType', ...
-        'Expected estimator to be a scalar struct.');
+        'Ожидалась скалярная структура estimator.');
 end
 
 estimator.q_nb = local_validate_vec( ...
@@ -138,7 +139,7 @@ estimator.vz_mps = local_validate_scalar( ...
 end
 
 function cfg = local_validate_cfg(cfg)
-%LOCAL_VALIDATE_CFG Validate the ArduPilot adapter config.
+%LOCAL_VALIDATE_CFG Проверить конфигурацию сопряжения с ArduPilot.
 
 if ~isstruct(cfg) || ~isscalar(cfg)
     error('uav:ardupilot:pack_json_fdm_packet:CfgType', ...

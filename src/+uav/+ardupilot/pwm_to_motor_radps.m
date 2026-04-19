@@ -1,23 +1,24 @@
 function motor_cmd_radps = pwm_to_motor_radps(pwm_us, params, cfg)
 %PWM_TO_MOTOR_RADPS Преобразовать команды ШИМ в частоты вращения винтов.
-% Description:
+% Назначение:
 %   Преобразует длительности импульсов ШИМ в нормированное управляющее
 %   воздействие на интервале `[0, 1]`, а затем переносит его в диапазон
 %   допустимых частот вращения из `params.motor`. Ограничение диапазона
 %   задается явно, скрытые калибровочные параметры не используются.
 %
-% Inputs:
-%   pwm_us - motor PWM vector [us]
-%   params - vehicle parameter struct with motor speed limits
-%   cfg    - ArduPilot adapter config with PWM limits
+% Входы:
+%   pwm_us - вектор команд ШИМ [us]
+%   params - структура параметров летательного аппарата с пределами
+%            частоты вращения винтов
+%   cfg    - конфигурация сопряжения с пределами ШИМ
 %
-% Outputs:
-%   motor_cmd_radps - motor speed command vector [rad/s]
+% Выходы:
+%   motor_cmd_radps - вектор команд по частоте вращения винтов [rad/s]
 %
-% Units:
-%   PWM [us], motor command [rad/s]
+% Единицы измерения:
+%   ШИМ [us], команды частоты вращения [rad/s]
 %
-% Assumptions:
+% Допущения:
 %   Семантика ШИМ на текущем этапе задается как линейная инженерная
 %   заготовка для проверочных прогонов и требует последующего согласования
 %   с реальным `ArduPilot`.

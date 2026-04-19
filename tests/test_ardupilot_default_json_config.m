@@ -1,6 +1,6 @@
 function tests = test_ardupilot_default_json_config
 %TEST_ARDUPILOT_DEFAULT_JSON_CONFIG Проверки типовой конфигурации TASK-10.
-% Description:
+% Назначение:
 %   Подтверждает, что функция `uav.ardupilot.default_json_config`
 %   возвращает структуру с обязательными полями и согласованными
 %   ограничениями диапазона ШИМ.

@@ -1,6 +1,6 @@
 function tests = test_ardupilot_pack_json_fdm_packet
 %TEST_ARDUPILOT_PACK_JSON_FDM_PACKET Проверки пакета данных TASK-10.
-% Description:
+% Назначение:
 %   Подтверждает наличие обязательных полей в каноническом пакете данных
 %   и корректный перенос основных величин из состояния и измерений.
 

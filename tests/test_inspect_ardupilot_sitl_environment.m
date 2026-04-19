@@ -1,6 +1,6 @@
 function tests = test_inspect_ardupilot_sitl_environment
 %TEST_INSPECT_ARDUPILOT_SITL_ENVIRONMENT Проверки локальной среды.
-% Description:
+% Назначение:
 %   Подтверждает, что функция проверки локальной среды возвращает
 %   структурированный результат и не завершается аварийно при отсутствии
 %   реального `ArduPilot`.

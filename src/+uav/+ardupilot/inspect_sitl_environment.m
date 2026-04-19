@@ -1,21 +1,21 @@
 function info = inspect_sitl_environment(cfg)
 %INSPECT_SITL_ENVIRONMENT Проверить локальную готовность к ArduPilot SITL.
-% Description:
+% Назначение:
 %   Проверяет локальную вычислительную среду на наличие минимальных
 %   средств, необходимых для следующего этапа сопряжения с
 %   `ArduPilot SITL`. Функция не завершает работу с ошибкой только из-за
 %   отсутствия `WSL`, `Python` или `ArduPilot`.
 %
-% Inputs:
+% Входы:
 %   cfg - optional adapter config with ardupilot_root
 %
-% Outputs:
+% Выходы:
 %   info - scalar struct with readiness flags and diagnostic messages
 %
-% Units:
+% Единицы измерения:
 %   not applicable
 %
-% Assumptions:
+% Допущения:
 %   TASK-10 ограничен проверкой локальной среды и подготовкой заготовки
 %   средства сопряжения.
 

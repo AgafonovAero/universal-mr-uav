@@ -1,22 +1,23 @@
 function packet = make_loopback_servo_packet(mode, time_s, cfg)
 %MAKE_LOOPBACK_SERVO_PACKET Построить тестовый пакет команд ШИМ.
-% Description:
+% Назначение:
 %   Формирует детерминированный заменитель будущих команд ШИМ от
 %   `ArduPilot`. В TASK-10 эта вспомогательная функция используется для
 %   проверки границы сопряжения без реального JSON/UDP-обмена.
 %
-% Inputs:
-%   mode   - "hover" or "yaw_step"
-%   time_s - simulation time [s]
-%   cfg    - optional ArduPilot adapter config
+% Входы:
+%   mode   - режим `"hover"` или `"yaw_step"`
+%   time_s - время моделирования [s]
+%   cfg    - необязательная конфигурация сопряжения с ArduPilot
 %
-% Outputs:
-%   packet - scalar struct with mode, time_s, pwm_us, and message
+% Выходы:
+%   packet - скалярная структура с полями `mode`, `time_s`, `pwm_us` и
+%            `message`
 %
-% Units:
-%   time_s [s], pwm_us [us]
+% Единицы измерения:
+%   `time_s` [s], `pwm_us` [us]
 %
-% Assumptions:
+% Допущения:
 %   Тестовый пакет не представляет реальную логику режимов или взведения
 %   `ArduPilot`.
 

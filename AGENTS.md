@@ -1,144 +1,166 @@
-# Project instructions
+# Инструкции проекта
 
-Project: Universal multirotor UAV model for MATLAB/Simulink
+Проект: универсальная математическая и имитационная модель
+мультироторного беспилотного воздушного судна для MATLAB/Simulink.
 
-## Current stage
+## Текущий этап
 
-Stage-1.5+ with a minimal Simulink MIL shell and TASK-08 SIL-prep
-interface layer.
+Текущий этап соответствует стадии 1.5+ и включает:
 
-Build and extend a repository with primacy of the computational core.
+- минимальную имитационную оболочку MIL;
+- подготовленный интерфейсный слой TASK-08 для дальнейшего SIL;
+- существующие `.m`-реализации подсистемы датчиков;
+- существующие `.m`-реализации алгоритма оценивания состояния.
 
-The subsystem of sensors and the state-estimation algorithm already exist
-in `.m` code.
-
-Current priority for external complex-of-flight-control integration:
+Приоритет дальнейшего сопряжения с внешними комплексами управления
+полетом установлен в следующем порядке:
 
 1. ArduPilot SIL
 2. PX4 SIL
 3. PX4 HIL
 
-Simulink is allowed only as a minimal orchestration shell over the
-existing computational core.
+Simulink допускается только как тонкая имитационная оболочка над уже
+существующим расчетным ядром.
 
-Do NOT build GUI.
+В рамках задач проекта не допускается:
 
-Do NOT build MLAPP apps in this task.
+- создавать графические интерфейсы;
+- создавать приложения `.mlapp`;
+- делать бинарные артефакты основным инженерным описанием модели.
 
-Do NOT create binary-only artifacts as the primary model description.
+## Основная инженерная идея
 
-## Main engineering idea
+Исходным достоверным описанием модели должны оставаться MATLAB-код и
+текстовые файлы.
 
-The primary model description must remain MATLAB code and text files.
+Simulink допускается только как тонкая имитационная оболочка, которая:
 
-Simulink is allowed only as a minimal orchestration shell generated and
-maintained through `.m` scripts. Simulink must never become the primary
-source of physical logic.
+- формируется из `.m`-скриптов;
+- сопровождается через `.m`-скрипты;
+- не становится местом хранения основной физической логики;
+- не подменяет расчетное ядро блок-схемой ручной сборки.
 
-## Terminology and documentation style
+## Терминология и стиль документации
 
-All documentation, reports, pull-request descriptions, review notes, task
-results, and final answers for this project must be written in Russian
-technical language.
+Вся человекочитаемая документация проекта должна писаться на русском
+техническом языке.
 
-Use terminology consistent with:
+Это требование распространяется на:
 
-- ГОСТ Р 57258-2016
-- ГОСТ 20058-80
-- ГОСТ 23281-78
-- ГОСТ 24999-81
+- `README.md`;
+- документы каталога `docs/`;
+- отчеты в `artifacts/reports/`;
+- исходные журналы прогонов в `artifacts/logs/`;
+- описания запросов на слияние;
+- замечания по проверке;
+- итоговые ответы по инженерным задачам.
 
-In Russian text do not use colloquial English words for engineering
-concepts if a Russian technical equivalent exists.
+При подготовке русскоязычных пояснений необходимо опираться на
+авиационную и нормативную терминологию, согласованную со следующими
+документами:
 
-The following are allowed without translation:
+- ГОСТ Р 57258-2016;
+- ГОСТ 20058-80;
+- ГОСТ 23281-78;
+- ГОСТ 24999-81.
 
-- product names: MATLAB, Simulink, ArduPilot, PX4
-- file names, function names, package names, branch names
-- command lines and tool syntax
-- standard symbols of physical quantities and units
+Допускается не переводить:
 
-Use the following Russian replacements in documentation and explanatory
-text:
+- имена программных изделий, например `MATLAB`, `Simulink`, `ArduPilot`,
+  `PX4`;
+- имена файлов, функций, пакетов и веток репозитория;
+- синтаксис командной строки;
+- общепринятые буквенные обозначения физических величин и единиц.
 
-- `source of truth` -> исходное достоверное описание модели
-- `code-centric` -> программно-реализованное расчетное ядро
-- `kernel-first` -> первичность расчетного ядра
-- `thin shell` -> тонкая имитационная оболочка
-- `scaffold` -> заготовка средства сопряжения
-- `loopback` -> проверочный замкнутый прогон
-- `smoke` / `smoke test` -> первичная проверка работоспособности
-- `boundary` -> граница сопряжения
-- `adapter` -> модуль сопряжения
-- `runner` -> исполнитель сценария моделирования
-- `flight stack` -> внешний комплекс управления полетом
-- `raw logs` -> исходные журналы прогонов
-- `summary` -> отчет
-- `roadmap` -> план-график работ
-- `packet` -> пакет данных
-- `mapping` -> преобразование
-- `estimator` -> алгоритм оценивания состояния
-- `sensor layer` -> подсистема датчиков
-- `plant` -> объект управления
-- `true state` -> истинное состояние объекта
-- `hover` -> зависание
-- `yaw-step` -> ступенчатое воздействие по рысканию
-- `pitch-step` -> ступенчатое воздействие по тангажу
-- `takeoff` -> взлет
-- `debug` -> отладка
-- `display` -> отображение
-- `backend` -> исполняющая часть сопряженного комплекса
-- `runtime bridge` -> средство обмена данными в ходе моделирования
-- `production-ready` -> пригодный к штатной эксплуатации
+Русские пояснения должны использовать инженерные формулировки,
+характерные для документации по динамике полета, системам управления и
+имитационному моделированию.
 
-If an external protocol or software complex must be mentioned for the first
-time, first describe its Russian technical role, then give its exact proper
-name.
+Если в тексте впервые упоминается иностранное техническое название,
+необходимо:
 
-## Domain language
+1. сначала дать русское техническое назначение;
+2. затем указать точное имя программного изделия или протокола.
 
-Use Russian flight-dynamics terminology in docs:
+Для единообразия следует использовать следующие русские замены:
 
-- объект управления
-- математическая модель движения
-- связанная система координат
-- земная система координат
-- ВМГ
-- система автоматического управления
-- контур угловой стабилизации
-- контур стабилизации высоты
-- траекторное управление
-- верификация
-- валидация
-- идентификация
-- летные испытания
+- `source / of / truth` -> исходное достоверное описание модели;
+- `code / centric` -> программно-реализованное расчетное ядро;
+- `kernel / first` -> первичность расчетного ядра;
+- `thin / shell` -> тонкая имитационная оболочка;
+- `scaf / fold` -> заготовка средства сопряжения;
+- `loop / back` -> проверочный замкнутый прогон;
+- `smoke / test` -> первичная проверка работоспособности;
+- `bound / ary` -> граница сопряжения;
+- `adapt / er` -> модуль сопряжения;
+- `run / ner` -> исполнитель сценария моделирования;
+- `flight / stack` -> внешний комплекс управления полетом;
+- `raw / logs` -> исходные журналы прогонов;
+- `sum / mary` -> отчет;
+- `road / map` -> план-график работ;
+- `pack / et` -> пакет данных;
+- `map / ping` -> преобразование;
+- `estim / ator` -> алгоритм оценивания состояния;
+- `sensor / layer` -> подсистема датчиков;
+- `plant` -> объект управления;
+- `true / state` -> истинное состояние объекта;
+- `hover` -> зависание;
+- `yaw / step` -> ступенчатое воздействие по рысканию;
+- `pitch / step` -> ступенчатое воздействие по тангажу;
+- `take / off` -> взлет;
+- `de / bug` -> отладка;
+- `dis / play` -> отображение;
+- `back / end` -> исполняющая часть сопряженного комплекса;
+- `runtime / bridge` -> средство обмена данными в ходе моделирования;
+- `production / ready` -> пригодный к штатной эксплуатации.
 
-Use concise English identifiers in code.
+## Предметная область
 
-## Coordinate conventions
+В русскоязычных документах по проекту рекомендуется использовать
+следующие базовые термины:
 
-- Earth frame in core: NED
-- Body frame: X forward, Y right, Z down
-- Internal attitude representation: quaternion
-- Euler angles are allowed only for display, debugging, and selected
-  interfaces
+- объект управления;
+- математическая модель движения;
+- связанная система координат;
+- земная система координат;
+- винтомоторная группа;
+- система автоматического управления;
+- контур угловой стабилизации;
+- контур стабилизации высоты;
+- траекторное управление;
+- верификация;
+- валидация;
+- идентификация;
+- летные испытания.
 
-## Units
+В коде следует применять краткие и ясные английские идентификаторы.
 
-Use SI only.
+## Соглашения по системам координат
 
-Angles in code must be radians.
+- земная система координат в расчетном ядре: `NED`;
+- связанная система координат: `X` вперед, `Y` вправо, `Z` вниз;
+- внутренняя форма представления ориентации: кватернион;
+- углы Эйлера допускаются только для отображения, отладки и отдельных
+  интерфейсов.
 
-If degrees are used anywhere, conversion must be explicit.
+## Единицы измерения
 
-## Architectural rules
+В коде следует использовать только единицы системы СИ.
 
-1. Keep the implementation text-first.
-2. No `.mlapp`, `.sldd`, `.prj` creation in this task. A minimal `.slx`
-   is allowed only when it is script-generated or script-maintained and
-   stays a thin shell over the `.m` core.
-3. Use MATLAB package folders under `/src/+uav/`.
-4. Separate code into:
+Углы в вычислительном коде должны задаваться в радианах.
+
+Если где-либо используются градусы, преобразование должно быть
+выполнено явно и отражено в тексте, коде или названии поля.
+
+## Архитектурные правила
+
+1. Реализация должна оставаться тексто-ориентированной.
+2. В рамках задач не допускается создавать `.mlapp`, `.sldd`, `.prj`.
+   Минимальный `.slx` допустим только при условии, что он формируется
+   или сопровождается скриптами и остается тонкой оболочкой над `.m`
+   ядром.
+3. MATLAB-пакеты необходимо размещать под `/src/+uav/`.
+4. Код следует распределять по подсистемам:
    - `core`
    - `vmg`
    - `env`
@@ -148,80 +170,88 @@ If degrees are used anywhere, conversion must be explicit.
    - `sim`
    - `sil`
    - `sl`
-5. Every nontrivial function must include:
-   - H1 line
-   - description
-   - inputs
-   - outputs
-   - units
-   - assumptions
-6. No hardcoded aircraft values inside generic functions.
-7. Put example parameters into dedicated preset files.
-8. Keep the first implementation minimal and runnable.
-9. Do not fake test execution results.
-10. If MATLAB execution is not available, explicitly say so and provide exact
-    local commands to run.
+5. Каждая нетривиальная функция должна содержать:
+   - строку H1;
+   - описание назначения;
+   - входы;
+   - выходы;
+   - единицы измерения;
+   - допущения.
+6. В универсальных функциях не допускаются жестко зашитые значения
+   конкретного летательного аппарата.
+7. Примерные параметры следует выносить в отдельные preset- или
+   config-файлы.
+8. Первая реализация должна быть минимальной, но исполнимой.
+9. Нельзя утверждать, что проверки выполнены, если они реально не были
+   запущены.
+10. Если MATLAB недоступен, это необходимо прямо указать и привести
+    точные локальные команды для выполнения.
 
-## Modeling rules for this task
+## Правила моделирования на текущем этапе
 
-- Baseline plant: rigid-body 6DOF
-- Attitude: quaternion-based
-- Propulsion model: simple rotor model `T = kT * omega^2`,
-  `Q = kQ * omega^2`
-- Mixer: quad-X only for now
-- Control: minimal body-rate PID scaffold only
-- Sensor layer: code-centric and explicit
-- Estimator layer: code-centric and explicit
-- Environment: gravity only for now
-- One basic hover demo
-- Two basic unit tests minimum
-- MIL thin shell is allowed only as orchestration around existing `.m`
-  APIs for plant, sensors, and estimator
-- TASK-08 prepares only a SIL-prep interface layer between an external
-  flight stack boundary and the existing code-centric core
-- TASK-08 does NOT implement a real MAVLink, UDP, ArduPilot, or PX4
-  runtime bridge
-- `models/mil_top.slx` and existing TASK-07 scenarios must remain
-  available and must not be broken by TASK-08 changes
+- базовая модель объекта управления: жесткое тело с шестью степенями
+  свободы;
+- ориентация: на основе кватернионов;
+- модель движителей: простая квадратичная зависимость
+  `T = kT * omega^2`, `Q = kQ * omega^2`;
+- микшер: только схема `quad-X`;
+- управление: минимальная заготовка ПИД-регулятора угловых скоростей;
+- подсистема датчиков: программно-реализованная и явная;
+- алгоритм оценивания состояния: программно-реализованный и явный;
+- внешняя среда: пока только сила тяжести;
+- один базовый сценарий зависания;
+- минимум две базовые модульные проверки;
+- оболочка MIL допускается только как оркестрация существующих `.m`
+  интерфейсов объекта управления, датчиков и алгоритма оценивания;
+- TASK-08 подготавливает только интерфейсный слой сопряжения между
+  внешним комплексом управления и существующим расчетным ядром;
+- TASK-08 не реализует реальный `MAVLink`, `UDP`, `ArduPilot` или `PX4`
+  обмен в ходе моделирования;
+- `models/mil_top.slx` и сценарии TASK-07 должны оставаться
+  работоспособными.
 
-## Done criteria
+## Критерии завершения задачи
 
-A task is done only if:
+Задача считается завершенной только в том случае, если:
 
-- requested files are created
-- repository structure is coherent
-- code is readable
-- tests are provided
-- local verification commands are provided
-- assumptions and limitations are written down
+- созданы все запрошенные файлы;
+- структура репозитория остается согласованной;
+- код читаем;
+- добавлены проверки;
+- приведены команды локальной верификации;
+- записаны допущения и ограничения.
 
-## Git workflow
+## Правила работы с Git
 
-- Для каждой инженерной задачи работать в отдельной ветке вида
+- Для каждой инженерной задачи использовать отдельную ветку вида
   `task/NN-short-name`.
-- Основной режим работы Codex для этого репозитория: `Worktree`.
-- После завершения каждой задачи обязательно:
-  1. запустить `scripts/bootstrap_project.m`
-  2. запустить `runtests('tests')`
-  3. запустить специализированные демонстрационные сценарии задачи
-  4. сохранить исходные журналы прогонов в `artifacts/logs/`
-  5. обновить `artifacts/reports/task_NN_summary_ru.md`
-  6. сделать commit
-  7. выполнить push ветки
-  8. открыть или обновить pull request
-- Никогда не утверждать, что MATLAB-прогоны выполнены успешно, если
-  исходные журналы прогонов не сохранены в репозитории.
-- Все отчеты по задачам, пояснительные записки, сообщения фиксации,
-  описания запросов на слияние и итоговые ответы писать на русском языке.
+- Основной режим работы Codex для репозитория: `Worktree`.
+- После завершения каждой задачи необходимо:
+  1. запустить `scripts/bootstrap_project.m`;
+  2. запустить `runtests('tests')`;
+  3. запустить сценарии моделирования, относящиеся к задаче;
+  4. сохранить исходные журналы прогонов в `artifacts/logs/`;
+  5. обновить отчет задачи в `artifacts/reports/task_NN_summary_ru.md`;
+  6. сделать commit;
+  7. выполнить push ветки;
+  8. открыть или обновить запрос на слияние.
+- Нельзя утверждать, что MATLAB-прогоны завершились успешно, если
+  исходные журналы не сохранены в репозитории.
+- Все отчеты по задачам, замечания по проверке, сообщения commit и
+  описания запросов на слияние должны быть на русском языке.
 
-## Review guidelines
+## Правила инженерной проверки
 
-- Считать ошибками уровня P1:
-  - ошибки знаков и систем координат
-  - некорректную геометрию микширования
-  - скрытые параметры вне preset/config файлов
-  - отсутствие исходных журналов прогонов после заявленных запусков
-  - перенос физической логики в бинарные артефакты вместо `.m`-кода
-  - перенос физики объекта, подсистемы датчиков или алгоритма оценивания
-    состояния внутрь `.slx` как ручной block-diagram реализации
-- Требовать минимальный scope изменений без лишнего функционала.
+К ошибкам уровня `P1` следует относить:
+
+- ошибки знаков и систем координат;
+- неверную геометрию микширования;
+- скрытые параметры вне preset- и config-файлов;
+- отсутствие исходных журналов после заявленных прогонов;
+- перенос физической логики в бинарные артефакты вместо `.m`-кода;
+- перенос физики объекта управления, подсистемы датчиков или алгоритма
+  оценивания состояния внутрь `.slx` как ручной блок-схемной
+  реализации.
+
+При проверке необходимо требовать минимальный достаточный объем
+изменений без постороннего функционального расширения.

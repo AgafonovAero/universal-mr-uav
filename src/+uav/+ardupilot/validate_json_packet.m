@@ -1,20 +1,21 @@
 function packet = validate_json_packet(packet)
 %VALIDATE_JSON_PACKET Проверить канонический пакет данных для ArduPilot.
-% Description:
+% Назначение:
 %   Проверяет, что пакет данных, подготовленный для будущего JSON-обмена с
 %   `ArduPilot`, содержит обязательные поля, векторы ожидаемых размеров и
 %   только конечные числовые значения.
 %
-% Inputs:
-%   packet - scalar FDM packet struct
+% Входы:
+%   packet - скалярная структура пакета данных
 %
-% Outputs:
-%   packet - validated packet with normalized column-vector fields
+% Выходы:
+%   packet - проверенный пакет с нормализованными векторными полями
 %
-% Units:
-%   SI only, frames are NED and FRD as documented in packet.frames
+% Единицы измерения:
+%   используются единицы СИ; системы координат `NED` и `FRD` описаны в
+%   `packet.frames`
 %
-% Assumptions:
+% Допущения:
 %   Пакет использует канонические имена полей TASK-10 и скалярно-первую
 %   форму кватерниона.
 

@@ -1,270 +1,54 @@
-Running test_actuator_cmd_to_motor_radps
-..
-Done test_actuator_cmd_to_motor_radps
-__________
+Всего проверок: 49
+Успешно: 49
+С ошибками: 0
+Незавершено: 0
 
-Running test_altitude_filter_step
-..
-Done test_altitude_filter_step
-__________
-
-Running test_ardupilot_default_json_config
-.
-Done test_ardupilot_default_json_config
-__________
-
-Running test_ardupilot_loopback_runner
-.
-Done test_ardupilot_loopback_runner
-__________
-
-Running test_ardupilot_pack_json_fdm_packet
-.
-Done test_ardupilot_pack_json_fdm_packet
-__________
-
-Running test_ardupilot_pwm_to_motor_radps
-.
-Done test_ardupilot_pwm_to_motor_radps
-__________
-
-Running test_attitude_cf_step
-....
-Done test_attitude_cf_step
-__________
-
-Running test_baro_measure
-..
-Done test_baro_measure
-__________
-
-Running test_build_mil_top
-Built thin MIL model: D:\WORK\AI_SOLUTION\universal-mr-uav\models\mil_top.slx
-.
-Done test_build_mil_top
-__________
-
-Running test_build_sil_top
-Built thin SIL-prep model: D:\WORK\AI_SOLUTION\universal-mr-uav\models\sil_top.slx
-.
-Done test_build_sil_top
-__________
-
-Running test_demo_pitch_step_minus10deg
-Demo pitch step -10 deg diagnostics:
-  final pitch [deg]             : -12.121453
-  final estimated pitch [deg]   : -10.003234
-  final pitch estimation err [deg]: -2.118220
-  peak pitch tracking err [deg] : 10.000000
-  min accel weight [-]          : 0.000000
-  max consistency metric [m/s^2]: 1.855700
-  final altitude [m]            : 19.844794
-  quat norms [-]                : true=1.000000000000 est=1.000000000000
-  saved MAT                     : D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\reports\demo_pitch_step_minus10deg.mat
-  saved CSV                     : D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\reports\demo_pitch_step_minus10deg.csv
-.
-Done test_demo_pitch_step_minus10deg
-__________
-
-Running test_demo_takeoff_to_50m
-Demo takeoff to 50 m diagnostics:
-  final altitude [m]          : 49.992157
-  peak altitude error [m]     : 3.988082
-  final estimated altitude [m]: 49.991800
-  final accel weight [-]      : 1.000000
-  final quat norms [-]        : true=1.000000000000 est=1.000000000000
-  saved MAT                   : D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\reports\demo_takeoff_to_50m.mat
-  saved CSV                   : D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\reports\demo_takeoff_to_50m.csv
-.
-Done test_demo_takeoff_to_50m
-__________
-
-Running test_estimator_step
-.
-Done test_estimator_step
-__________
-
-Running test_forces_moments_sum
-.
-Done test_forces_moments_sum
-__________
-
-Running test_gnss_measure
-.
-Done test_gnss_measure
-__________
-
-Running test_hover_balance
-.
-Done test_hover_balance
-__________
-
-Running test_imu_measure
-.
-Done test_imu_measure
-__________
-
-Running test_inspect_ardupilot_sitl_environment
-.
-Done test_inspect_ardupilot_sitl_environment
-__________
-
-Running test_mag_measure
-.
-Done test_mag_measure
-__________
-
-Running test_make_bus_defs
-.
-Done test_make_bus_defs
-__________
-
-Running test_make_sil_bus_defs
-.
-Done test_make_sil_bus_defs
-__________
-
-Running test_mixer_quad_x
-....
-Done test_mixer_quad_x
-__________
-
-Running test_motor_esc_step
-..
-Done test_motor_esc_step
-__________
-
-Running test_plant_step
-.
-Done test_plant_step
-__________
-
-Running test_plant_step_struct
-.
-Done test_plant_step_struct
-__________
-
-Running test_quat_tools
-..
-Done test_quat_tools
-__________
-
-Running test_run_case_closed_loop_with_estimator
-..
-Done test_run_case_closed_loop_with_estimator
-__________
-
-Running test_run_case_hover
-.
-Done test_run_case_hover
-__________
-
-Running test_run_case_with_estimator
-.
-Done test_run_case_with_estimator
-__________
-
-Running test_run_case_with_sensors
-.
-Done test_run_case_with_sensors
-__________
-
-Running test_run_case_yaw_step
-.
-Done test_run_case_yaw_step
-__________
-
-Running test_run_mil_top_hover
-Built thin MIL model: D:\WORK\AI_SOLUTION\universal-mr-uav\models\mil_top.slx
-Thin MIL hover diagnostics:
-  final position NED [m]      : [0.000000 0.000000 1.186404]
-  final altitude [m]          : -1.186404
-  final estimated altitude [m]: -1.159642
-  final estimated Euler [rad] : [0.000000 0.000000 0.000000]
-  final true quat norm [-]    : 1.000000000000
-  final estimated quat norm[-]: 1.000000000000
-.
-Done test_run_mil_top_hover
-__________
-
-Running test_run_sil_stub_hover
-Built thin SIL-prep model: D:\WORK\AI_SOLUTION\universal-mr-uav\models\sil_top.slx
-Thin SIL-prep hover diagnostics:
-  final true position NED [m]      : [0.000000 0.000000 0.791605]
-  final true altitude [m]          : -0.791605
-  final estimated altitude [m]     : -0.785766
-  final true quat norm [-]         : 1.000000000000
-  final estimated quat norm [-]    : 1.000000000000
-  final hover actuator cmd [-]     : [0.631033 0.631033 0.631033 0.631033]
-.
-Done test_run_sil_stub_hover
-__________
-
-Running test_sensors_step
-.
-Done test_sensors_step
-__________
-
-Running test_stage15_sil_bridge
-.
-Done test_stage15_sil_bridge
-__________
-
-Running test_state_pack_unpack
-..
-Done test_state_pack_unpack
-__________
-
-                                                     <strong>Name</strong>                                                     <strong>Passed</strong>    <strong>Failed</strong>    <strong>Incomplete</strong>    <strong>Duration</strong>       <strong>Details</strong>   
-    <strong>______________________________________________________________________________________________________</strong>    <strong>______</strong>    <strong>______</strong>    <strong>__________</strong>    <strong>_________</strong>    <strong>____________</strong>
-
-    {'test_actuator_cmd_to_motor_radps/testLinearNorm01Mapping'                                          }    true      false       false         0.21341    {1×1 struct}
-    {'test_actuator_cmd_to_motor_radps/testInputSaturationHonorsMotorLimits'                             }    true      false       false        0.021497    {1×1 struct}
-    {'test_altitude_filter_step/testAltitudeEstimateConvergesToBaro'                                     }    true      false       false         0.08225    {1×1 struct}
-    {'test_altitude_filter_step/testZeroVerticalAccelerationKeepsVzBounded'                              }    true      false       false        0.046991    {1×1 struct}
-    {'test_ardupilot_default_json_config/testDefaultConfigContainsRequiredFields'                        }    true      false       false        0.059827    {1×1 struct}
-    {'test_ardupilot_loopback_runner/testLoopbackRunnerReturnsPacketsAndBoundedQuatNorms'                }    true      false       false         0.32615    {1×1 struct}
-    {'test_ardupilot_pack_json_fdm_packet/testPacketContainsRequiredTruthAndSensorFields'                }    true      false       false        0.061341    {1×1 struct}
-    {'test_ardupilot_pwm_to_motor_radps/testLinearMappingAndSaturation'                                  }    true      false       false        0.048622    {1×1 struct}
-    {'test_attitude_cf_step/testIdentityZeroGyroPreservesOrientation'                                    }    true      false       false        0.050513    {1×1 struct}
-    {'test_attitude_cf_step/testQuaternionNormRemainsNearUnity'                                          }    true      false       false        0.019051    {1×1 struct}
-    {'test_attitude_cf_step/testLevelHoverKeepsRollPitchNearZero'                                        }    true      false       false        0.017631    {1×1 struct}
-    {'test_attitude_cf_step/testAcceleratedPitchDoesNotCollapseBackToLevel'                              }    true      false       false         0.01456    {1×1 struct}
-    {'test_baro_measure/testBaroAltitudeMatchesNegativeNedZ'                                             }    true      false       false        0.046218    {1×1 struct}
-    {'test_baro_measure/testPressureDecreasesWithAltitude'                                               }    true      false       false        0.000997    {1×1 struct}
-    {'test_build_mil_top/testBuildMilTopCreatesThinShellModel'                                           }    true      false       false          9.6656    {1×1 struct}
-    {'test_build_sil_top/testBuildSilTopCreatesThinBridgeModel'                                          }    true      false       false          2.0997    {1×1 struct}
-    {'test_demo_pitch_step_minus10deg/testPitchDemoProducesArtifactsAndTracksCommand'                    }    true      false       false          1.9566    {1×1 struct}
-    {'test_demo_takeoff_to_50m/testTakeoffDemoProducesArtifactsAndBoundedState'                          }    true      false       false          2.0279    {1×1 struct}
-    {'test_estimator_step/testEstimatorStepReturnsRequiredFields'                                        }    true      false       false        0.077759    {1×1 struct}
-    {'test_forces_moments_sum/testEqualRotorSpeedsProducePureNegativeZForce'                             }    true      false       false         0.07679    {1×1 struct}
-    {'test_gnss_measure/testGnssReturnsPositionAndRotatedVelocityInNed'                                  }    true      false       false        0.085183    {1×1 struct}
-    {'test_hover_balance/testBaselineHoverThrustBalancesWeight'                                          }    true      false       false        0.081019    {1×1 struct}
-    {'test_imu_measure/testLevelHoverSpecificForceAndGyro'                                               }    true      false       false        0.078557    {1×1 struct}
-    {'test_inspect_ardupilot_sitl_environment/testInspectionReturnsStructuredStatusWithoutThrowing'      }    true      false       false         0.36944    {1×1 struct}
-    {'test_mag_measure/testIdentityQuaternionKeepsNedField'                                              }    true      false       false        0.061849    {1×1 struct}
-    {'test_make_bus_defs/testMakeBusDefsCreatesTopLevelBuses'                                            }    true      false       false        0.083827    {1×1 struct}
-    {'test_make_sil_bus_defs/testMakeSilBusDefsCreatesTopLevelBuses'                                     }    true      false       false         0.06615    {1×1 struct}
-    {'test_mixer_quad_x/testHoverMixDistributesThrustEqually'                                            }    true      false       false        0.061553    {1×1 struct}
-    {'test_mixer_quad_x/testMixerGeometryMatchesPresetParameters'                                        }    true      false       false        0.011007    {1×1 struct}
-    {'test_mixer_quad_x/testMixerReproducesRequestedMoments'                                             }    true      false       false       0.0030645    {1×1 struct}
-    {'test_mixer_quad_x/testPureRollCommandIsSymmetricAcrossFrontAndRear'                                }    true      false       false       0.0028485    {1×1 struct}
-    {'test_motor_esc_step/testMotorEscStepConvergesMonotonically'                                        }    true      false       false        0.081972    {1×1 struct}
-    {'test_motor_esc_step/testMotorEscStepSaturatesAtMaximum'                                            }    true      false       false       0.0028077    {1×1 struct}
-    {'test_plant_step/testTrimLikeHoverAccelerationIsNearZeroAfterSpool'                                 }    true      false       false        0.077543    {1×1 struct}
-    {'test_plant_step_struct/testPlantStepStructMatchesPackedPlantStep'                                  }    true      false       false        0.072379    {1×1 struct}
-    {'test_quat_tools/testQuatNormalizeReturnsUnitNorm'                                                  }    true      false       false        0.050502    {1×1 struct}
-    {'test_quat_tools/testQuatToDcmProducesProperRotation'                                               }    true      false       false        0.024404    {1×1 struct}
-    {'test_run_case_closed_loop_with_estimator/testClosedLoopRunnerReturnsDiagnosticsAndBoundedQuatNorms'}    true      false       false         0.59924    {1×1 struct}
-    {'test_run_case_closed_loop_with_estimator/testDemoControllersUseEstimatorSensorInputsOnly'          }    true      false       false       0.0026781    {1×1 struct}
-    {'test_run_case_hover/testHoverCaseKeepsQuatNormAndNearZeroVerticalAccel'                            }    true      false       false        0.086286    {1×1 struct}
-    {'test_run_case_with_estimator/testHoverCaseReturnsEstimatorHistoryAndBoundedAltitude'               }    true      false       false         0.12534    {1×1 struct}
-    {'test_run_case_with_sensors/testHoverCaseReturnsSensorHistoryAndBoundedDrift'                       }    true      false       false         0.14098    {1×1 struct}
-    {'test_run_case_yaw_step/testYawStepProducesPositiveYawRate'                                         }    true      false       false         0.11285    {1×1 struct}
-    {'test_run_mil_top_hover/testMilHoverRunMatchesCodeCentricKernel'                                    }    true      false       false          1.7837    {1×1 struct}
-    {'test_run_sil_stub_hover/testSilHoverRunCompletesAndKeepsQuatNormsNearOne'                          }    true      false       false          1.3005    {1×1 struct}
-    {'test_sensors_step/testAggregatorContainsAllSensorsAndMatchesIndividualCalls'                       }    true      false       false        0.071415    {1×1 struct}
-    {'test_stage15_sil_bridge/testBridgeMatchesCodeCentricReferenceLoop'                                 }    true      false       false         0.25273    {1×1 struct}
-    {'test_state_pack_unpack/testPackUnpackRoundTripIsConsistent'                                        }    true      false       false        0.070974    {1×1 struct}
-    {'test_state_pack_unpack/testStateValidateRejectsWrongQuaternionSize'                                }    true      false       false        0.076652    {1×1 struct}
-
+test_actuator_cmd_to_motor_radps/testLinearNorm01Mapping | passed=1 failed=0 incomplete=0 duration_s=0.201128
+test_actuator_cmd_to_motor_radps/testInputSaturationHonorsMotorLimits | passed=1 failed=0 incomplete=0 duration_s=0.021198
+test_altitude_filter_step/testAltitudeEstimateConvergesToBaro | passed=1 failed=0 incomplete=0 duration_s=0.081404
+test_altitude_filter_step/testZeroVerticalAccelerationKeepsVzBounded | passed=1 failed=0 incomplete=0 duration_s=0.046974
+test_ardupilot_default_json_config/testDefaultConfigContainsRequiredFields | passed=1 failed=0 incomplete=0 duration_s=0.059068
+test_ardupilot_loopback_runner/testLoopbackRunnerReturnsPacketsAndBoundedQuatNorms | passed=1 failed=0 incomplete=0 duration_s=0.324188
+test_ardupilot_pack_json_fdm_packet/testPacketContainsRequiredTruthAndSensorFields | passed=1 failed=0 incomplete=0 duration_s=0.065867
+test_ardupilot_pwm_to_motor_radps/testLinearMappingAndSaturation | passed=1 failed=0 incomplete=0 duration_s=0.048217
+test_attitude_cf_step/testIdentityZeroGyroPreservesOrientation | passed=1 failed=0 incomplete=0 duration_s=0.050434
+test_attitude_cf_step/testQuaternionNormRemainsNearUnity | passed=1 failed=0 incomplete=0 duration_s=0.018145
+test_attitude_cf_step/testLevelHoverKeepsRollPitchNearZero | passed=1 failed=0 incomplete=0 duration_s=0.015495
+test_attitude_cf_step/testAcceleratedPitchDoesNotCollapseBackToLevel | passed=1 failed=0 incomplete=0 duration_s=0.018439
+test_baro_measure/testBaroAltitudeMatchesNegativeNedZ | passed=1 failed=0 incomplete=0 duration_s=0.047598
+test_baro_measure/testPressureDecreasesWithAltitude | passed=1 failed=0 incomplete=0 duration_s=0.000850
+test_build_mil_top/testBuildMilTopCreatesThinShellModel | passed=1 failed=0 incomplete=0 duration_s=10.554014
+test_build_sil_top/testBuildSilTopCreatesThinBridgeModel | passed=1 failed=0 incomplete=0 duration_s=2.250819
+test_demo_pitch_step_minus10deg/testPitchDemoProducesArtifactsAndTracksCommand | passed=1 failed=0 incomplete=0 duration_s=2.070420
+test_demo_takeoff_to_50m/testTakeoffDemoProducesArtifactsAndBoundedState | passed=1 failed=0 incomplete=0 duration_s=1.859877
+test_estimator_step/testEstimatorStepReturnsRequiredFields | passed=1 failed=0 incomplete=0 duration_s=0.096888
+test_forces_moments_sum/testEqualRotorSpeedsProducePureNegativeZForce | passed=1 failed=0 incomplete=0 duration_s=0.092025
+test_gnss_measure/testGnssReturnsPositionAndRotatedVelocityInNed | passed=1 failed=0 incomplete=0 duration_s=0.093138
+test_hover_balance/testBaselineHoverThrustBalancesWeight | passed=1 failed=0 incomplete=0 duration_s=0.091295
+test_imu_measure/testLevelHoverSpecificForceAndGyro | passed=1 failed=0 incomplete=0 duration_s=0.091331
+test_inspect_ardupilot_sitl_environment/testInspectionReturnsStructuredStatusWithoutThrowing | passed=1 failed=0 incomplete=0 duration_s=0.370628
+test_mag_measure/testIdentityQuaternionKeepsNedField | passed=1 failed=0 incomplete=0 duration_s=0.068236
+test_make_bus_defs/testMakeBusDefsCreatesTopLevelBuses | passed=1 failed=0 incomplete=0 duration_s=0.099153
+test_make_sil_bus_defs/testMakeSilBusDefsCreatesTopLevelBuses | passed=1 failed=0 incomplete=0 duration_s=0.104087
+test_mixer_quad_x/testHoverMixDistributesThrustEqually | passed=1 failed=0 incomplete=0 duration_s=0.081804
+test_mixer_quad_x/testMixerGeometryMatchesPresetParameters | passed=1 failed=0 incomplete=0 duration_s=0.020548
+test_mixer_quad_x/testMixerReproducesRequestedMoments | passed=1 failed=0 incomplete=0 duration_s=0.005907
+test_mixer_quad_x/testPureRollCommandIsSymmetricAcrossFrontAndRear | passed=1 failed=0 incomplete=0 duration_s=0.006493
+test_motor_esc_step/testMotorEscStepConvergesMonotonically | passed=1 failed=0 incomplete=0 duration_s=0.126791
+test_motor_esc_step/testMotorEscStepSaturatesAtMaximum | passed=1 failed=0 incomplete=0 duration_s=0.005572
+test_plant_step/testTrimLikeHoverAccelerationIsNearZeroAfterSpool | passed=1 failed=0 incomplete=0 duration_s=0.086717
+test_plant_step_struct/testPlantStepStructMatchesPackedPlantStep | passed=1 failed=0 incomplete=0 duration_s=0.070326
+test_quat_tools/testQuatNormalizeReturnsUnitNorm | passed=1 failed=0 incomplete=0 duration_s=0.074741
+test_quat_tools/testQuatToDcmProducesProperRotation | passed=1 failed=0 incomplete=0 duration_s=0.029637
+test_run_case_closed_loop_with_estimator/testClosedLoopRunnerReturnsDiagnosticsAndBoundedQuatNorms | passed=1 failed=0 incomplete=0 duration_s=0.581495
+test_run_case_closed_loop_with_estimator/testDemoControllersUseEstimatorSensorInputsOnly | passed=1 failed=0 incomplete=0 duration_s=0.002269
+test_run_case_hover/testHoverCaseKeepsQuatNormAndNearZeroVerticalAccel | passed=1 failed=0 incomplete=0 duration_s=0.121510
+test_run_case_with_estimator/testHoverCaseReturnsEstimatorHistoryAndBoundedAltitude | passed=1 failed=0 incomplete=0 duration_s=0.136319
+test_run_case_with_sensors/testHoverCaseReturnsSensorHistoryAndBoundedDrift | passed=1 failed=0 incomplete=0 duration_s=0.155609
+test_run_case_yaw_step/testYawStepProducesPositiveYawRate | passed=1 failed=0 incomplete=0 duration_s=0.072242
+test_run_mil_top_hover/testMilHoverRunMatchesCodeCentricKernel | passed=1 failed=0 incomplete=0 duration_s=1.748989
+test_run_sil_stub_hover/testSilHoverRunCompletesAndKeepsQuatNormsNearOne | passed=1 failed=0 incomplete=0 duration_s=1.451478
+test_sensors_step/testAggregatorContainsAllSensorsAndMatchesIndividualCalls | passed=1 failed=0 incomplete=0 duration_s=0.077041
+test_stage15_sil_bridge/testBridgeMatchesCodeCentricReferenceLoop | passed=1 failed=0 incomplete=0 duration_s=0.231396
+test_state_pack_unpack/testPackUnpackRoundTripIsConsistent | passed=1 failed=0 incomplete=0 duration_s=0.079309
+test_state_pack_unpack/testStateValidateRejectsWrongQuaternionSize | passed=1 failed=0 incomplete=0 duration_s=0.093881

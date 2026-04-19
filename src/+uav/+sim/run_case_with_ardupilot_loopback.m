@@ -1,24 +1,27 @@
 function log = run_case_with_ardupilot_loopback(case_cfg)
 %RUN_CASE_WITH_ARDUPILOT_LOOPBACK Выполнить проверочный прогон с ArduPilot.
-% Description:
+% Назначение:
 %   Использует существующие математическую модель движения, подсистему
 %   датчиков и алгоритм оценивания состояния, формирует на каждом шаге
 %   пакет данных для будущего `ArduPilot`, подставляет тестовый пакет
 %   команд ШИМ вместо реального внешнего комплекса, преобразует ШИМ в
 %   частоты вращения винтов и передает их объекту управления.
 %
-% Inputs:
-%   case_cfg - struct with params, state0, dt_s, t_final_s, loopback_mode,
-%              and optional ardupilot_cfg
+% Входы:
+%   case_cfg - структура с полями `params`, `state0`, `dt_s`,
+%              `t_final_s`, `loopback_mode` и необязательным полем
+%              `ardupilot_cfg`
 %
-% Outputs:
-%   log - struct with state, sensors, estimator, packet, servo, and motor
-%         histories together with quaternion norms
+% Выходы:
+%   log - структура с историями состояния, датчиков, алгоритма
+%         оценивания, пакетов данных, команд исполнительных органов,
+%         команд частоты вращения и норм кватерниона
 %
-% Units:
-%   SI only, frames follow NED for Earth and FRD for body vectors
+% Единицы измерения:
+%   используются единицы СИ; земная система координат - `NED`, связанная
+%   система координат - `FRD`
 %
-% Assumptions:
+% Допущения:
 %   В TASK-10 не используется реальный UDP-обмен или JSON-транспорт;
 %   тестовый пакет применяется только для первичной проверки
 %   работоспособности границы сопряжения.

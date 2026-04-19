@@ -1,22 +1,24 @@
 function servo = unpack_servo_outputs(packet, cfg)
 %UNPACK_SERVO_OUTPUTS Разобрать канонический пакет команд ШИМ.
-% Description:
+% Назначение:
 %   Проверяет и нормализует один пакет команд исполнительных органов в
 %   детерминированную структуру, используемую в проверочных сценариях.
 %   Функция допускает наличие дополнительных каналов ШИМ и возвращает
 %   сообщение вместо аварийного завершения при некорректном входе.
 %
-% Inputs:
-%   packet - scalar struct with packet.pwm_us as 4x1 or Nx1 vector
-%   cfg    - optional ArduPilot adapter config
+% Входы:
+%   packet - скалярная структура с полем `packet.pwm_us` размерности
+%            `4x1` или `Nx1`
+%   cfg    - необязательная конфигурация сопряжения с ArduPilot
 %
-% Outputs:
-%   servo - scalar struct with pwm_us, motor_pwm_us, valid, and message
+% Выходы:
+%   servo - скалярная структура с полями `pwm_us`, `motor_pwm_us`,
+%           `valid` и `message`
 %
-% Units:
-%   PWM values are in microseconds
+% Единицы измерения:
+%   значения ШИМ задаются в микросекундах
 %
-% Assumptions:
+% Допущения:
 %   В качестве команд двигателей используются только первые
 %   `cfg.motor_count` каналов.
 
