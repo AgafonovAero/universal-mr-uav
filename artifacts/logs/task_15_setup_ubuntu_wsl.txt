@@ -1,0 +1,12 @@
+WSL setup check for ArduPilot SITL
+  mode                         : execute
+  target distro                : Ubuntu
+  preferred WSL version        : 2
+  administrator rights         : no
+  wsl.exe available            : yes
+  detected distros             : none
+  recommended commands:
+    wsl --install -d Ubuntu
+
+Administrator rights are required for the requested WSL changes.
+Suggested elevated command: Start-Process powershell -Verb RunAs -ArgumentList '-ExecutionPolicy Bypass -File "D:\WORK\AI_SOLUTION\universal-mr-uav\tools\ardupilot\windows\Setup-WSLForArduPilot.ps1" -Execute -DistroName "Ubuntu" -PreferWSLVersion 2'
