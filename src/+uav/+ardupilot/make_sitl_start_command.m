@@ -1,18 +1,17 @@
 function cmd = make_sitl_start_command(cfg)
 %MAKE_SITL_START_COMMAND Построить рекомендуемую команду запуска SITL.
 % Назначение:
-%   Формирует командную строку запуска `ArduPilot SITL` в режиме `JSON`
-%   без автоматического выполнения этой команды. Функция используется
-%   сценариями подготовки среды и проверки первого двоичного пакета.
+%   Формирует командную строку ручного запуска `ArduPilot SITL`
+%   в режиме `JSON`. Функция не выполняет эту команду автоматически.
 %
 % Входы:
 %   cfg - конфигурация средства сопряжения
 %
 % Выходы:
-%   cmd - структура с текстом команды и поясняющим сообщением
+%   cmd - структура с текстами команд и поясняющим сообщением
 %
 % Единицы измерения:
-%   not applicable
+%   не применяются
 %
 % Допущения:
 %   Команда предназначена для ручного выполнения оператором после
@@ -42,10 +41,11 @@ else
 end
 
 if strlength(cfg.wsl_distro_name) > 0
+    escaped_command = strrep(cmd.run_from_root_command, '''', '''''');
     cmd.wsl_command_text = sprintf( ...
         'wsl -d %s -- bash -lc ''%s''', ...
         char(cfg.wsl_distro_name), ...
-        strrep(cmd.run_from_root_command, '''', ''''''));
+        escaped_command);
 else
     cmd.wsl_command_text = ...
         "wsl -- bash -lc '" + string(cmd.run_from_root_command) + "'";
@@ -63,7 +63,7 @@ end
 end
 
 function cfg = local_normalize_cfg(cfg)
-%LOCAL_NORMALIZE_CFG Нормализовать конфигурацию запуска.
+%LOCAL_NORMALIZE_CFG Нормализовать конфигурацию запуска SITL.
 
 if ~isstruct(cfg) || ~isscalar(cfg)
     error( ...
@@ -79,8 +79,8 @@ required_fields = { ...
     'sitl_vehicle', ...
     'sitl_frame'};
 
-for k = 1:numel(required_fields)
-    field_name = required_fields{k};
+for idx = 1:numel(required_fields)
+    field_name = required_fields{idx};
     if ~isfield(cfg, field_name) || isempty(cfg.(field_name))
         cfg.(field_name) = default_cfg.(field_name);
     end

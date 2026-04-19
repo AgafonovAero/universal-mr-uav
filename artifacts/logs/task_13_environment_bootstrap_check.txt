@@ -1,0 +1,31 @@
+ArduPilot SITL environment bootstrap check
+  WSL ready                                 : no
+  external ArduPilot root ready             : no
+  sim_vehicle.py found                      : no
+  local environment ready                   : no
+
+PowerShell script commands
+  Windows and WSL check                     : powershell -ExecutionPolicy Bypass -File "D:\WORK\AI_SOLUTION\universal-mr-uav\tools\ardupilot\windows\Test-ArduPilotEnvironment.ps1"
+  WSL preparation                           : powershell -ExecutionPolicy Bypass -File "D:\WORK\AI_SOLUTION\universal-mr-uav\tools\ardupilot\windows\Setup-WSLForArduPilot.ps1"
+  ArduPilot setup inside WSL                : powershell -ExecutionPolicy Bypass -File "D:\WORK\AI_SOLUTION\universal-mr-uav\tools\ardupilot\windows\Invoke-ArduPilotWslSetup.ps1"
+  ArduCopter JSON SITL start                : powershell -ExecutionPolicy Bypass -File "D:\WORK\AI_SOLUTION\universal-mr-uav\tools\ardupilot\windows\Start-ArduPilotJsonSitl.ps1"
+
+ArduCopter JSON SITL start command
+  sim_vehicle.py -v ArduCopter -f quad --model JSON:127.0.0.1 --console --map
+
+MATLAB commands for the next stage
+  wait for first packet                     : scripts/run_ardupilot_wait_for_packet.m
+  handshake check                           : scripts/run_ardupilot_json_udp_handshake.m
+
+Recommended sequence of actions
+  1. Run Test-ArduPilotEnvironment.ps1 to inspect Windows and WSL.
+  2. If needed, run Setup-WSLForArduPilot.ps1 to prepare WSL.
+  3. Run Invoke-ArduPilotWslSetup.ps1 to prepare the external ArduPilot tree inside WSL.
+  4. Run Start-ArduPilotJsonSitl.ps1 to start ArduCopter in JSON mode.
+  5. In MATLAB, run scripts/run_ardupilot_wait_for_packet.m.
+  6. After a confirmed packet reception, run scripts/run_ardupilot_json_udp_handshake.m.
+
+Missing environment items
+  - WSL
+  - external ArduPilot root
+  - sim_vehicle.py

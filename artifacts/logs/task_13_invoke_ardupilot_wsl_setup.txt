@@ -1,0 +1,7 @@
+ArduPilot preparation inside WSL
+  distro                               : Ubuntu
+  Bash script                          : /mnt/d/WORK/AI_SOLUTION/universal-mr-uav/tools/ardupilot/wsl/setup_ardupilot_wsl.sh
+  execution mode                       : check
+  WSL command                          : wsl.exe -d "Ubuntu" -- bash "/mnt/d/WORK/AI_SOLUTION/universal-mr-uav/tools/ardupilot/wsl/setup_ardupilot_wsl.sh"
+
+Check mode: Bash preparation script was not executed.

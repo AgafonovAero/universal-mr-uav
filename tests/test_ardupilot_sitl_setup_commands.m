@@ -27,6 +27,9 @@ verifyTrue(testCase, isfield(setup, 'wsl_commands'));
 verifyTrue(testCase, isfield(setup, 'ardupilot_clone_commands'));
 verifyTrue(testCase, isfield(setup, 'ardupilot_build_commands'));
 verifyTrue(testCase, isfield(setup, 'sitl_start_commands'));
+verifyTrue(testCase, isfield(setup, 'matlab_commands'));
+verifyTrue(testCase, isfield(setup, 'script_paths'));
+verifyTrue(testCase, isfield(setup, 'recommended_sequence'));
 verifyTrue(testCase, isfield(setup, 'notes'));
 
 verifyTrue(testCase, isstring(setup.windows_commands));
@@ -34,6 +37,10 @@ verifyTrue(testCase, isstring(setup.wsl_commands));
 verifyTrue(testCase, isstring(setup.ardupilot_clone_commands));
 verifyTrue(testCase, isstring(setup.ardupilot_build_commands));
 verifyTrue(testCase, isstring(setup.sitl_start_commands));
+verifyTrue(testCase, isstring(setup.matlab_commands));
+verifyTrue(testCase, isstring(setup.recommended_sequence));
 verifyTrue(testCase, isstring(setup.notes));
 verifyTrue(testCase, any(contains(setup.sitl_start_commands, "JSON:")));
+verifyTrue(testCase, isstruct(setup.script_paths));
+verifyGreaterThanOrEqual(testCase, numel(setup.recommended_sequence), 5);
 end

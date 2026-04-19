@@ -1,0 +1,27 @@
+{
+    "timestamp_utc":  "2026-04-19T12:06:11Z",
+    "windows_version":  "Microsoft Windows NT 10.0.26200.0",
+    "has_wsl_command":  true,
+    "wsl_distros":  [
+
+                    ],
+    "has_ubuntu":  false,
+    "has_git":  true,
+    "git_path":  "C:\\Program Files\\Git\\cmd\\git.exe",
+    "has_python":  true,
+    "python_path":  "C:\\Users\\O.Agaphonov\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+    "has_matlab":  true,
+    "matlab_path":  "D:\\MATLAB\\R2025b\\bin\\matlab.exe",
+    "has_github_cli":  true,
+    "github_cli_path":  "C:\\Program Files\\GitHub CLI\\gh.exe",
+    "ardupilot_path_hint":  null,
+    "ardupilot_path_hint_file":  null,
+    "missing_items":  [
+                          "Ubuntu distro in WSL",
+                          "ArduPilot path hint inside WSL"
+                      ],
+    "is_ready":  false,
+    "messages":  [
+                     "Failed to query WSL distros. No installed WSL distro was reported."
+                 ]
+}
