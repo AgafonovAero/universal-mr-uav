@@ -33,6 +33,7 @@ est = ctrl_input.estimator;
 sens = ctrl_input.sensors;
 ref = ctrl_input.reference;
 
+% Read the estimator attitude channels and the measured body rates.
 est_euler_rpy_rad = est.euler_rpy_rad(:);
 gyro_b_radps = sens.imu.gyro_b_radps(:);
 
@@ -63,6 +64,7 @@ rate_cmd_radps = local_clip(rate_cmd_radps, ...
     rate_cmd_radps, gyro_b_radps, ctrl_state.rate_pid_state, ...
     cfg.rate_pid_gains, dt_s, cfg.rate_pid_limits);
 
+% Convert total thrust and commanded body moments into motor-speed commands.
 [motor_cmd_radps, ~] = uav.vmg.mixer_quad_x( ...
     total_thrust_N, body_moments_Nm, params);
 motor_cmd_radps = local_clip(motor_cmd_radps, ...

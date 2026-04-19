@@ -52,7 +52,8 @@ if acc_valid
         q_pred, accel_b_mps2, gravity_ned_mps2);
     accel_correction_weight = local_specific_force_weight( ...
         accel_consistency_metric, params);
-    acc_alpha = local_complementary_alpha(params.estimator.attitude.k_acc, dt_s);
+    acc_alpha = local_complementary_alpha( ...
+        params.estimator.attitude.k_acc, dt_s);
     acc_alpha = acc_alpha .* accel_correction_weight;
     acc_error_rad = [ ...
         local_wrap_angle_pi(roll_meas_rad - euler_pred(1)); ...
@@ -82,7 +83,8 @@ else
 end
 
 % Pack the updated attitude estimate and diagnostics.
-euler_corr(3) = local_wrap_angle_pi(euler_corr(3) + mag_alpha * mag_error_rad(3));
+euler_corr(3) = local_wrap_angle_pi( ...
+    euler_corr(3) + mag_alpha * mag_error_rad(3));
 q_est = uav.core.quat_normalize(local_euler_to_quat_rpy(euler_corr));
 euler_est = local_quat_to_euler_rpy(q_est);
 
