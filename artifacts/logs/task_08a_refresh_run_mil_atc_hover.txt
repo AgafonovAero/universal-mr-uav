@@ -10,9 +10,9 @@ Built thin ATC MIL model: <repo>\models\mil_top_atc.slx
 Thin ATC MIL hover diagnostics:
   final true position NED [m]      : [-0.005106 -0.000000 8.320881]
   final true altitude [m]          : -8.320881
-  final estimated altitude [m]     : -8.110030
-  final ATC motor norm [-]         : [0.722105 0.722105 0.485293 0.485293]
-  final motor cmd [rad/s]          : [649.894418 649.894492 436.763337 436.763254]
+  final estimated altitude [m]     : -8.110040
+  final ATC motor norm [-]         : [0.725303 0.725303 0.480499 0.480499]
+  final motor cmd [rad/s]          : [652.773078 652.773115 432.449186 432.449103]
   final spool state [-]            : 3
   final true quat norm [-]         : 1.000000000000
   final estimated quat norm [-]    : 1.000000000000

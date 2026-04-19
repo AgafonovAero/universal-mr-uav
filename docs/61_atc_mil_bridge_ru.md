@@ -15,6 +15,23 @@
 Это именно промежуточный controller-in-the-loop MIL шаг перед полноценным
 stack-specific SIL.
 
+## Текущий статус после актуализации main
+
+После merge PR `#9` и PR `#10` эта ветка была повторно проверена на
+совместимость с актуальным `main`.
+
+Текущий вывод такой:
+
+- ATC bridge по-прежнему совместим с текущим code-centric ядром;
+- boundary по-прежнему использует существующие plant, sensors и estimator,
+  а не переносит их в `.slx`;
+- текущие `run_mil_atc_hover` и `run_mil_atc_yaw_step`
+  остаются smoke-level boundary verification;
+- эти demo не должны трактоваться как подтверждение настроенного
+  и устойчивого closed-loop hover внешнего контроллера;
+- полноценная настройка `atc_controller` под baseline airframe
+  `universal-mr-uav` остаётся отдельным следующим этапом.
+
 ## Чем этот шаг отличается от базового thin MIL shell
 
 Базовый thin MIL shell (`Stage15MILSystem`, `mil_top.slx`) ожидает уже готовую
@@ -173,6 +190,9 @@ models/mil_top_atc.slx
 - текущие demo-прогоны являются именно smoke-level boundary verification;
 - внешний контроллер на этом шаге еще не отстроен как устойчивая система
   автоматического управления для baseline airframe `universal-mr-uav`.
+- их назначение - подтвердить работоспособность adapter layer
+  и controller-in-the-loop MIL boundary, а не заявить готовый closed-loop
+  hover.
 
 ## Что пока остается ограничением
 
