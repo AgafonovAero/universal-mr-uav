@@ -1,0 +1,19 @@
+Project paths added from repository root.
+
+Next MATLAB commands:
+  params = uav.sim.default_params_quad_x250();
+  run('scripts/run_case_hover.m');
+  run('scripts/run_case_yaw_step.m');
+  results = runtests('tests');
+  table(results)
+Проверка обмена с ArduPilot по JSON и UDP
+  готовность UDP                         : да
+  готовность локальной среды             : нет
+  пакет от ArduPilot получен             : нет
+  среда не готова                        : да
+  пакет от ArduPilot не получен          : да
+  исходящая пробная строка JSON отправлена : да
+  ответ на принятый двоичный пакет ArduPilot не проверен, так как входной пакет не был получен.
+  команда запуска для отдельного прогона : sim_vehicle.py -v ArduCopter --model JSON:127.0.0.1 --console --map
+  пояснение                              : Команда сформирована для запуска из среды Windows или WSL. При запуске из WSL адрес узла Windows может отличаться от 127.0.0.1; при необходимости замените IP-адрес в параметре JSON-модели.
+  статус обмена                          : Двоичный пакет от ArduPilot не получен; Исходящая пробная строка JSON была сформирована и отправлена без принятого пакета ArduPilot.

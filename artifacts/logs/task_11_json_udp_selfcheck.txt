@@ -1,0 +1,20 @@
+Project paths added from repository root.
+
+Next MATLAB commands:
+  params = uav.sim.default_params_quad_x250();
+  run('scripts/run_case_hover.m');
+  run('scripts/run_case_yaw_step.m');
+  results = runtests('tests');
+  table(results)
+Самопроверка средства обмена ArduPilot по JSON и UDP
+  доступность UDP                        : да
+  используемый механизм                  : udpport
+  кодирование JSON выполнено             : да
+  разбор двоичного пакета выполнен       : да
+  magic                                  : 18458
+  frame_rate_hz                          : 100
+  frame_count                            : 7
+  первые четыре значения ШИМ [us]        : [1615.000000 1615.000000 1615.000000 1615.000000]
+  команды частоты вращения [rad/s]       : [553.500000 553.500000 553.500000 553.500000]
+  локальный обмен UDP выполнен           : да
+  сообщение транспортной проверки        : Локальный обмен по UDP выполнен успешно.
