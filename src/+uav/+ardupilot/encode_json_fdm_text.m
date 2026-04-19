@@ -37,29 +37,10 @@ json_packet.imu = struct( ...
 json_packet.position = local_row(packet.position_ned_m);
 json_packet.velocity = local_row(packet.velocity_ned_mps);
 json_packet.quaternion = local_row(packet.q_nb);
-json_packet.body_rates = local_row(packet.w_b_radps);
+json_packet.no_time_sync = true;
+json_packet.no_lockstep = true;
 
-if isfield(packet, 'baro') && isstruct(packet.baro) && ...
-        isfield(packet.baro, 'alt_m')
-    json_packet.baro = struct( ...
-        'altitude_m', double(packet.baro.alt_m));
-end
-
-if isfield(packet, 'mag') && isstruct(packet.mag) && ...
-        isfield(packet.mag, 'field_b_uT')
-    json_packet.mag = struct( ...
-        'body_uT', local_row(packet.mag.field_b_uT));
-end
-
-if isfield(packet, 'gnss') && isstruct(packet.gnss) && ...
-        isfield(packet.gnss, 'pos_ned_m') && ...
-        isfield(packet.gnss, 'vel_ned_mps')
-    json_packet.gnss = struct( ...
-        'position_ned_m', local_row(packet.gnss.pos_ned_m), ...
-        'velocity_ned_mps', local_row(packet.gnss.vel_ned_mps));
-end
-
-json_text = string(jsonencode(json_packet)) + newline;
+json_text = newline + string(jsonencode(json_packet)) + newline;
 end
 
 function local_require_fields(data, field_names)

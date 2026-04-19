@@ -1,0 +1,3 @@
+Get-Process | Where-Object {$_.ProcessName -match 'arducopter|sim_vehicle|python|mavproxy|MissionPlanner|QGroundControl'} | Format-Table ProcessName,Id,Path -AutoSize
+''
+Get-NetUDPEndpoint | Where-Object {$_.LocalPort -in 9002,9003,14550,14551} | Format-Table LocalAddress,LocalPort,OwningProcess -AutoSize

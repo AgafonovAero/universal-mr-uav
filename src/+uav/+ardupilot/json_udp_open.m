@@ -35,6 +35,7 @@ transport.remote_port = double(cfg.udp_remote_port);
 transport.timeout_s = double(cfg.udp_timeout_s);
 transport.rx_count = 0;
 transport.tx_count = 0;
+transport.has_valid_remote = false;
 transport.handle = [];
 
 if ~availability.is_available
