@@ -1,29 +1,31 @@
 function [transport, rx_out, diag] = json_udp_step(transport, json_text, cfg)
 %JSON_UDP_STEP Выполнить один шаг приема и передачи по UDP.
 % Назначение:
-%   Функция выполняет неблокирующий шаг обмена данными по UDP. Сначала
-%   выполняется попытка принять двоичный пакет от ArduPilot. Если пакет
-%   получен и успешно разобран, последующая передача JSON трактуется как
-%   ответная передача. Если входной пакет не получен, отправка строки JSON
-%   рассматривается только как исходящая пробная передача.
+%   Выполняет один неблокирующий шаг обмена по `UDP`. Сначала функция
+%   пытается принять двоичный пакет от `ArduPilot SITL`, затем при
+%   наличии строки `JSON` выполняет передачу. Диагностика шага явно
+%   различает три состояния:
+%   1. прием не подтвержден;
+%   2. исходящая пробная передача без принятого пакета;
+%   3. ответная передача после принятого и разобранного пакета.
 %
 % Входы:
 %   transport - структура транспортного уровня
-%   json_text - строка JSON для отправки
+%   json_text - строка JSON для передачи
 %   cfg       - конфигурация средства сопряжения
 %
 % Выходы:
 %   transport - обновленная структура транспортного уровня
-%   rx_out    - результат разбора двоичного пакета ArduPilot
+%   rx_out    - результат разбора входного двоичного пакета
 %   diag      - структура диагностических признаков шага обмена
 %
 % Единицы измерения:
-%   объем принятого пакета задается числом байтов, сетевые порты задаются
-%   целыми числами
+%   объем принятого пакета задается в байтах
 %
 % Допущения:
-%   Функция не должна зависать и использует только малое время ожидания,
-%   уже заданное при открытии транспортного уровня.
+%   Функция не должна зависать и использует только уже открытое средство
+%   обмена. При отсутствии пакета от `ArduPilot` допускается только
+%   исходящая пробная передача строки `JSON`.
 
 if nargin < 3 || isempty(cfg)
     cfg = uav.ardupilot.default_json_config();
@@ -32,7 +34,7 @@ end
 cfg = local_validate_cfg(cfg);
 transport = local_validate_transport(transport);
 rx_out = uav.ardupilot.decode_sitl_output_packet([], cfg);
-diag = local_make_empty_diag(cfg);
+diag = local_make_empty_diag(cfg, transport);
 
 if ~isstring(json_text) && ~ischar(json_text)
     error( ...
@@ -43,9 +45,10 @@ end
 json_text = string(json_text);
 
 if ~transport.is_open || isempty(transport.handle)
-    diag.status = "средство обмена не открыто";
-    diag.rx_message = "Двоичный пакет не принят.";
-    diag.tx_message = transport.message;
+    diag.status = "прием не подтвержден";
+    diag.status_message = "Средство обмена не открыто.";
+    diag.rx_message = "Входящий двоичный пакет не получен.";
+    diag.tx_message = string(transport.message);
     return;
 end
 
@@ -55,9 +58,10 @@ if ~isempty(raw_bytes)
     rx_out = uav.ardupilot.decode_sitl_output_packet(raw_bytes, cfg);
     diag.rx_received = true;
     diag.rx_bytes_count = numel(raw_bytes);
-    diag.rx_message = rx_out.message;
+    diag.rx_valid = logical(rx_out.valid);
+    diag.rx_message = string(rx_out.message);
 else
-    diag.rx_message = "Двоичный пакет от ArduPilot не получен.";
+    diag.rx_message = "Входящий двоичный пакет от ArduPilot не получен.";
 end
 
 if strlength(json_text) > 0
@@ -65,27 +69,34 @@ if strlength(json_text) > 0
         transport, ...
         json_text, ...
         diag, ...
-        cfg, ...
-        rx_out.valid);
+        cfg);
 else
     diag.tx_kind = "none";
-    diag.tx_message = "Строка JSON пуста и не отправлялась.";
+    diag.tx_message = "Строка JSON не была передана.";
 end
 
-if rx_out.valid && diag.tx_ok
-    diag.status = "пакет принят, ответная строка JSON отправлена";
-elseif rx_out.valid
-    diag.status = "пакет принят, ответная строка JSON не отправлена";
-elseif diag.rx_received && diag.tx_ok
-    diag.status = "пакет получен, но не разобран; " + ...
-        "выполнена исходящая пробная передача JSON";
-elseif diag.rx_received
-    diag.status = "пакет получен, но не разобран; " + ...
-        "исходящая пробная передача JSON не выполнена";
+diag.handshake_confirmed = logical(diag.rx_valid && diag.tx_ok);
+
+if diag.handshake_confirmed
+    diag.status = "ответная передача";
+    diag.status_message = [ ...
+        "Входящий двоичный пакет ArduPilot принят и разобран. " ...
+        + "После этого выполнена ответная передача строки JSON."];
 elseif diag.tx_ok
-    diag.status = "пакет не получен, выполнена исходящая пробная передача JSON";
+    diag.status = "исходящая пробная передача";
+    diag.status_message = [ ...
+        "Прием не подтвержден. Выполнена только исходящая пробная " ...
+        + "передача строки JSON без принятого пакета ArduPilot."];
 else
-    diag.status = "обмен не выполнен";
+    diag.status = "прием не подтвержден";
+    if diag.rx_received && ~diag.rx_valid
+        diag.status_message = [ ...
+            "Входящий двоичный пакет был получен, но не разобран. " ...
+            + "Ответная передача не подтверждена."];
+    else
+        diag.status_message = ...
+            "Входящий двоичный пакет ArduPilot не получен.";
+    end
 end
 end
 
@@ -144,20 +155,31 @@ for k = 1:numel(required_fields)
 end
 end
 
-function diag = local_make_empty_diag(cfg)
+function diag = local_make_empty_diag(cfg, transport)
 %LOCAL_MAKE_EMPTY_DIAG Построить пустую диагностическую структуру.
 
 diag = struct();
-diag.status = "обмен не выполнялся";
+diag.status = "прием не подтвержден";
+diag.status_message = "Обмен не выполнялся.";
 diag.rx_received = false;
+diag.rx_valid = false;
 diag.rx_bytes_count = 0;
 diag.rx_message = "";
 diag.tx_attempted = false;
 diag.tx_ok = false;
 diag.tx_kind = "none";
 diag.tx_message = "";
+diag.handshake_confirmed = false;
 diag.used_remote_ip = string(cfg.udp_remote_ip);
 diag.used_remote_port = double(cfg.udp_remote_port);
+
+if isfield(transport, 'remote_ip')
+    diag.used_remote_ip = string(transport.remote_ip);
+end
+
+if isfield(transport, 'remote_port')
+    diag.used_remote_port = double(transport.remote_port);
+end
 end
 
 function [raw_bytes, transport, diag] = local_receive_bytes(transport, diag, cfg)
@@ -170,9 +192,7 @@ try
         case "udpport"
             bytes_available = double(transport.handle.NumBytesAvailable);
             if bytes_available > 0
-                bytes_to_read = min( ...
-                    bytes_available, ...
-                    double(cfg.udp_max_rx_bytes));
+                bytes_to_read = min(bytes_available, double(cfg.udp_max_rx_bytes));
                 raw_bytes = read(transport.handle, bytes_to_read, "uint8");
                 raw_bytes = uint8(raw_bytes(:));
                 transport.rx_count = transport.rx_count + 1;
@@ -180,9 +200,7 @@ try
         case "udp"
             bytes_available = double(get(transport.handle, 'BytesAvailable'));
             if bytes_available > 0
-                bytes_to_read = min( ...
-                    bytes_available, ...
-                    double(cfg.udp_max_rx_bytes));
+                bytes_to_read = min(bytes_available, double(cfg.udp_max_rx_bytes));
                 raw_bytes = fread(transport.handle, bytes_to_read, 'uint8');
                 raw_bytes = uint8(raw_bytes(:));
                 transport.rx_count = transport.rx_count + 1;
@@ -196,25 +214,20 @@ catch rx_error
 end
 end
 
-function [transport, diag] = local_send_json_text( ...
-        transport, ...
-        json_text, ...
-        diag, ...
-        cfg, ...
-        has_valid_rx_packet)
+function [transport, diag] = local_send_json_text(transport, json_text, diag, cfg)
 %LOCAL_SEND_JSON_TEXT Отправить строку JSON удаленному узлу.
 
 diag.tx_attempted = true;
+diag.tx_kind = "probe";
 
-if has_valid_rx_packet
+if diag.rx_valid
     diag.tx_kind = "reply";
-else
-    diag.tx_kind = "probe";
 end
 
 warn_state = warning;
 cleanup_obj = onCleanup(@() warning(warn_state));
 warning('off', 'all');
+
 bytes_to_send = reshape(uint8(char(json_text)), 1, []);
 
 try
@@ -238,22 +251,27 @@ try
     transport.tx_count = transport.tx_count + 1;
     diag.tx_ok = true;
 
-    if has_valid_rx_packet
-        diag.tx_message = "Ответная строка JSON отправлена " + ...
-            "после принятого пакета ArduPilot.";
+    if diag.rx_valid
+        diag.tx_message = [ ...
+            "Ответная передача строки JSON выполнена после " ...
+            + "принятого двоичного пакета ArduPilot."];
     else
-        diag.tx_message = "Исходящая пробная строка JSON была сформирована " + ...
-            "и отправлена без принятого пакета ArduPilot.";
+        diag.tx_message = [ ...
+            "Исходящая пробная строка JSON была сформирована " ...
+            + "и отправлена без принятого пакета ArduPilot."];
     end
 catch tx_error
     diag.tx_ok = false;
-    if has_valid_rx_packet
-        diag.tx_message = "Не удалось отправить ответную строку JSON " + ...
-            "после принятого пакета ArduPilot: " + ...
-            string(tx_error.message);
+
+    if diag.rx_valid
+        diag.tx_message = [ ...
+            "Не удалось выполнить ответную передачу строки JSON " ...
+            + "после принятого пакета ArduPilot: " ...
+            + string(tx_error.message)];
     else
-        diag.tx_message = "Не удалось выполнить исходящую пробную " + ...
-            "передачу строки JSON: " + string(tx_error.message);
+        diag.tx_message = [ ...
+            "Не удалось выполнить исходящую пробную передачу " ...
+            + "строки JSON: " + string(tx_error.message)];
     end
 end
 
