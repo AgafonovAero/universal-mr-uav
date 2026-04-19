@@ -1,9 +1,10 @@
 function packet = pack_json_fdm_packet(state, sensors, estimator, time_s, params, cfg)
-%PACK_JSON_FDM_PACKET Pack one canonical ArduPilot-style FDM payload struct.
+%PACK_JSON_FDM_PACKET Сформировать канонический пакет данных для ArduPilot.
 % Description:
-%   Converts the internal plant, sensor, and estimator snapshots into an
-%   explicit MATLAB struct that freezes the future JSON boundary. The
-%   function does not perform JSON serialization and does not send UDP.
+%   Преобразует снимки состояния объекта управления, подсистемы датчиков и
+%   алгоритма оценивания состояния в явную структуру MATLAB, фиксирующую
+%   будущую границу JSON-обмена. Функция не выполняет сериализацию JSON и
+%   не осуществляет отправку по UDP.
 %
 % Inputs:
 %   state     - canonical plant state struct
@@ -14,14 +15,16 @@ function packet = pack_json_fdm_packet(state, sensors, estimator, time_s, params
 %   cfg       - ArduPilot JSON adapter config
 %
 % Outputs:
-%   packet - scalar struct with truth and measured channels for JSON FDM
+%   packet - scalar struct with state and measurement channels
 %
 % Units:
 %   SI only, frames are NED for Earth and FRD for body vectors
 %
 % Assumptions:
-%   q_nb is scalar-first and maps body-frame vectors into the Earth NED
-%   frame. Body velocity and NED velocity are kept as different channels.
+%   `q_nb` задается в скалярно-первой форме и переводит векторы из
+%   связанной системы координат в земную систему координат `NED`.
+%   Скорость в `NED` и скорость в связанной системе координат сохраняются
+%   раздельно.
 
 if nargin < 6 || isempty(cfg)
     cfg = uav.ardupilot.default_json_config();

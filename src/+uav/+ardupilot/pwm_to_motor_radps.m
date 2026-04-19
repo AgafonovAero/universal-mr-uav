@@ -1,9 +1,10 @@
 function motor_cmd_radps = pwm_to_motor_radps(pwm_us, params, cfg)
-%PWM_TO_MOTOR_RADPS Convert ArduPilot PWM values into motor rad/s commands.
+%PWM_TO_MOTOR_RADPS Преобразовать команды ШИМ в частоты вращения винтов.
 % Description:
-%   Maps PWM microseconds into normalized throttle in [0, 1], then applies
-%   the configured motor speed limits from params.motor. Saturation is
-%   explicit and no hidden calibration parameters are introduced.
+%   Преобразует длительности импульсов ШИМ в нормированное управляющее
+%   воздействие на интервале `[0, 1]`, а затем переносит его в диапазон
+%   допустимых частот вращения из `params.motor`. Ограничение диапазона
+%   задается явно, скрытые калибровочные параметры не используются.
 %
 % Inputs:
 %   pwm_us - motor PWM vector [us]
@@ -17,9 +18,9 @@ function motor_cmd_radps = pwm_to_motor_radps(pwm_us, params, cfg)
 %   PWM [us], motor command [rad/s]
 %
 % Assumptions:
-%   PWM semantics are linear placeholder semantics for TASK-10 loopback
-%   verification and still require later alignment with a real ArduPilot
-%   setup.
+%   Семантика ШИМ на текущем этапе задается как линейная инженерная
+%   заготовка для проверочных прогонов и требует последующего согласования
+%   с реальным `ArduPilot`.
 
 if nargin < 3 || isempty(cfg)
     cfg = uav.ardupilot.default_json_config();
@@ -33,7 +34,7 @@ omega_min_radps = local_read_motor_limit(params, 'omega_min_radps');
 omega_max_radps = local_read_motor_limit(params, 'omega_max_radps');
 if omega_max_radps < omega_min_radps
     error('uav:ardupilot:pwm_to_motor_radps:MotorRange', ...
-        'Expected params.motor.omega_max_radps >= params.motor.omega_min_radps.');
+        'Ожидалось, что params.motor.omega_max_radps >= params.motor.omega_min_radps.');
 end
 
 validateattributes(cfg.pwm_min_us, {'numeric'}, ...
@@ -42,7 +43,7 @@ validateattributes(cfg.pwm_max_us, {'numeric'}, ...
     {'real', 'scalar', 'finite'}, mfilename, 'cfg.pwm_max_us');
 if cfg.pwm_max_us <= cfg.pwm_min_us
     error('uav:ardupilot:pwm_to_motor_radps:PwmRange', ...
-        'Expected cfg.pwm_max_us > cfg.pwm_min_us.');
+        'Ожидалось, что cfg.pwm_max_us > cfg.pwm_min_us.');
 end
 
 pwm_norm_01 = (pwm_us - cfg.pwm_min_us) ./ ...

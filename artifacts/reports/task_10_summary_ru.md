@@ -1,149 +1,161 @@
-# TASK-10: ArduPilot JSON SITL adapter scaffold
+# TASK-10: средство сопряжения с ArduPilot для программного моделирования
 
-## Что сделано
+## Назначение задачи
 
-В рамках TASK-10 подготовлен новый code-centric пакет
-`src/+uav/+ardupilot/` для будущей связи `universal-mr-uav`
-с `ArduPilot SITL` через JSON interface.
+Задача TASK-10 предназначена для подготовки средства сопряжения между
+`universal-mr-uav` и внешним комплексом управления полетом `ArduPilot`
+через будущий JSON-обмен данными.
 
-На этом шаге добавлены:
+На данном этапе целью было не построение полноценной интеграции, а
+фиксация инженерного интерфейса и подготовка воспроизводимой основы для
+следующего шага работ.
 
-- `default_json_config.m` с явной фиксацией UDP endpoint placeholders,
-  frame conventions, PWM semantics и motor order;
-- `inspect_sitl_environment.m` для inventory-проверки локальной среды
-  без падения при отсутствии ArduPilot;
-- `pack_json_fdm_packet.m` для формирования canonical MATLAB struct
-  будущего FDM/JSON boundary;
-- `unpack_servo_outputs.m` для нормализации servo/PWM packet;
-- `pwm_to_motor_radps.m` для явного PWM -> motor rad/s mapping;
-- `make_loopback_servo_packet.m` для fake servo-output packet
-  без реального ArduPilot;
-- `validate_json_packet.m` для структурной проверки packet fields;
-- `uav.sim.run_case_with_ardupilot_loopback` как smoke runner
-  по цепочке
-  `plant -> sensors -> estimator -> ArduPilot-style packet -> fake PWM -> plant`.
+В рамках задачи требовалось:
 
-Также добавлены:
+- зафиксировать состав пакета данных состояния и измерений;
+- определить преобразование команд широтно-импульсной модуляции в
+  команды частоты вращения винтов;
+- подготовить проверочные замкнутые прогоны без реального внешнего
+  автопилота;
+- документировать ограничения текущего этапа.
 
-- `scripts/inspect_ardupilot_sitl_env.m`
-- `scripts/run_ardupilot_loopback_hover.m`
-- `scripts/run_ardupilot_loopback_yaw_step.m`
-- 5 новых tests для TASK-10
-- новая документация `docs/70_ardupilot_json_sitl_ru.md`
-- обновленный `README.md`
+## Выполненные изменения
 
-Важно:
-TASK-10 не зависит от PR #7 и не переносит изменения из ветки
+В репозитории создан пакет `src/+uav/+ardupilot/`, включающий:
+
+- `default_json_config.m` с типовой конфигурацией средства сопряжения;
+- `inspect_sitl_environment.m` для проверки локальной готовности среды;
+- `pack_json_fdm_packet.m` для формирования канонического пакета данных;
+- `unpack_servo_outputs.m` для разбора команд ШИМ;
+- `pwm_to_motor_radps.m` для преобразования ШИМ в команды по частоте
+  вращения винтов;
+- `make_loopback_servo_packet.m` для формирования тестовых команд без
+  запуска реального `ArduPilot`;
+- `validate_json_packet.m` для структурной проверки пакета данных.
+
+Дополнительно созданы:
+
+- `uav.sim.run_case_with_ardupilot_loopback` как исполнитель сценария
+  моделирования;
+- `scripts/inspect_ardupilot_sitl_env.m`;
+- `scripts/run_ardupilot_loopback_hover.m`;
+- `scripts/run_ardupilot_loopback_yaw_step.m`;
+- пять новых проверок в каталоге `tests/`;
+- документ `docs/70_ardupilot_json_sitl_ru.md`;
+- исходные журналы прогонов TASK-10.
+
+Задача выполнена независимо от PR `#7` и не использует изменения ветки
 `task/08a-atc-mil-bridge`.
 
-## Что запускалось
+## Проведенные проверки
 
-Локально были реально выполнены обязательные прогоны:
+Локально были выполнены следующие команды:
 
-1. `scripts/bootstrap_project.m`
-2. `runtests('tests')`
-3. `scripts/inspect_ardupilot_sitl_env.m`
-4. `scripts/run_ardupilot_loopback_hover.m`
-5. `scripts/run_ardupilot_loopback_yaw_step.m`
+```matlab
+scripts/bootstrap_project.m
+runtests('tests')
+scripts/inspect_ardupilot_sitl_env.m
+scripts/run_ardupilot_loopback_hover.m
+scripts/run_ardupilot_loopback_yaw_step.m
+```
 
-Raw logs сохранены в:
+Вывод всех запусков сохранен в:
 
-- `artifacts/logs/task_10_bootstrap.txt`
-- `artifacts/logs/task_10_runtests.txt`
-- `artifacts/logs/task_10_inspect_ardupilot_sitl_env.txt`
-- `artifacts/logs/task_10_run_ardupilot_loopback_hover.txt`
-- `artifacts/logs/task_10_run_ardupilot_loopback_yaw_step.txt`
+- `artifacts/logs/task_10_bootstrap.txt`;
+- `artifacts/logs/task_10_runtests.txt`;
+- `artifacts/logs/task_10_inspect_ardupilot_sitl_env.txt`;
+- `artifacts/logs/task_10_run_ardupilot_loopback_hover.txt`;
+- `artifacts/logs/task_10_run_ardupilot_loopback_yaw_step.txt`.
 
-Все эти raw logs пересохранены как UTF-8 text без BOM и без ANSI/control
-characters.
+## Готовность локальной среды
 
-## Готовность локальной среды к реальному ArduPilot SITL
+Проверка локальной среды показала:
 
-По результатам `inspect_ardupilot_sitl_env.m`:
+- `WSL` не обнаружен;
+- `Python` обнаружен;
+- `sim_vehicle.py` не обнаружен;
+- локальный каталог `ArduPilot` не обнаружен.
 
-- `ready for real SITL = no`
-- `has WSL = no`
-- `has Python = yes`
-- `has sim_vehicle.py = no`
-- `ArduPilot root = <not found>`
+Итог:
 
-Это означает, что локальная среда пока не готова к следующему реальному
-ArduPilot SITL шагу.
+- локальная среда не готова к реальному `ArduPilot SITL`;
+- для следующего этапа отсутствуют как минимум `WSL`, рабочий checkout
+  `ArduPilot` и сценарий запуска `sim_vehicle.py`.
 
-На текущей машине не хватает как минимум:
+## Результаты проверочных прогонов
 
-- подтвержденного WSL runtime;
-- `sim_vehicle.py` в `PATH`;
-- локального ArduPilot checkout,
-  если запуск будет делаться из локальной source tree.
+### Проверки
 
-## Результаты тестов
+Результат `runtests('tests')`:
 
-По итогам `runtests('tests')`:
+- `49 tests passed`;
+- `failed = 0`;
+- `incomplete = 0`.
 
-- `49 tests passed`
-- `failed = 0`
-- `incomplete = 0`
+### Проверочный замкнутый прогон режима зависания
 
-Новые TASK-10 tests подтвердили:
+Сценарий `scripts/run_ardupilot_loopback_hover.m` завершился со следующими
+значениями:
 
-- валидность default config;
-- наличие обязательных полей в FDM packet;
-- корректный PWM mapping для canonical values и saturation;
-- возврат непустого log из loopback runner;
-- сохранение норм quaternion близко к `1`;
-- устойчивую работу inventory-функции без установленного ArduPilot.
+- `final altitude = -2.456768 m`;
+- `final estimated altitude = -2.428282 m`;
+- `final motor PWM = [1615 1615 1615 1615] us`;
+- `final motor command = [553.5 553.5 553.5 553.5] rad/s`;
+- нормы кватернионов истинного состояния объекта и результата
+  оценивания остались равными `1.0`.
 
-## Результаты loopback demos
+### Проверочный замкнутый прогон ступенчатого воздействия по рысканию
 
-### Hover loopback smoke
+Сценарий `scripts/run_ardupilot_loopback_yaw_step.m` завершился со
+следующими значениями:
 
-`run_ardupilot_loopback_hover.m` дал следующие финальные значения:
+- `final yaw = 77.416971 deg`;
+- `final yaw rate = 9.436954 rad/s`;
+- `final altitude = -2.694160 m`;
+- `final estimated altitude = -2.676790 m`;
+- `final motor PWM = [1675 1555 1675 1555] us`;
+- нормы кватернионов истинного состояния объекта и результата
+  оценивания остались равными `1.0`.
 
-- `final altitude = -2.456768 m`
-- `final estimated altitude = -2.428282 m`
-- `final motor PWM = [1615 1615 1615 1615] us`
-- `final motor command = [553.5 553.5 553.5 553.5] rad/s`
-- `quat norms = true=1.0, est=1.0`
+## Ограничения текущего этапа
 
-Этот сценарий подтверждает,
-что pack/unpack boundary и PWM mapping работают численно прозрачно,
-но не является утверждением о настроенном closed-loop hover.
+TASK-10 не подтверждает:
 
-### Yaw-step loopback smoke
+- полноценное сопряжение с работающим `ArduPilot SITL`;
+- устойчивый замкнутый полет с внешним автопилотом;
+- готовность к штатной эксплуатации;
+- результаты летной валидации.
 
-`run_ardupilot_loopback_yaw_step.m` дал следующие финальные значения:
+Текущий этап ограничен:
 
-- `final yaw = 77.416971 deg`
-- `final yaw rate = 9.436954 rad/s`
-- `final altitude = -2.694160 m`
-- `final estimated altitude = -2.676790 m`
-- `final motor PWM = [1675 1555 1675 1555] us`
-- `quat norms = true=1.0, est=1.0`
+- отсутствием реального UDP-обмена;
+- отсутствием рабочего экземпляра `ArduPilot SITL`;
+- отсутствием согласования всех режимов, порядка двигателей и параметров
+  внешнего комплекса управления полетом;
+- использованием только тестовых команд ШИМ для проверочных замкнутых
+  прогонов.
 
-Этот сценарий подтверждает,
-что synthetic PWM yaw-step действительно проходит через adapter boundary
-и вызывает ожидаемую реакцию plant,
-но все еще остается smoke-level loopback verification.
+## Вывод
 
-## Ограничения
+TASK-10 достиг своей цели как подготовительный инженерный этап.
 
-- Реальный UDP JSON bridge пока не реализован.
-- Реальный `sim_vehicle.py` не запускался.
-- Motor order и PWM semantics еще не выровнены по реальному ArduPilot.
-- Arming, takeoff и mode handling уровня SITL runtime пока отсутствуют.
-- Loopback packet не является реальной логикой внешнего автопилота.
-- TASK-10 не меняет математику plant, sensors или estimator.
+В репозитории:
 
-## Следующий шаг
+- зафиксирован состав пакета данных для будущего обмена;
+- реализовано прозрачное преобразование команд ШИМ;
+- создан исполнитель сценария моделирования для проверочных замкнутых
+  прогонов;
+- подтверждена работоспособность нового пакета функций и проверок;
+- документированы ограничения и состояние локальной среды.
 
-Следующим отдельным этапом должен стать уже реальный ArduPilot SITL шаг:
+## Следующий этап
 
-1. подготовить WSL и локальный ArduPilot checkout;
-2. обеспечить доступность `sim_vehicle.py`;
-3. поднять реальный UDP JSON bridge;
-4. выровнять motor order и parameter mapping;
-5. после этого запустить первые настоящие SITL smoke runs.
+Следующим этапом следует выполнить:
 
-Именно после этого можно будет говорить не о scaffold,
-а о реальной внешней integration boundary с ArduPilot.
+1. подготовку локальной среды с `WSL`;
+2. получение рабочего checkout `ArduPilot`;
+3. запуск `sim_vehicle.py`;
+4. настройку средства обмена данными с реальным `ArduPilot SITL`;
+5. согласование порядка двигателей, диапазонов ШИМ и логики режимов;
+6. расширение сценариев верификации после появления реального внешнего
+   обмена.

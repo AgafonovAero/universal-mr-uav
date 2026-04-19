@@ -6,16 +6,16 @@ Next MATLAB commands:
   run('scripts/run_case_yaw_step.m');
   results = runtests('tests');
   table(results)
-ArduPilot JSON SITL environment inspection:
-  ready for real SITL : no
-  has WSL             : no
-  has Python          : yes
-  has sim_vehicle.py  : no
-  ArduPilot root      : <not found>
-  messages:
-    - WSL: WSL not detected or returned a nonzero status.
-    - Python: found -> C:\Users\O.Agaphonov\AppData\Local\Programs\Python\Python312\python.exe
+Проверка локальной среды для ArduPilot SITL:
+  готовность к реальному SITL : нет
+  наличие WSL                 : нет
+  наличие Python              : да
+  наличие sim_vehicle.py      : нет
+  каталог ArduPilot           : <не найден>
+  сообщения:
+    - WSL: WSL не обнаружен или вернул ненулевой код завершения.
+    - Python: обнаружен -> C:\Users\O.Agaphonov\AppData\Local\Programs\Python\Python312\python.exe
 C:\Users\O.Agaphonov\AppData\Local\Microsoft\WindowsApps\python.exe
-    - sim_vehicle.py: sim_vehicle.py not found in PATH.
-    - ArduPilot checkout: path is not set or the folder was not found.
-    - Local environment is not ready for a real ArduPilot SITL yet; TASK-10 stays at loopback smoke level.
+    - sim_vehicle.py: sim_vehicle.py не найден в PATH.
+    - Локальный каталог ArduPilot: путь не задан или каталог не найден.
+    - Локальная среда пока не готова к реальному ArduPilot SITL; TASK-10 остается на уровне проверочных замкнутых прогонов.

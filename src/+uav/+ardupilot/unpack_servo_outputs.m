@@ -1,10 +1,10 @@
 function servo = unpack_servo_outputs(packet, cfg)
-%UNPACK_SERVO_OUTPUTS Unpack a canonical servo-output packet.
+%UNPACK_SERVO_OUTPUTS Разобрать канонический пакет команд ШИМ.
 % Description:
-%   Validates and normalizes one future ArduPilot servo-output payload into
-%   a deterministic struct used by loopback smoke runners. The function is
-%   tolerant to extra PWM channels and reports a message instead of
-%   crashing on malformed inputs.
+%   Проверяет и нормализует один пакет команд исполнительных органов в
+%   детерминированную структуру, используемую в проверочных сценариях.
+%   Функция допускает наличие дополнительных каналов ШИМ и возвращает
+%   сообщение вместо аварийного завершения при некорректном входе.
 %
 % Inputs:
 %   packet - scalar struct with packet.pwm_us as 4x1 or Nx1 vector
@@ -17,7 +17,8 @@ function servo = unpack_servo_outputs(packet, cfg)
 %   PWM values are in microseconds
 %
 % Assumptions:
-%   Only the first cfg.motor_count channels are consumed as motor outputs.
+%   В качестве команд двигателей используются только первые
+%   `cfg.motor_count` каналов.
 
 if nargin < 2 || isempty(cfg)
     cfg = uav.ardupilot.default_json_config();
@@ -27,30 +28,30 @@ cfg = local_validate_cfg(cfg);
 servo = local_empty_servo(cfg.motor_count);
 
 if ~isstruct(packet) || ~isscalar(packet)
-    servo.message = "Expected packet to be a scalar struct.";
+    servo.message = "Ожидалась скалярная структура packet.";
     return;
 end
 
 if ~isfield(packet, 'pwm_us')
-    servo.message = "Expected packet.pwm_us to be present.";
+    servo.message = "Ожидалось наличие поля packet.pwm_us.";
     return;
 end
 
 pwm_us = packet.pwm_us;
 if ~isnumeric(pwm_us) || ~isreal(pwm_us)
-    servo.message = "Expected packet.pwm_us to be a real numeric vector.";
+    servo.message = "Ожидался вещественный числовой вектор packet.pwm_us.";
     return;
 end
 
 pwm_us = pwm_us(:);
 if any(~isfinite(pwm_us))
-    servo.message = "Expected packet.pwm_us to contain only finite values.";
+    servo.message = "Ожидались только конечные значения в packet.pwm_us.";
     return;
 end
 
 if numel(pwm_us) < cfg.motor_count
     servo.message = sprintf( ...
-        'Expected at least %d PWM channels, got %d.', ...
+        'Ожидалось не менее %d каналов ШИМ, получено %d.', ...
         cfg.motor_count, numel(pwm_us));
     return;
 end
@@ -60,20 +61,20 @@ servo.motor_pwm_us = pwm_us(1:cfg.motor_count);
 servo.valid = true;
 
 if numel(pwm_us) == cfg.motor_count
-    servo.message = "Motor PWM packet unpacked successfully.";
+    servo.message = "Пакет команд ШИМ успешно разобран.";
 else
     servo.message = sprintf( ...
-        'Motor PWM packet unpacked successfully; using the first %d channels out of %d.', ...
+        'Пакет команд ШИМ успешно разобран; используются первые %d каналов из %d.', ...
         cfg.motor_count, numel(pwm_us));
 end
 end
 
 function cfg = local_validate_cfg(cfg)
-%LOCAL_VALIDATE_CFG Validate the minimal config fields.
+%LOCAL_VALIDATE_CFG Проверить минимальный состав конфигурации.
 
 if ~isstruct(cfg) || ~isscalar(cfg) || ~isfield(cfg, 'motor_count')
     error('uav:ardupilot:unpack_servo_outputs:CfgType', ...
-        'Expected cfg.motor_count to be present.');
+        'Ожидалось наличие поля cfg.motor_count.');
 end
 
 validateattributes(cfg.motor_count, {'numeric'}, ...
@@ -82,7 +83,7 @@ validateattributes(cfg.motor_count, {'numeric'}, ...
 end
 
 function servo = local_empty_servo(motor_count)
-%LOCAL_EMPTY_SERVO Create one deterministic empty servo struct.
+%LOCAL_EMPTY_SERVO Создать детерминированную пустую структуру сервоприводов.
 
 servo = struct();
 servo.pwm_us = zeros(motor_count, 1);

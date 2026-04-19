@@ -6,9 +6,9 @@ Next MATLAB commands:
   run('scripts/run_case_yaw_step.m');
   results = runtests('tests');
   table(results)
-ArduPilot loopback hover diagnostics:
-  final altitude [m]          : -2.456768
-  final estimated altitude [m]: -2.428282
-  final motor PWM [us]        : [1615.000000 1615.000000 1615.000000 1615.000000]
-  final motor command [rad/s] : [553.500000 553.500000 553.500000 553.500000]
-  final quat norms [-]        : true=1.000000000000 est=1.000000000000
+Проверочный замкнутый прогон ArduPilot: режим зависания
+  конечная высота [m]                    : -2.456768
+  конечная оцененная высота [m]          : -2.428282
+  конечные команды ШИМ [us]              : [1615.000000 1615.000000 1615.000000 1615.000000]
+  конечные команды частоты [rad/s]       : [553.500000 553.500000 553.500000 553.500000]
+  нормы кватернионов [-]                 : ист=1.000000000000 оц=1.000000000000

@@ -1,20 +1,22 @@
-%% RUN_ARDUPILOT_LOOPBACK_YAW_STEP Execute the ArduPilot yaw-step smoke.
+%% RUN_ARDUPILOT_LOOPBACK_YAW_STEP Выполнить прогон ступенчатого рыскания.
 % Description:
-%   Runs the ArduPilot JSON adapter scaffold with a synthetic PWM yaw step
-%   packet instead of a real SITL backend and prints compact diagnostics.
+%   Запускает средство сопряжения с `ArduPilot` с синтетическим
+%   ступенчатым изменением команд ШИМ по каналу рыскания вместо реального
+%   внешнего комплекса и печатает итоговые диагностические величины.
 %
 % Inputs:
 %   none
 %
 % Outputs:
-%   ardupilot_loopback_yaw_step - assigned in base workspace
+%   ardupilot_loopback_yaw_step - структура результата в базовом рабочем
+%   пространстве MATLAB
 %
 % Units:
 %   SI only, explicit degree conversion only for printed yaw
 %
 % Assumptions:
-%   The yaw-step packet is a loopback placeholder and not a real external
-%   autopilot mode transition.
+%   Пакет ступенчатого воздействия по рысканию является проверочной
+%   заменой и не моделирует реальные переходы режимов внешнего автопилота.
 
 params = uav.sim.make_deterministic_demo_params();
 cfg = uav.ardupilot.default_json_config();
@@ -40,25 +42,25 @@ result.log = log;
 
 assignin('base', 'ardupilot_loopback_yaw_step', result);
 
-fprintf('ArduPilot loopback yaw-step diagnostics:\n');
-fprintf('  final yaw [deg]             : %.6f\n', rad2deg(final_euler_rpy_rad(3)));
-fprintf('  final yaw rate [rad/s]      : %.6f\n', final_state.w_b_radps(3));
-fprintf('  final altitude [m]          : %.6f\n', -final_state.p_ned_m(3));
-fprintf('  final estimated altitude [m]: %.6f\n', final_est.alt_m);
-fprintf('  final motor PWM [us]        : [%s]\n', ...
+fprintf('Проверочный замкнутый прогон ArduPilot: ступенчатое воздействие по рысканию\n');
+fprintf('  конечный угол рыскания [deg]           : %.6f\n', rad2deg(final_euler_rpy_rad(3)));
+fprintf('  конечная угловая скорость [rad/s]      : %.6f\n', final_state.w_b_radps(3));
+fprintf('  конечная высота [m]                    : %.6f\n', -final_state.p_ned_m(3));
+fprintf('  конечная оцененная высота [m]          : %.6f\n', final_est.alt_m);
+fprintf('  конечные команды ШИМ [us]              : [%s]\n', ...
     local_format_vector(final_servo.motor_pwm_us));
-fprintf('  final quat norms [-]        : true=%.12f est=%.12f\n', ...
+fprintf('  нормы кватернионов [-]                 : ист=%.12f оц=%.12f\n', ...
     log.quat_norm_true(end), log.quat_norm_est(end));
 
 function text_value = local_format_vector(vec)
-%LOCAL_FORMAT_VECTOR Format one numeric vector for compact printing.
+%LOCAL_FORMAT_VECTOR Сформировать компактную строку для числового вектора.
 
 text_value = sprintf('%.6f ', vec(:));
 text_value = strtrim(text_value);
 end
 
 function euler_rpy_rad = local_quat_to_euler_rpy(q_nb)
-%LOCAL_QUAT_TO_EULER_RPY Convert q_nb into roll, pitch, and yaw.
+%LOCAL_QUAT_TO_EULER_RPY Преобразовать q_nb в углы крена, тангажа и рыскания.
 
 q_nb = uav.core.quat_normalize(q_nb);
 

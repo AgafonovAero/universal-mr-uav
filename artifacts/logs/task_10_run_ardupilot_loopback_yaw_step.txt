@@ -6,10 +6,10 @@ Next MATLAB commands:
   run('scripts/run_case_yaw_step.m');
   results = runtests('tests');
   table(results)
-ArduPilot loopback yaw-step diagnostics:
-  final yaw [deg]             : 77.416971
-  final yaw rate [rad/s]      : 9.436954
-  final altitude [m]          : -2.694160
-  final estimated altitude [m]: -2.676790
-  final motor PWM [us]        : [1675.000000 1555.000000 1675.000000 1555.000000]
-  final quat norms [-]        : true=1.000000000000 est=1.000000000000
+Проверочный замкнутый прогон ArduPilot: ступенчатое воздействие по рысканию
+  конечный угол рыскания [deg]           : 77.416971
+  конечная угловая скорость [rad/s]      : 9.436954
+  конечная высота [m]                    : -2.694160
+  конечная оцененная высота [m]          : -2.676790
+  конечные команды ШИМ [us]              : [1675.000000 1555.000000 1675.000000 1555.000000]
+  нормы кватернионов [-]                 : ист=1.000000000000 оц=1.000000000000

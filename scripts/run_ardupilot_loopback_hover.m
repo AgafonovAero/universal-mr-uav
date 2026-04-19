@@ -1,21 +1,23 @@
-%% RUN_ARDUPILOT_LOOPBACK_HOVER Execute the ArduPilot loopback hover smoke.
+%% RUN_ARDUPILOT_LOOPBACK_HOVER Выполнить проверочный прогон режима зависания.
 % Description:
-%   Runs the ArduPilot JSON adapter scaffold with a deterministic hover
-%   loopback packet instead of a real SITL backend and prints compact
-%   end-of-run diagnostics.
+%   Запускает средство сопряжения с `ArduPilot` в режиме проверочного
+%   замкнутого прогона с детерминированным пакетом команд ШИМ вместо
+%   реального внешнего комплекса и печатает итоговые диагностические
+%   величины.
 %
 % Inputs:
 %   none
 %
 % Outputs:
-%   ardupilot_loopback_hover - assigned in base workspace
+%   ardupilot_loopback_hover - структура результата в базовом рабочем
+%   пространстве MATLAB
 %
 % Units:
 %   SI only, printed PWM in microseconds and motor speed in rad/s
 %
 % Assumptions:
-%   The loopback packet is a smoke-test placeholder, not a real ArduPilot
-%   control law.
+%   Используемый пакет команд является проверочной заменой и не
+%   представляет реальный закон управления `ArduPilot`.
 
 params = uav.sim.make_deterministic_demo_params();
 cfg = uav.ardupilot.default_json_config();
@@ -41,18 +43,18 @@ result.log = log;
 
 assignin('base', 'ardupilot_loopback_hover', result);
 
-fprintf('ArduPilot loopback hover diagnostics:\n');
-fprintf('  final altitude [m]          : %.6f\n', -final_state.p_ned_m(3));
-fprintf('  final estimated altitude [m]: %.6f\n', final_est.alt_m);
-fprintf('  final motor PWM [us]        : [%s]\n', ...
+fprintf('Проверочный замкнутый прогон ArduPilot: режим зависания\n');
+fprintf('  конечная высота [m]                    : %.6f\n', -final_state.p_ned_m(3));
+fprintf('  конечная оцененная высота [m]          : %.6f\n', final_est.alt_m);
+fprintf('  конечные команды ШИМ [us]              : [%s]\n', ...
     local_format_vector(final_servo.motor_pwm_us));
-fprintf('  final motor command [rad/s] : [%s]\n', ...
+fprintf('  конечные команды частоты [rad/s]       : [%s]\n', ...
     local_format_vector(final_motor_cmd_radps));
-fprintf('  final quat norms [-]        : true=%.12f est=%.12f\n', ...
+fprintf('  нормы кватернионов [-]                 : ист=%.12f оц=%.12f\n', ...
     log.quat_norm_true(end), log.quat_norm_est(end));
 
 function text_value = local_format_vector(vec)
-%LOCAL_FORMAT_VECTOR Format one numeric vector for compact printing.
+%LOCAL_FORMAT_VECTOR Сформировать компактную строку для числового вектора.
 
 text_value = sprintf('%.6f ', vec(:));
 text_value = strtrim(text_value);

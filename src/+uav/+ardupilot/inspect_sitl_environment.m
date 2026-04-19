@@ -1,9 +1,10 @@
 function info = inspect_sitl_environment(cfg)
-%INSPECT_SITL_ENVIRONMENT Inspect local readiness for ArduPilot SITL work.
+%INSPECT_SITL_ENVIRONMENT Проверить локальную готовность к ArduPilot SITL.
 % Description:
-%   Probes the local host for the minimal tooling typically needed for a
-%   later ArduPilot JSON SITL integration step. The function is defensive:
-%   it never throws just because WSL, Python, or ArduPilot are missing.
+%   Проверяет локальную вычислительную среду на наличие минимальных
+%   средств, необходимых для следующего этапа сопряжения с
+%   `ArduPilot SITL`. Функция не завершает работу с ошибкой только из-за
+%   отсутствия `WSL`, `Python` или `ArduPilot`.
 %
 % Inputs:
 %   cfg - optional adapter config with ardupilot_root
@@ -15,7 +16,8 @@ function info = inspect_sitl_environment(cfg)
 %   not applicable
 %
 % Assumptions:
-%   The current TASK-10 scope is inventory and scaffold preparation only.
+%   TASK-10 ограничен проверкой локальной среды и подготовкой заготовки
+%   средства сопряжения.
 
 if nargin < 1 || isempty(cfg)
     cfg = uav.ardupilot.default_json_config();
@@ -29,25 +31,25 @@ if ispc
     has_wsl = status_wsl == 0;
     messages(end + 1, 1) = local_status_message( ...
         "WSL", has_wsl, output_wsl, ...
-        "WSL not detected or returned a nonzero status.");
+        "WSL не обнаружен или вернул ненулевой код завершения.");
 else
     has_wsl = false;
     messages(end + 1, 1) = ...
-        "WSL check skipped because the host is not Windows.";
+        "Проверка WSL пропущена, так как узел не относится к Windows.";
 end
 
 [status_python, output_python] = local_run_command(local_python_probe_command());
 has_python = status_python == 0;
 messages(end + 1, 1) = local_status_message( ...
     "Python", has_python, output_python, ...
-    "Python executable not found in PATH.");
+    "Исполняемый файл Python не найден в PATH.");
 
 [status_sim_vehicle, output_sim_vehicle] = ...
     local_run_command(local_sim_vehicle_probe_command());
 has_sim_vehicle = status_sim_vehicle == 0;
 messages(end + 1, 1) = local_status_message( ...
     "sim_vehicle.py", has_sim_vehicle, output_sim_vehicle, ...
-    "sim_vehicle.py not found in PATH.");
+    "sim_vehicle.py не найден в PATH.");
 
 [ardupilot_root, has_ardupilot_root, root_message] = ...
     local_detect_ardupilot_root(cfg);
@@ -62,10 +64,10 @@ end
 
 if is_ready
     messages(end + 1, 1) = ...
-        "Local environment looks ready for the next step with a real ArduPilot SITL.";
+        "Локальная среда выглядит готовой к следующему этапу с реальным ArduPilot SITL.";
 else
     messages(end + 1, 1) = ...
-        "Local environment is not ready for a real ArduPilot SITL yet; TASK-10 stays at loopback smoke level.";
+        "Локальная среда пока не готова к реальному ArduPilot SITL; TASK-10 остается на уровне проверочных замкнутых прогонов.";
 end
 
 info = struct();
@@ -78,11 +80,11 @@ info.messages = messages;
 end
 
 function cfg = local_normalize_cfg(cfg)
-%LOCAL_NORMALIZE_CFG Normalize the optional config input.
+%LOCAL_NORMALIZE_CFG Нормализовать необязательную входную конфигурацию.
 
 if ~isstruct(cfg) || ~isscalar(cfg)
     error('uav:ardupilot:inspect_sitl_environment:CfgType', ...
-        'Expected cfg to be a scalar struct.');
+        'Ожидалась скалярная структура cfg.');
 end
 
 if ~isfield(cfg, 'ardupilot_root') || isempty(cfg.ardupilot_root)
@@ -91,7 +93,7 @@ end
 end
 
 function [status, output] = local_run_command(command_text)
-%LOCAL_RUN_COMMAND Execute one shell command without throwing.
+%LOCAL_RUN_COMMAND Выполнить системную команду без аварийного завершения.
 
 try
     [status, output] = system(char(command_text));
@@ -107,7 +109,7 @@ end
 end
 
 function command_text = local_python_probe_command()
-%LOCAL_PYTHON_PROBE_COMMAND Return a platform-appropriate Python probe.
+%LOCAL_PYTHON_PROBE_COMMAND Вернуть команду проверки наличия Python.
 
 if ispc
     command_text = "where python";
@@ -117,7 +119,7 @@ end
 end
 
 function command_text = local_sim_vehicle_probe_command()
-%LOCAL_SIM_VEHICLE_PROBE_COMMAND Return a platform-appropriate probe.
+%LOCAL_SIM_VEHICLE_PROBE_COMMAND Вернуть команду проверки sim_vehicle.py.
 
 if ispc
     command_text = "where sim_vehicle.py";
@@ -127,13 +129,13 @@ end
 end
 
 function message = local_status_message(name, is_ok, output, fallback_text)
-%LOCAL_STATUS_MESSAGE Build one readable diagnostic line.
+%LOCAL_STATUS_MESSAGE Сформировать диагностическую строку.
 
 if is_ok
     if strlength(output) > 0
-        message = name + ": found -> " + output;
+        message = name + ": обнаружен -> " + output;
     else
-        message = name + ": found.";
+        message = name + ": обнаружен.";
     end
 else
     message = name + ": " + fallback_text;
@@ -141,7 +143,7 @@ end
 end
 
 function [ardupilot_root, has_root, message] = local_detect_ardupilot_root(cfg)
-%LOCAL_DETECT_ARDUPILOT_ROOT Choose one plausible ArduPilot checkout path.
+%LOCAL_DETECT_ARDUPILOT_ROOT Определить возможный локальный каталог ArduPilot.
 
 candidate_roots = strings(0, 1);
 
@@ -173,8 +175,8 @@ for k = 1:numel(candidate_roots)
 end
 
 if has_root
-    message = "ArduPilot checkout: found -> " + ardupilot_root;
+    message = "Локальный каталог ArduPilot: обнаружен -> " + ardupilot_root;
 else
-    message = "ArduPilot checkout: path is not set or the folder was not found.";
+    message = "Локальный каталог ArduPilot: путь не задан или каталог не найден.";
 end
 end

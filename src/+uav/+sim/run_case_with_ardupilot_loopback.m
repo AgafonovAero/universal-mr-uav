@@ -1,25 +1,27 @@
 function log = run_case_with_ardupilot_loopback(case_cfg)
-%RUN_CASE_WITH_ARDUPILOT_LOOPBACK Execute an ArduPilot-style loopback case.
+%RUN_CASE_WITH_ARDUPILOT_LOOPBACK Выполнить проверочный прогон с ArduPilot.
 % Description:
-%   Runs the existing plant, sensor, and estimator stack, packs an
-%   ArduPilot-style FDM struct at each sample, substitutes a fake
-%   servo-output packet in place of a real SITL backend, converts PWM to
-%   motor rad/s, and feeds the plant forward.
+%   Использует существующие математическую модель движения, подсистему
+%   датчиков и алгоритм оценивания состояния, формирует на каждом шаге
+%   пакет данных для будущего `ArduPilot`, подставляет тестовый пакет
+%   команд ШИМ вместо реального внешнего комплекса, преобразует ШИМ в
+%   частоты вращения винтов и передает их объекту управления.
 %
 % Inputs:
 %   case_cfg - struct with params, state0, dt_s, t_final_s, loopback_mode,
 %              and optional ardupilot_cfg
 %
 % Outputs:
-%   log - struct with plant, sensors, estimator, packet, servo, and motor
+%   log - struct with state, sensors, estimator, packet, servo, and motor
 %         histories together with quaternion norms
 %
 % Units:
 %   SI only, frames follow NED for Earth and FRD for body vectors
 %
 % Assumptions:
-%   No real UDP or JSON transport is used in TASK-10; the loopback packet
-%   is a smoke-test placeholder only.
+%   В TASK-10 не используется реальный UDP-обмен или JSON-транспорт;
+%   тестовый пакет применяется только для первичной проверки
+%   работоспособности границы сопряжения.
 
 case_cfg = local_validate_case_cfg(case_cfg);
 n_steps = round(case_cfg.t_final_s / case_cfg.dt_s) + 1;
@@ -65,7 +67,7 @@ for k = 1:n_steps
 
     if ~servo_k.valid
         error('uav:sim:run_case_with_ardupilot_loopback:ServoPacket', ...
-            'Loopback servo packet is invalid: %s', servo_k.message);
+            'Пакет команд ШИМ для проверочного прогона некорректен: %s', servo_k.message);
     end
 
     motor_cmd_k_radps = uav.ardupilot.pwm_to_motor_radps( ...
@@ -110,11 +112,11 @@ log.ardupilot_cfg = case_cfg.ardupilot_cfg;
 end
 
 function case_cfg = local_validate_case_cfg(case_cfg)
-%LOCAL_VALIDATE_CASE_CFG Validate the loopback runner config.
+%LOCAL_VALIDATE_CASE_CFG Проверить конфигурацию сценария моделирования.
 
 if ~isstruct(case_cfg) || ~isscalar(case_cfg)
     error('uav:sim:run_case_with_ardupilot_loopback:CaseCfgType', ...
-        'Expected case_cfg to be a scalar struct.');
+        'Ожидалась скалярная структура case_cfg.');
 end
 
 required_fields = {'params', 'state0', 'dt_s', 't_final_s', 'loopback_mode'};
@@ -122,7 +124,7 @@ for k = 1:numel(required_fields)
     field_name = required_fields{k};
     if ~isfield(case_cfg, field_name)
         error('uav:sim:run_case_with_ardupilot_loopback:MissingField', ...
-            'Expected case_cfg.%s to be present.', field_name);
+            'Ожидалось наличие поля case_cfg.%s.', field_name);
     end
 end
 
@@ -140,7 +142,7 @@ validateattributes(case_cfg.t_final_s, {'numeric'}, ...
 n_intervals = round(case_cfg.t_final_s / case_cfg.dt_s);
 if abs(n_intervals * case_cfg.dt_s - case_cfg.t_final_s) > 1.0e-12
     error('uav:sim:run_case_with_ardupilot_loopback:TimeGrid', ...
-        'Expected t_final_s to be an integer multiple of dt_s.');
+        'Ожидалось, что t_final_s является целым кратным dt_s.');
 end
 
 case_cfg.state0 = uav.core.state_validate(case_cfg.state0);
@@ -151,16 +153,16 @@ case_cfg.loopback_mode = local_normalize_mode_name(case_cfg.loopback_mode);
 expected_dt_s = 1.0 / case_cfg.ardupilot_cfg.update_rate_hz;
 if abs(expected_dt_s - case_cfg.dt_s) > 1.0e-12
     error('uav:sim:run_case_with_ardupilot_loopback:RateMismatch', ...
-        'Expected case_cfg.dt_s to match 1/cfg.update_rate_hz.');
+        'Ожидалось, что case_cfg.dt_s совпадает с 1/cfg.update_rate_hz.');
 end
 end
 
 function cfg = local_validate_ardupilot_cfg(cfg)
-%LOCAL_VALIDATE_ARDUPILOT_CFG Validate the loopback config.
+%LOCAL_VALIDATE_ARDUPILOT_CFG Проверить конфигурацию средства сопряжения.
 
 if ~isstruct(cfg) || ~isscalar(cfg)
     error('uav:sim:run_case_with_ardupilot_loopback:ArduPilotCfgType', ...
-        'Expected case_cfg.ardupilot_cfg to be a scalar struct.');
+        'Ожидалась скалярная структура case_cfg.ardupilot_cfg.');
 end
 
 cfg = local_merge_default_cfg(cfg);
@@ -183,7 +185,7 @@ validateattributes(cfg.pwm_max_us, {'numeric'}, ...
 end
 
 function cfg = local_merge_default_cfg(cfg_override)
-%LOCAL_MERGE_DEFAULT_CFG Merge override fields with the default config.
+%LOCAL_MERGE_DEFAULT_CFG Объединить пользовательскую и типовую конфигурацию.
 
 cfg = uav.ardupilot.default_json_config();
 override_fields = fieldnames(cfg_override);
@@ -195,7 +197,7 @@ end
 end
 
 function mode_name = local_normalize_mode_name(mode_value)
-%LOCAL_NORMALIZE_MODE_NAME Normalize the loopback mode value.
+%LOCAL_NORMALIZE_MODE_NAME Нормализовать обозначение режима прогона.
 
 if isstring(mode_value) && isscalar(mode_value)
     mode_name = lower(strtrim(mode_value));
@@ -203,17 +205,17 @@ elseif ischar(mode_value)
     mode_name = lower(strtrim(string(mode_value)));
 else
     error('uav:sim:run_case_with_ardupilot_loopback:ModeType', ...
-        'Expected case_cfg.loopback_mode to be a char vector or string scalar.');
+        'Ожидалась строка или символьный вектор в case_cfg.loopback_mode.');
 end
 
 if mode_name ~= "hover" && mode_name ~= "yaw_step"
     error('uav:sim:run_case_with_ardupilot_loopback:UnsupportedMode', ...
-        'Unsupported loopback mode "%s".', mode_name);
+        'Неподдерживаемый режим проверочного прогона "%s".', mode_name);
 end
 end
 
 function snapshot = local_snapshot_diag(state, params)
-%LOCAL_SNAPSHOT_DIAG Build one plant diagnostic snapshot.
+%LOCAL_SNAPSHOT_DIAG Сформировать диагностический снимок состояния объекта.
 
 fm = uav.core.forces_moments_sum(state.omega_m_radps, params);
 
@@ -224,7 +226,7 @@ snapshot.quat_norm = norm(state.q_nb);
 end
 
 function sens = local_empty_sensor_sample()
-%LOCAL_EMPTY_SENSOR_SAMPLE Build one empty sensor sample.
+%LOCAL_EMPTY_SENSOR_SAMPLE Сформировать пустой отсчет подсистемы датчиков.
 
 sens = struct();
 sens.imu = struct( ...
@@ -241,7 +243,7 @@ sens.gnss = struct( ...
 end
 
 function est = local_empty_estimator_sample()
-%LOCAL_EMPTY_ESTIMATOR_SAMPLE Build one empty estimator sample.
+%LOCAL_EMPTY_ESTIMATOR_SAMPLE Сформировать пустой отсчет алгоритма оценивания.
 
 est = struct();
 est.attitude = struct( ...

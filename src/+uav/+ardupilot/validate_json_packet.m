@@ -1,9 +1,9 @@
 function packet = validate_json_packet(packet)
-%VALIDATE_JSON_PACKET Validate the canonical ArduPilot JSON FDM packet.
+%VALIDATE_JSON_PACKET Проверить канонический пакет данных для ArduPilot.
 % Description:
-%   Checks that a packet prepared for future ArduPilot JSON transport
-%   contains the mandatory fields, expected vector sizes, and finite
-%   numeric values.
+%   Проверяет, что пакет данных, подготовленный для будущего JSON-обмена с
+%   `ArduPilot`, содержит обязательные поля, векторы ожидаемых размеров и
+%   только конечные числовые значения.
 %
 % Inputs:
 %   packet - scalar FDM packet struct
@@ -15,12 +15,12 @@ function packet = validate_json_packet(packet)
 %   SI only, frames are NED and FRD as documented in packet.frames
 %
 % Assumptions:
-%   The packet uses the TASK-10 canonical field names and scalar-first
-%   quaternion convention.
+%   Пакет использует канонические имена полей TASK-10 и скалярно-первую
+%   форму кватерниона.
 
 if ~isstruct(packet) || ~isscalar(packet)
     error('uav:ardupilot:validate_json_packet:PacketType', ...
-        'Expected packet to be a scalar struct.');
+        'Ожидалась скалярная структура packet.');
 end
 
 required_fields = { ...
@@ -31,7 +31,7 @@ for k = 1:numel(required_fields)
     field_name = required_fields{k};
     if ~isfield(packet, field_name)
         error('uav:ardupilot:validate_json_packet:MissingField', ...
-            'Expected packet.%s to be present.', field_name);
+            'Ожидалось наличие поля packet.%s.', field_name);
     end
 end
 
