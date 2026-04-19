@@ -199,9 +199,14 @@ function text_value = local_exchange_status_text(transport, sitl_output, udp_dia
 %LOCAL_EXCHANGE_STATUS_TEXT Построить строку статуса шага обмена.
 
 if sitl_output.valid
-    text_value = "Принят двоичный пакет ArduPilot; " + udp_diag.tx_message;
+    text_value = "Принят и разобран двоичный пакет ArduPilot; " + ...
+        udp_diag.tx_message;
+elseif udp_diag.rx_received
+    text_value = "Получен двоичный пакет ArduPilot, но разбор не подтвержден; " + ...
+        udp_diag.rx_message + " " + udp_diag.tx_message;
 elseif transport.is_open
-    text_value = "Пакет от ArduPilot не получен; " + udp_diag.tx_message;
+    text_value = "Двоичный пакет от ArduPilot не получен; " + ...
+        udp_diag.tx_message;
 else
     text_value = "Средство UDP не открыто; " + transport.message;
 end

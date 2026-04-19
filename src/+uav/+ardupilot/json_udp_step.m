@@ -1,9 +1,11 @@
 function [transport, rx_out, diag] = json_udp_step(transport, json_text, cfg)
 %JSON_UDP_STEP Выполнить один шаг приема и передачи по UDP.
 % Назначение:
-%   Выполняет неблокирующий шаг обмена данными по `UDP`: принимает
-%   двоичный пакет `ArduPilot`, если он уже поступил, разбирает его и
-%   затем передает строку `JSON` состояния объекта управления.
+%   Функция выполняет неблокирующий шаг обмена данными по UDP. Сначала
+%   выполняется попытка принять двоичный пакет от ArduPilot. Если пакет
+%   получен и успешно разобран, последующая передача JSON трактуется как
+%   ответная передача. Если входной пакет не получен, отправка строки JSON
+%   рассматривается только как исходящая пробная передача.
 %
 % Входы:
 %   transport - структура транспортного уровня
@@ -12,15 +14,15 @@ function [transport, rx_out, diag] = json_udp_step(transport, json_text, cfg)
 %
 % Выходы:
 %   transport - обновленная структура транспортного уровня
-%   rx_out    - разобранный пакет выходов ArduPilot
+%   rx_out    - результат разбора двоичного пакета ArduPilot
 %   diag      - структура диагностических признаков шага обмена
 %
 % Единицы измерения:
-%   объем принятого пакета измеряется в байтах, порты задаются целыми
-%   числами
+%   объем принятого пакета задается числом байтов, сетевые порты задаются
+%   целыми числами
 %
 % Допущения:
-%   Шаг обмена не должен зависать и использует только малое время ожидания,
+%   Функция не должна зависать и использует только малое время ожидания,
 %   уже заданное при открытии транспортного уровня.
 
 if nargin < 3 || isempty(cfg)
@@ -33,7 +35,8 @@ rx_out = uav.ardupilot.decode_sitl_output_packet([], cfg);
 diag = local_make_empty_diag(cfg);
 
 if ~isstring(json_text) && ~ischar(json_text)
-    error('uav:ardupilot:json_udp_step:JsonType', ...
+    error( ...
+        'uav:ardupilot:json_udp_step:JsonType', ...
         'Ожидалась строка JSON или символьный вектор.');
 end
 
@@ -41,7 +44,7 @@ json_text = string(json_text);
 
 if ~transport.is_open || isempty(transport.handle)
     diag.status = "средство обмена не открыто";
-    diag.rx_message = "Пакет не принят.";
+    diag.rx_message = "Двоичный пакет не принят.";
     diag.tx_message = transport.message;
     return;
 end
@@ -54,21 +57,33 @@ if ~isempty(raw_bytes)
     diag.rx_bytes_count = numel(raw_bytes);
     diag.rx_message = rx_out.message;
 else
-    diag.rx_message = "Пакет от ArduPilot не получен.";
+    diag.rx_message = "Двоичный пакет от ArduPilot не получен.";
 end
 
 if strlength(json_text) > 0
-    [transport, diag] = local_send_json_text(transport, json_text, diag, cfg);
+    [transport, diag] = local_send_json_text( ...
+        transport, ...
+        json_text, ...
+        diag, ...
+        cfg, ...
+        rx_out.valid);
 else
+    diag.tx_kind = "none";
     diag.tx_message = "Строка JSON пуста и не отправлялась.";
 end
 
 if rx_out.valid && diag.tx_ok
-    diag.status = "пакет принят, строка JSON отправлена";
+    diag.status = "пакет принят, ответная строка JSON отправлена";
 elseif rx_out.valid
-    diag.status = "пакет принят, строка JSON не отправлена";
+    diag.status = "пакет принят, ответная строка JSON не отправлена";
+elseif diag.rx_received && diag.tx_ok
+    diag.status = "пакет получен, но не разобран; " + ...
+        "выполнена исходящая пробная передача JSON";
+elseif diag.rx_received
+    diag.status = "пакет получен, но не разобран; " + ...
+        "исходящая пробная передача JSON не выполнена";
 elseif diag.tx_ok
-    diag.status = "пакет не получен, строка JSON отправлена";
+    diag.status = "пакет не получен, выполнена исходящая пробная передача JSON";
 else
     diag.status = "обмен не выполнен";
 end
@@ -78,19 +93,28 @@ function transport = local_validate_transport(transport)
 %LOCAL_VALIDATE_TRANSPORT Проверить структуру транспортного уровня.
 
 if ~isstruct(transport) || ~isscalar(transport)
-    error('uav:ardupilot:json_udp_step:TransportType', ...
+    error( ...
+        'uav:ardupilot:json_udp_step:TransportType', ...
         'Ожидалась скалярная структура transport.');
 end
 
 required_fields = { ...
-    'is_open', 'method', 'message', 'remote_ip', 'remote_port', ...
-    'rx_count', 'tx_count', 'handle'};
+    'is_open', ...
+    'method', ...
+    'message', ...
+    'remote_ip', ...
+    'remote_port', ...
+    'rx_count', ...
+    'tx_count', ...
+    'handle'};
 
 for k = 1:numel(required_fields)
     field_name = required_fields{k};
     if ~isfield(transport, field_name)
-        error('uav:ardupilot:json_udp_step:MissingTransportField', ...
-            'Ожидалось наличие поля transport.%s.', field_name);
+        error( ...
+            'uav:ardupilot:json_udp_step:MissingTransportField', ...
+            'Ожидалось наличие поля transport.%s.', ...
+            field_name);
     end
 end
 end
@@ -99,7 +123,8 @@ function cfg = local_validate_cfg(cfg)
 %LOCAL_VALIDATE_CFG Проверить конфигурацию шага обмена.
 
 if ~isstruct(cfg) || ~isscalar(cfg)
-    error('uav:ardupilot:json_udp_step:CfgType', ...
+    error( ...
+        'uav:ardupilot:json_udp_step:CfgType', ...
         'Ожидалась скалярная структура cfg.');
 end
 
@@ -111,8 +136,10 @@ required_fields = { ...
 for k = 1:numel(required_fields)
     field_name = required_fields{k};
     if ~isfield(cfg, field_name)
-        error('uav:ardupilot:json_udp_step:MissingCfgField', ...
-            'Ожидалось наличие поля cfg.%s.', field_name);
+        error( ...
+            'uav:ardupilot:json_udp_step:MissingCfgField', ...
+            'Ожидалось наличие поля cfg.%s.', ...
+            field_name);
     end
 end
 end
@@ -127,6 +154,7 @@ diag.rx_bytes_count = 0;
 diag.rx_message = "";
 diag.tx_attempted = false;
 diag.tx_ok = false;
+diag.tx_kind = "none";
 diag.tx_message = "";
 diag.used_remote_ip = string(cfg.udp_remote_ip);
 diag.used_remote_port = double(cfg.udp_remote_port);
@@ -142,7 +170,9 @@ try
         case "udpport"
             bytes_available = double(transport.handle.NumBytesAvailable);
             if bytes_available > 0
-                bytes_to_read = min(bytes_available, double(cfg.udp_max_rx_bytes));
+                bytes_to_read = min( ...
+                    bytes_available, ...
+                    double(cfg.udp_max_rx_bytes));
                 raw_bytes = read(transport.handle, bytes_to_read, "uint8");
                 raw_bytes = uint8(raw_bytes(:));
                 transport.rx_count = transport.rx_count + 1;
@@ -150,7 +180,9 @@ try
         case "udp"
             bytes_available = double(get(transport.handle, 'BytesAvailable'));
             if bytes_available > 0
-                bytes_to_read = min(bytes_available, double(cfg.udp_max_rx_bytes));
+                bytes_to_read = min( ...
+                    bytes_available, ...
+                    double(cfg.udp_max_rx_bytes));
                 raw_bytes = fread(transport.handle, bytes_to_read, 'uint8');
                 raw_bytes = uint8(raw_bytes(:));
                 transport.rx_count = transport.rx_count + 1;
@@ -164,10 +196,22 @@ catch rx_error
 end
 end
 
-function [transport, diag] = local_send_json_text(transport, json_text, diag, cfg)
+function [transport, diag] = local_send_json_text( ...
+        transport, ...
+        json_text, ...
+        diag, ...
+        cfg, ...
+        has_valid_rx_packet)
 %LOCAL_SEND_JSON_TEXT Отправить строку JSON удаленному узлу.
 
 diag.tx_attempted = true;
+
+if has_valid_rx_packet
+    diag.tx_kind = "reply";
+else
+    diag.tx_kind = "probe";
+end
+
 warn_state = warning;
 cleanup_obj = onCleanup(@() warning(warn_state));
 warning('off', 'all');
@@ -185,16 +229,32 @@ try
         case "udp"
             fwrite(transport.handle, bytes_to_send, 'uint8');
         otherwise
-            error('uav:ardupilot:json_udp_step:UnsupportedMethod', ...
-                'Неподдерживаемый метод UDP: %s.', transport.method);
+            error( ...
+                'uav:ardupilot:json_udp_step:UnsupportedMethod', ...
+                'Неподдерживаемый метод UDP: %s.', ...
+                transport.method);
     end
 
     transport.tx_count = transport.tx_count + 1;
     diag.tx_ok = true;
-    diag.tx_message = "Строка JSON отправлена.";
+
+    if has_valid_rx_packet
+        diag.tx_message = "Ответная строка JSON отправлена " + ...
+            "после принятого пакета ArduPilot.";
+    else
+        diag.tx_message = "Исходящая пробная строка JSON была сформирована " + ...
+            "и отправлена без принятого пакета ArduPilot.";
+    end
 catch tx_error
     diag.tx_ok = false;
-    diag.tx_message = "Ошибка передачи UDP: " + string(tx_error.message);
+    if has_valid_rx_packet
+        diag.tx_message = "Не удалось отправить ответную строку JSON " + ...
+            "после принятого пакета ArduPilot: " + ...
+            string(tx_error.message);
+    else
+        diag.tx_message = "Не удалось выполнить исходящую пробную " + ...
+            "передачу строки JSON: " + string(tx_error.message);
+    end
 end
 
 clear cleanup_obj;
