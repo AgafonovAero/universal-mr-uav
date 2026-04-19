@@ -24,14 +24,22 @@ info = uav.ardupilot.inspect_sitl_environment(cfg);
 verifyTrue(testCase, isstruct(info));
 verifyTrue(testCase, isfield(info, 'is_ready'));
 verifyTrue(testCase, isfield(info, 'has_wsl'));
+verifyTrue(testCase, isfield(info, 'wsl_distros'));
 verifyTrue(testCase, isfield(info, 'has_python'));
+verifyTrue(testCase, isfield(info, 'has_git'));
 verifyTrue(testCase, isfield(info, 'has_sim_vehicle'));
 verifyTrue(testCase, isfield(info, 'ardupilot_root'));
+verifyTrue(testCase, isfield(info, 'start_command'));
+verifyTrue(testCase, isfield(info, 'missing_items'));
 verifyTrue(testCase, isfield(info, 'messages'));
 
 verifyTrue(testCase, islogical(info.is_ready));
 verifyTrue(testCase, islogical(info.has_python));
+verifyTrue(testCase, islogical(info.has_git));
 verifyTrue(testCase, islogical(info.has_sim_vehicle));
+verifyTrue(testCase, isstring(info.wsl_distros));
+verifyTrue(testCase, isstring(info.missing_items));
 verifyTrue(testCase, isstring(info.messages));
 verifyGreaterThanOrEqual(testCase, numel(info.messages), 1);
+verifyGreaterThan(testCase, strlength(string(info.start_command)), 0);
 end

@@ -3,9 +3,10 @@ function log = run_case_with_ardupilot_udp(case_cfg)
 % Назначение:
 %   Использует математическую модель движения, подсистему датчиков,
 %   алгоритм оценивания состояния и транспортный уровень `UDP` для
-%   пошаговой попытки обмена данными с `ArduPilot JSON SITL`.
+%   поэтапной попытки обмена с `ArduPilot JSON SITL`.
 %   При отсутствии ответа от `ArduPilot` функция не подменяет внешний
-%   комплекс синтетическими командами и завершает прогон с явным статусом.
+%   комплекс искусственными командами и сохраняет явный статус
+%   "прием не подтвержден".
 %
 % Входы:
 %   case_cfg - структура с полями `params`, `state0`, `dt_s`, `t_final_s`
@@ -14,16 +15,17 @@ function log = run_case_with_ardupilot_udp(case_cfg)
 % Выходы:
 %   log - структура с историями состояния, датчиков, алгоритма
 %         оценивания, пакетов данных, строк JSON, выходов SITL,
-%         команд частоты вращения винтов, норм кватернионов и статусов
-%         обмена
+%         команд частоты вращения винтов, норм кватернионов,
+%         статусов обмена и диагностикой обмена
 %
 % Единицы измерения:
-%   используются единицы СИ; земная система координат - `NED`, связанная
-%   система координат - `FRD`
+%   используются единицы СИ; земная система координат - `NED`,
+%   связанная система координат - `FRD`
 %
 % Допущения:
-%   Текущий этап предназначен для первого воспроизводимого обмена
-%   данными, а не для подтверждения устойчивого автоматического полета.
+%   Текущий этап предназначен для подтверждения приема первого пакета
+%   и различения пробной и ответной передачи, а не для подтверждения
+%   устойчивого автоматического полета.
 
 case_cfg = local_validate_case_cfg(case_cfg);
 n_steps = round(case_cfg.t_final_s / case_cfg.dt_s) + 1;
@@ -37,6 +39,7 @@ quat_norm_est = zeros(n_steps, 1);
 motor_cmd_hist_radps = nan(n_steps, case_cfg.ardupilot_cfg.motor_count);
 json_text_hist = strings(n_steps, 1);
 exchange_status = strings(n_steps, 1);
+exchange_diag_hist = repmat(local_empty_exchange_diag(), n_steps, 1);
 
 ardupilot_packet_hist = struct([]);
 sitl_output_hist = struct([]);
@@ -61,7 +64,10 @@ for k = 1:n_steps
     end
 
     [est_k, ~] = uav.est.estimator_step( ...
-        est_prev, sens_k, dt_est_s, case_cfg.params);
+        est_prev, ...
+        sens_k, ...
+        dt_est_s, ...
+        case_cfg.params);
 
     ardupilot_packet_k = uav.ardupilot.pack_json_fdm_packet( ...
         state_k, ...
@@ -73,15 +79,16 @@ for k = 1:n_steps
     json_text_k = uav.ardupilot.encode_json_fdm_text(ardupilot_packet_k);
 
     [transport, sitl_output_k, udp_diag_k] = uav.ardupilot.json_udp_step( ...
-        transport, json_text_k, case_cfg.ardupilot_cfg);
+        transport, ...
+        json_text_k, ...
+        case_cfg.ardupilot_cfg);
 
+    motor_cmd_k_radps = nan(case_cfg.ardupilot_cfg.motor_count, 1);
     if sitl_output_k.valid
         motor_cmd_k_radps = uav.ardupilot.pwm_to_motor_radps( ...
             sitl_output_k.motor_pwm_us, ...
             case_cfg.params, ...
             case_cfg.ardupilot_cfg);
-    else
-        motor_cmd_k_radps = nan(case_cfg.ardupilot_cfg.motor_count, 1);
     end
 
     if k == 1
@@ -94,10 +101,8 @@ for k = 1:n_steps
     ardupilot_packet_hist(k) = ardupilot_packet_k;
     sitl_output_hist(k) = sitl_output_k;
     json_text_hist(k) = json_text_k;
-    exchange_status(k) = local_exchange_status_text( ...
-        transport, ...
-        sitl_output_k, ...
-        udp_diag_k);
+    exchange_status(k) = local_exchange_status_text(udp_diag_k);
+    exchange_diag_hist(k) = udp_diag_k;
     quat_norm_true(k) = snapshot.quat_norm;
     quat_norm_est(k) = norm(est_k.q_nb);
     motor_cmd_hist_radps(k, :) = motor_cmd_k_radps(:).';
@@ -131,6 +136,7 @@ log.motor_cmd_radps = motor_cmd_hist_radps;
 log.quat_norm_true = quat_norm_true;
 log.quat_norm_est = quat_norm_est;
 log.exchange_status = exchange_status;
+log.exchange_diag = exchange_diag_hist;
 log.ardupilot_cfg = case_cfg.ardupilot_cfg;
 log.transport_message_open = transport_message_open;
 log.transport_message_close = string(transport.message);
@@ -140,7 +146,8 @@ function case_cfg = local_validate_case_cfg(case_cfg)
 %LOCAL_VALIDATE_CASE_CFG Проверить конфигурацию сценария моделирования.
 
 if ~isstruct(case_cfg) || ~isscalar(case_cfg)
-    error('uav:sim:run_case_with_ardupilot_udp:CaseCfgType', ...
+    error( ...
+        'uav:sim:run_case_with_ardupilot_udp:CaseCfgType', ...
         'Ожидалась скалярная структура case_cfg.');
 end
 
@@ -148,8 +155,10 @@ required_fields = {'params', 'state0', 'dt_s', 't_final_s'};
 for k = 1:numel(required_fields)
     field_name = required_fields{k};
     if ~isfield(case_cfg, field_name)
-        error('uav:sim:run_case_with_ardupilot_udp:MissingField', ...
-            'Ожидалось наличие поля case_cfg.%s.', field_name);
+        error( ...
+            'uav:sim:run_case_with_ardupilot_udp:MissingField', ...
+            'Ожидалось наличие поля case_cfg.%s.', ...
+            field_name);
     end
 end
 
@@ -166,7 +175,8 @@ validateattributes(case_cfg.t_final_s, {'numeric'}, ...
 
 n_intervals = round(case_cfg.t_final_s / case_cfg.dt_s);
 if abs(n_intervals * case_cfg.dt_s - case_cfg.t_final_s) > 1.0e-12
-    error('uav:sim:run_case_with_ardupilot_udp:TimeGrid', ...
+    error( ...
+        'uav:sim:run_case_with_ardupilot_udp:TimeGrid', ...
         'Ожидалось, что t_final_s является целым кратным dt_s.');
 end
 
@@ -178,7 +188,8 @@ function cfg = local_validate_ardupilot_cfg(cfg)
 %LOCAL_VALIDATE_ARDUPILOT_CFG Проверить конфигурацию средства сопряжения.
 
 if ~isstruct(cfg) || ~isscalar(cfg)
-    error('uav:sim:run_case_with_ardupilot_udp:ArduPilotCfgType', ...
+    error( ...
+        'uav:sim:run_case_with_ardupilot_udp:ArduPilotCfgType', ...
         'Ожидалась скалярная структура case_cfg.ardupilot_cfg.');
 end
 
@@ -188,27 +199,21 @@ validateattributes(cfg.update_rate_hz, {'numeric'}, ...
 validateattributes(cfg.motor_count, {'numeric'}, ...
     {'real', 'scalar', 'finite', 'integer', 'positive'}, ...
     mfilename, 'case_cfg.ardupilot_cfg.motor_count');
-
-expected_dt_s = 1.0 / cfg.update_rate_hz;
-validateattributes(expected_dt_s, {'numeric'}, ...
-    {'real', 'scalar', 'finite', 'positive'}, ...
-    mfilename, 'expected_dt_s');
 end
 
-function text_value = local_exchange_status_text(transport, sitl_output, udp_diag)
-%LOCAL_EXCHANGE_STATUS_TEXT Построить строку статуса шага обмена.
+function text_value = local_exchange_status_text(udp_diag)
+%LOCAL_EXCHANGE_STATUS_TEXT Построить человекочитаемый статус обмена.
 
-if sitl_output.valid
-    text_value = "Принят и разобран двоичный пакет ArduPilot; " + ...
-        udp_diag.tx_message;
-elseif udp_diag.rx_received
-    text_value = "Получен двоичный пакет ArduPilot, но разбор не подтвержден; " + ...
-        udp_diag.rx_message + " " + udp_diag.tx_message;
-elseif transport.is_open
-    text_value = "Двоичный пакет от ArduPilot не получен; " + ...
-        udp_diag.tx_message;
-else
-    text_value = "Средство UDP не открыто; " + transport.message;
+switch string(udp_diag.status)
+    case "ответная передача"
+        text_value = ...
+            "Принят и разобран двоичный пакет ArduPilot; выполнена ответная передача строки JSON.";
+    case "исходящая пробная передача"
+        text_value = ...
+            "Прием не подтвержден; выполнена только исходящая пробная передача строки JSON.";
+    otherwise
+        text_value = ...
+            "Прием не подтвержден; входящий двоичный пакет ArduPilot не принят.";
 end
 end
 
@@ -254,4 +259,23 @@ est.q_nb = est.attitude.q_nb;
 est.euler_rpy_rad = est.attitude.euler_rpy_rad;
 est.alt_m = est.altitude.alt_m;
 est.vz_mps = est.altitude.vz_mps;
+end
+
+function diag = local_empty_exchange_diag()
+%LOCAL_EMPTY_EXCHANGE_DIAG Построить пустой элемент истории диагностики.
+
+diag = struct();
+diag.status = "прием не подтвержден";
+diag.status_message = "";
+diag.rx_received = false;
+diag.rx_valid = false;
+diag.rx_bytes_count = 0;
+diag.rx_message = "";
+diag.tx_attempted = false;
+diag.tx_ok = false;
+diag.tx_kind = "none";
+diag.tx_message = "";
+diag.handshake_confirmed = false;
+diag.used_remote_ip = "";
+diag.used_remote_port = 0;
 end

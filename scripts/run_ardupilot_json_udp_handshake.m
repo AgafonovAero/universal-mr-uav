@@ -1,10 +1,12 @@
 %% RUN_ARDUPILOT_JSON_UDP_HANDSHAKE Выполнить попытку обмена с ArduPilot.
 % Назначение:
-%   Скрипт выполняет короткую попытку обмена с уже запущенным
-%   `ArduPilot JSON SITL` без установки стороннего программного комплекса
-%   и без заявлений о готовности к полноценному автоматическому полету.
-%   При отсутствии входного двоичного пакета фиксируется только исходящая
-%   пробная передача строки `JSON`.
+%   Выполняет короткую попытку обмена с уже запущенным `ArduPilot JSON SITL`
+%   без установки внешнего программного комплекса и без заявлений о
+%   готовности к устойчивому автоматическому полету.
+%   Сценарий различает:
+%   - отсутствие подтвержденного приема;
+%   - исходящую пробную передачу строки JSON;
+%   - ответную передачу после принятого пакета.
 %
 % Входы:
 %   none
@@ -17,8 +19,8 @@
 %   длительности импульсов ШИМ задаются в микросекундах
 %
 % Допущения:
-%   При отсутствии ответа от `ArduPilot` скрипт завершается штатно и
-%   явно фиксирует отсутствие принятого двоичного пакета.
+%   При отсутствии ответа от `ArduPilot` сценарий завершается штатно и
+%   честно фиксирует отсутствие принятого двоичного пакета.
 
 params = uav.sim.make_deterministic_demo_params();
 cfg = uav.ardupilot.default_json_config();
@@ -31,28 +33,30 @@ case_cfg.params = params;
 case_cfg.state0 = uav.core.state_unpack(params.demo.initial_state_plant);
 case_cfg.dt_s = 1.0 / cfg.update_rate_hz;
 case_cfg.t_final_s = max( ...
-    cfg.handshake_wait_timeout_s, ...
+    cfg.udp_handshake_timeout_s, ...
     cfg.handshake_max_steps / cfg.update_rate_hz);
 case_cfg.ardupilot_cfg = cfg;
 
 log = uav.sim.run_case_with_ardupilot_udp(case_cfg);
+diag_hist = log.exchange_diag;
+status_values = arrayfun(@(item) string(item.status), diag_hist);
 
-valid_indices = find([log.sitl_output.valid], 1, 'first');
-packet_received = ~isempty(valid_indices);
+reply_indices = find([diag_hist.handshake_confirmed], 1, 'first');
+probe_indices = find(status_values == "исходящая пробная передача", 1, 'first');
+packet_indices = find([diag_hist.rx_valid], 1, 'first');
 
-status_text = string(log.exchange_status);
-status_text_lower = lower(status_text);
-probe_json_sent = any(contains(status_text_lower, "исходящая пробная"));
-reply_json_sent = any(contains(status_text_lower, "ответная строка json"));
+packet_received = ~isempty(packet_indices);
+reply_json_sent = ~isempty(reply_indices);
+probe_json_sent = ~isempty(probe_indices);
 
 if packet_received
-    rx_out = log.sitl_output(valid_indices);
-    first_pwm = rx_out.motor_pwm_us;
-    exchange_status = log.exchange_status(valid_indices);
+    rx_out = log.sitl_output(packet_indices);
+    exchange_status = string(diag_hist(packet_indices).status);
+    exchange_status_message = string(diag_hist(packet_indices).status_message);
 else
     rx_out = uav.ardupilot.decode_sitl_output_packet([], cfg);
-    first_pwm = zeros(cfg.motor_count, 1);
-    exchange_status = log.exchange_status(end);
+    exchange_status = string(diag_hist(end).status);
+    exchange_status_message = string(diag_hist(end).status_message);
 end
 
 result = struct();
@@ -63,47 +67,47 @@ result.log = log;
 result.packet_received = logical(packet_received);
 result.probe_json_sent = logical(probe_json_sent);
 result.reply_json_sent = logical(reply_json_sent);
-result.json_sent = logical(probe_json_sent || reply_json_sent);
 result.rx_out = rx_out;
-result.exchange_status = string(exchange_status);
+result.exchange_status = exchange_status;
+result.exchange_status_message = exchange_status_message;
 
 assignin('base', 'ardupilot_json_udp_handshake', result);
 
 fprintf('Проверка обмена с ArduPilot по JSON и UDP\n');
-fprintf('  готовность UDP                         : %s\n', ...
+fprintf('  готовность UDP                           : %s\n', ...
     local_bool_text(availability.is_available));
-fprintf('  готовность локальной среды             : %s\n', ...
+fprintf('  готовность локальной среды               : %s\n', ...
     local_bool_text(env_info.is_ready));
-fprintf('  пакет от ArduPilot получен             : %s\n', ...
+fprintf('  пакет от ArduPilot получен               : %s\n', ...
     local_bool_text(packet_received));
 
 if packet_received
-    fprintf('  magic                                  : %u\n', rx_out.magic);
-    fprintf('  frame_rate_hz                          : %.0f\n', ...
+    fprintf('  magic                                    : %u\n', ...
+        rx_out.magic);
+    fprintf('  frame_rate_hz                            : %.0f\n', ...
         rx_out.frame_rate_hz);
-    fprintf('  frame_count                            : %.0f\n', ...
+    fprintf('  frame_count                              : %.0f\n', ...
         rx_out.frame_count);
-    fprintf('  первые четыре значения ШИМ [us]        : [%s]\n', ...
-        local_format_vector(first_pwm));
-    fprintf('  ответная передача JSON выполнена       : %s\n', ...
+    fprintf('  первые четыре значения ШИМ [us]          : [%s]\n', ...
+        local_format_vector(rx_out.motor_pwm_us));
+    fprintf('  ответная передача JSON выполнена         : %s\n', ...
         local_bool_text(reply_json_sent));
-    fprintf('  статус обмена                          : %s\n', ...
-        char(string(exchange_status)));
+    fprintf('  статус обмена                            : %s\n', ...
+        char(exchange_status));
+    fprintf('  пояснение                                : %s\n', ...
+        char(exchange_status_message));
 else
-    fprintf('  среда не готова                        : %s\n', ...
-        local_bool_text(~env_info.is_ready));
-    fprintf('  пакет от ArduPilot не получен          : да\n');
+    fprintf('  прием не подтвержден                     : да\n');
     fprintf('  исходящая пробная строка JSON отправлена : %s\n', ...
         local_bool_text(probe_json_sent));
+    fprintf('  ответная передача JSON выполнена         : нет\n');
     fprintf([ ...
-        '  ответ на принятый двоичный пакет ArduPilot не проверен, ', ...
+        '  ответ на принятый двоичный пакет ArduPilot не проверен, ' ...
         'так как входной пакет не был получен.\n']);
-    fprintf('  команда запуска для отдельного прогона : %s\n', ...
+    fprintf('  команда запуска для отдельного прогона   : %s\n', ...
         char(start_cmd.command_text));
-    fprintf('  пояснение                              : %s\n', ...
-        char(start_cmd.message));
-    fprintf('  статус обмена                          : %s\n', ...
-        char(string(exchange_status)));
+    fprintf('  пояснение                                : %s\n', ...
+        char(exchange_status_message));
 end
 
 function text_value = local_format_vector(vec)
