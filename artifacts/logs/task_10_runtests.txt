@@ -1,0 +1,54 @@
+Всего проверок: 49
+Успешно: 49
+С ошибками: 0
+Незавершено: 0
+
+test_actuator_cmd_to_motor_radps/testLinearNorm01Mapping | passed=1 failed=0 incomplete=0 duration_s=0.202884
+test_actuator_cmd_to_motor_radps/testInputSaturationHonorsMotorLimits | passed=1 failed=0 incomplete=0 duration_s=0.022617
+test_altitude_filter_step/testAltitudeEstimateConvergesToBaro | passed=1 failed=0 incomplete=0 duration_s=0.097197
+test_altitude_filter_step/testZeroVerticalAccelerationKeepsVzBounded | passed=1 failed=0 incomplete=0 duration_s=0.046553
+test_ardupilot_default_json_config/testDefaultConfigContainsRequiredFields | passed=1 failed=0 incomplete=0 duration_s=0.061710
+test_ardupilot_loopback_runner/testLoopbackRunnerReturnsPacketsAndBoundedQuatNorms | passed=1 failed=0 incomplete=0 duration_s=0.319023
+test_ardupilot_pack_json_fdm_packet/testPacketContainsRequiredTruthAndSensorFields | passed=1 failed=0 incomplete=0 duration_s=0.064046
+test_ardupilot_pwm_to_motor_radps/testLinearMappingAndSaturation | passed=1 failed=0 incomplete=0 duration_s=0.050144
+test_attitude_cf_step/testIdentityZeroGyroPreservesOrientation | passed=1 failed=0 incomplete=0 duration_s=0.051688
+test_attitude_cf_step/testQuaternionNormRemainsNearUnity | passed=1 failed=0 incomplete=0 duration_s=0.019454
+test_attitude_cf_step/testLevelHoverKeepsRollPitchNearZero | passed=1 failed=0 incomplete=0 duration_s=0.017530
+test_attitude_cf_step/testAcceleratedPitchDoesNotCollapseBackToLevel | passed=1 failed=0 incomplete=0 duration_s=0.015004
+test_baro_measure/testBaroAltitudeMatchesNegativeNedZ | passed=1 failed=0 incomplete=0 duration_s=0.048508
+test_baro_measure/testPressureDecreasesWithAltitude | passed=1 failed=0 incomplete=0 duration_s=0.000985
+test_build_mil_top/testBuildMilTopCreatesThinShellModel | passed=1 failed=0 incomplete=0 duration_s=10.435665
+test_build_sil_top/testBuildSilTopCreatesThinBridgeModel | passed=1 failed=0 incomplete=0 duration_s=2.349733
+test_demo_pitch_step_minus10deg/testPitchDemoProducesArtifactsAndTracksCommand | passed=1 failed=0 incomplete=0 duration_s=1.988705
+test_demo_takeoff_to_50m/testTakeoffDemoProducesArtifactsAndBoundedState | passed=1 failed=0 incomplete=0 duration_s=1.938931
+test_estimator_step/testEstimatorStepReturnsRequiredFields | passed=1 failed=0 incomplete=0 duration_s=0.099120
+test_forces_moments_sum/testEqualRotorSpeedsProducePureNegativeZForce | passed=1 failed=0 incomplete=0 duration_s=0.083572
+test_gnss_measure/testGnssReturnsPositionAndRotatedVelocityInNed | passed=1 failed=0 incomplete=0 duration_s=0.098803
+test_hover_balance/testBaselineHoverThrustBalancesWeight | passed=1 failed=0 incomplete=0 duration_s=0.069435
+test_imu_measure/testLevelHoverSpecificForceAndGyro | passed=1 failed=0 incomplete=0 duration_s=0.086620
+test_inspect_ardupilot_sitl_environment/testInspectionReturnsStructuredStatusWithoutThrowing | passed=1 failed=0 incomplete=0 duration_s=0.376828
+test_mag_measure/testIdentityQuaternionKeepsNedField | passed=1 failed=0 incomplete=0 duration_s=0.080128
+test_make_bus_defs/testMakeBusDefsCreatesTopLevelBuses | passed=1 failed=0 incomplete=0 duration_s=0.122811
+test_make_sil_bus_defs/testMakeSilBusDefsCreatesTopLevelBuses | passed=1 failed=0 incomplete=0 duration_s=0.105405
+test_mixer_quad_x/testHoverMixDistributesThrustEqually | passed=1 failed=0 incomplete=0 duration_s=0.085983
+test_mixer_quad_x/testMixerGeometryMatchesPresetParameters | passed=1 failed=0 incomplete=0 duration_s=0.022224
+test_mixer_quad_x/testMixerReproducesRequestedMoments | passed=1 failed=0 incomplete=0 duration_s=0.006217
+test_mixer_quad_x/testPureRollCommandIsSymmetricAcrossFrontAndRear | passed=1 failed=0 incomplete=0 duration_s=0.005923
+test_motor_esc_step/testMotorEscStepConvergesMonotonically | passed=1 failed=0 incomplete=0 duration_s=0.118511
+test_motor_esc_step/testMotorEscStepSaturatesAtMaximum | passed=1 failed=0 incomplete=0 duration_s=0.005199
+test_plant_step/testTrimLikeHoverAccelerationIsNearZeroAfterSpool | passed=1 failed=0 incomplete=0 duration_s=0.082631
+test_plant_step_struct/testPlantStepStructMatchesPackedPlantStep | passed=1 failed=0 incomplete=0 duration_s=0.081500
+test_quat_tools/testQuatNormalizeReturnsUnitNorm | passed=1 failed=0 incomplete=0 duration_s=0.075447
+test_quat_tools/testQuatToDcmProducesProperRotation | passed=1 failed=0 incomplete=0 duration_s=0.030767
+test_run_case_closed_loop_with_estimator/testClosedLoopRunnerReturnsDiagnosticsAndBoundedQuatNorms | passed=1 failed=0 incomplete=0 duration_s=0.634480
+test_run_case_closed_loop_with_estimator/testDemoControllersUseEstimatorSensorInputsOnly | passed=1 failed=0 incomplete=0 duration_s=0.002373
+test_run_case_hover/testHoverCaseKeepsQuatNormAndNearZeroVerticalAccel | passed=1 failed=0 incomplete=0 duration_s=0.129212
+test_run_case_with_estimator/testHoverCaseReturnsEstimatorHistoryAndBoundedAltitude | passed=1 failed=0 incomplete=0 duration_s=0.172526
+test_run_case_with_sensors/testHoverCaseReturnsSensorHistoryAndBoundedDrift | passed=1 failed=0 incomplete=0 duration_s=0.144327
+test_run_case_yaw_step/testYawStepProducesPositiveYawRate | passed=1 failed=0 incomplete=0 duration_s=0.115653
+test_run_mil_top_hover/testMilHoverRunMatchesCodeCentricKernel | passed=1 failed=0 incomplete=0 duration_s=1.886298
+test_run_sil_stub_hover/testSilHoverRunCompletesAndKeepsQuatNormsNearOne | passed=1 failed=0 incomplete=0 duration_s=1.417442
+test_sensors_step/testAggregatorContainsAllSensorsAndMatchesIndividualCalls | passed=1 failed=0 incomplete=0 duration_s=0.087815
+test_stage15_sil_bridge/testBridgeMatchesCodeCentricReferenceLoop | passed=1 failed=0 incomplete=0 duration_s=0.251420
+test_state_pack_unpack/testPackUnpackRoundTripIsConsistent | passed=1 failed=0 incomplete=0 duration_s=0.076076
+test_state_pack_unpack/testStateValidateRejectsWrongQuaternionSize | passed=1 failed=0 incomplete=0 duration_s=0.110467
