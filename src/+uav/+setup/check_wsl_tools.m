@@ -40,6 +40,7 @@ info.is_ready = false;
 [status_list, output_list] = system('wsl.exe -l -q');
 if status_list == 0
     info.has_wsl_command = true;
+    output_list = erase(string(output_list), char(0));
     distros = splitlines(string(output_list));
     distros = strip(distros);
     distros = distros(strlength(distros) > 0);
@@ -69,9 +70,19 @@ if any(strcmpi(info.available_distros, info.target_distro))
     info.messages(end + 1, 1) = ...
         "Целевой дистрибутив WSL обнаружен: " + info.target_distro;
 else
-    info.messages(end + 1, 1) = ...
-        "Целевой дистрибутив WSL не обнаружен: " + info.target_distro;
-    return;
+    probe_command = "wsl.exe -d " + info.target_distro + " -- bash -lc ""printf ok""";
+    [probe_status, probe_output] = system(char(probe_command));
+    probe_output = erase(string(probe_output), char(0));
+    if probe_status == 0 && contains(probe_output, "ok")
+        info.has_target_distro = true;
+        info.available_distros = unique([info.available_distros; info.target_distro], "stable");
+        info.messages(end + 1, 1) = ...
+            "Целевой дистрибутив WSL подтвержден прямым вызовом: " + info.target_distro;
+    else
+        info.messages(end + 1, 1) = ...
+            "Целевой дистрибутив WSL не обнаружен: " + info.target_distro;
+        return;
+    end
 end
 
 git_result = uav.setup.run_wsl_command( ...
@@ -88,7 +99,7 @@ python_result = uav.setup.run_wsl_command( ...
 info.has_python = python_result.success ...
     && strlength(strtrim(python_result.output_text)) > 0;
 
-root_path = local_escape_single_quotes(string(cfg.ardupilot_root));
+root_path = local_escape_single_quotes(local_expand_wsl_home_path(string(cfg.ardupilot_root)));
 root_command = ...
     "if [ -d '" + root_path + "' ]; then printf '%s' '" + root_path + "'; fi";
 root_result = uav.setup.run_wsl_command( ...
@@ -100,7 +111,8 @@ if root_result.success && strlength(strtrim(root_result.output_text)) > 0
     info.ardupilot_root = strtrim(root_result.output_text);
 end
 
-sim_vehicle_path = string(cfg.ardupilot_root) + "/Tools/autotest/sim_vehicle.py";
+sim_vehicle_path = local_expand_wsl_home_path(string(cfg.ardupilot_root)) ...
+    + "/Tools/autotest/sim_vehicle.py";
 sim_vehicle_path = local_escape_single_quotes(sim_vehicle_path);
 sim_command = ...
     "if [ -f '" + sim_vehicle_path + "' ]; then printf '%s' '" ...
@@ -144,4 +156,17 @@ function escaped_value = local_escape_single_quotes(value)
 
 value = string(value);
 escaped_value = replace(value, "'", "'\''");
+end
+
+function expanded_value = local_expand_wsl_home_path(value)
+%LOCAL_EXPAND_WSL_HOME_PATH Раскрыть домашний каталог в WSL-пути.
+
+value = string(value);
+if startsWith(value, "~/")
+    expanded_value = "$HOME/" + extractAfter(value, 2);
+elseif value == "~"
+    expanded_value = "$HOME";
+else
+    expanded_value = value;
+end
 end

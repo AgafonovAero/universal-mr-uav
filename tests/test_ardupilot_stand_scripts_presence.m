@@ -61,5 +61,6 @@ verifyTrue(testCase, contains(startText, '-LaunchMissionPlanner'));
 verifyTrue(testCase, contains(startText, '-LaunchQGroundControl'));
 verifyTrue(testCase, contains(testText, '14550'));
 verifyTrue(testCase, contains(startWslText, '--model "JSON:${IP_ADDRESS}"'));
-verifyTrue(testCase, contains(startWslText, '--out "udp:127.0.0.1:${MAVLINK_PORT}"'));
+verifyTrue(testCase, contains(startWslText, '--serial0="udpclient:${IP_ADDRESS}:${MAVLINK_PORT}"'));
+verifyTrue(testCase, contains(startWslText, '--sim-address="${IP_ADDRESS}"'));
 end

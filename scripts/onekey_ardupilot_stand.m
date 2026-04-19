@@ -64,17 +64,53 @@ if nargin == 0
 end
 
 if nargin == 1 && isstruct(varargin{1}) && isscalar(varargin{1})
-    override_cfg = varargin{1};
-    field_names = fieldnames(override_cfg);
-    for idx = 1:numel(field_names)
-        cfg.(field_names{idx}) = override_cfg.(field_names{idx});
-    end
+    cfg = local_apply_struct_override(cfg, varargin{1});
     return;
 end
 
-error( ...
-    'uav:setup:onekey_ardupilot_stand:CfgOverride', ...
-    'Ожидалась одна скалярная структура с переопределением конфигурации.');
+if mod(nargin, 2) ~= 0
+    error( ...
+        'uav:setup:onekey_ardupilot_stand:CfgOverride', ...
+        ['Ожидалась одна скалярная структура с переопределением ' ...
+        'конфигурации или набор пар имя-значение.']);
+end
+
+for idx = 1:2:nargin
+    name = lower(string(varargin{idx}));
+    value = varargin{idx + 1};
+
+    switch name
+        case "execute"
+            execute_flag = logical(value);
+            cfg.execute_install = execute_flag;
+            cfg.execute_start = execute_flag;
+            cfg.execute_stop = execute_flag;
+        case "executeinstall"
+            cfg.execute_install = logical(value);
+        case "executestart"
+            cfg.execute_start = logical(value);
+        case "executestop"
+            cfg.execute_stop = logical(value);
+        case "groundstation"
+            cfg = local_apply_ground_station(cfg, value);
+        case "distroname"
+            cfg.wsl_distro_name = string(value);
+            cfg.ardupilot_cfg.wsl_distro_name = string(value);
+        case "sitlip"
+            cfg.json_udp_ip = string(value);
+        case "allowgroundstationclose"
+            cfg.allow_ground_station_close = logical(value);
+        otherwise
+            if isfield(cfg, char(name))
+                cfg.(char(name)) = value;
+            else
+                error( ...
+                    'uav:setup:onekey_ardupilot_stand:CfgOverrideField', ...
+                    'Неизвестное переопределение конфигурации: %s.', ...
+                    name);
+            end
+    end
+end
 end
 
 function mode = local_normalize_mode(mode)
@@ -554,4 +590,39 @@ end
 
 cleanup_obj = onCleanup(@() fclose(fid)); %#ok<NASGU>
 fprintf(fid, '%s', char(text_value));
+end
+
+function cfg = local_apply_struct_override(cfg, override_cfg)
+%LOCAL_APPLY_STRUCT_OVERRIDE Перенести поля скалярной структуры в конфигурацию.
+
+field_names = fieldnames(override_cfg);
+for idx = 1:numel(field_names)
+    cfg.(field_names{idx}) = override_cfg.(field_names{idx});
+end
+end
+
+function cfg = local_apply_ground_station(cfg, value)
+%LOCAL_APPLY_GROUND_STATION Настроить выбор наземной станции управления.
+
+station_name = lower(string(value));
+
+switch station_name
+    case ["missionplanner"; "mission_planner"]
+        cfg.prefer_ground_station = "MissionPlanner";
+        cfg.launch_mission_planner = true;
+        cfg.launch_qgroundcontrol = false;
+    case ["qgroundcontrol"; "qgc"]
+        cfg.prefer_ground_station = "QGroundControl";
+        cfg.launch_mission_planner = false;
+        cfg.launch_qgroundcontrol = true;
+    case ["both"; "all"]
+        cfg.prefer_ground_station = "MissionPlanner";
+        cfg.launch_mission_planner = true;
+        cfg.launch_qgroundcontrol = true;
+    otherwise
+        error( ...
+            'uav:setup:onekey_ardupilot_stand:GroundStation', ...
+            'Неподдерживаемое значение GroundStation: %s.', ...
+            station_name);
+end
 end

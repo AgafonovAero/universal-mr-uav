@@ -24,7 +24,7 @@ OneKeyArduPilotStand(check)
   - GitHub CLI: �����㦥��, ����: C:\Program Files\GitHub CLI\gh.exe
   - MATLAB: �����㦥��, ����: D:\MATLAB\R2025b\bin\win64\MATLAB.exe
   - WSL command: �����㦥��, ����: C:\Windows\System32\wsl.exe
-  - Mission Planner: �����㦥��, ����� ����饭, ����: C:\Program Files (x86)\Mission Planner\MissionPlanner.exe
+  - Mission Planner: �����㦥��, ����� �� ����饭, ����: C:\Program Files (x86)\Mission Planner\MissionPlanner.exe
   - QGroundControl: �����㦥��, ����� �� ����饭, ����: C:\Program Files\QGroundControl\QGroundControl.exe
   - �।����⥫쭠� ����㯭�� �������� �⠭�� �ࠢ�����: MissionPlanner
   - ������� WSL �����㦥��.

@@ -6,30 +6,25 @@ ArduPilot � WSL: ��
 sim_vehicle.py: ��
 Mission Planner ��⠭�����: ��
 QGroundControl ��⠭�����: ��
-Mission Planner ����饭: ��
+Mission Planner ����饭: ���
 QGroundControl ����饭: ���
 UDP � MATLAB: ��
 ��⮢����� � install: ��
 ��⮢����� � start: ��
 
 �����:
-  ���� 14550: ��
+  ���� 14550: ���
   ���� 9002: ���
   ���� 9003: ���
 
 ��易��� ������:
-  "wsl.exe","20272","Console","1","6�776 ��"
-  "wsl.exe","18136","Console","1","12�060 ��"
-  "wsl.exe","22464","Console","1","6�860 ��"
-  "wsl.exe","21812","Console","1","12�148 ��"
-  "MissionPlanner.exe","14608","Console","1","764�200 ��"
-  "MissionPlanner.exe","6008","Console","1","571�216 ��"
+  �� �����㦥��
 
 ��᫥���� ��ୠ��:
-  log_check -> 19-���-2026 19:14:31
+  log_check -> 19-���-2026 19:17:32
   log_install -> 19-���-2026 16:26:34
   log_start -> 19-���-2026 19:02:53
-  log_status -> 19-���-2026 19:14:31
+  log_status -> 19-���-2026 19:17:32
   log_full -> 19-���-2026 18:29:53
   log_install_mission_planner -> 19-���-2026 16:26:34
   log_install_qgroundcontrol -> 19-���-2026 16:26:34

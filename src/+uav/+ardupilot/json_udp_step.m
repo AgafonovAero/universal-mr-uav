@@ -190,12 +190,20 @@ raw_bytes = uint8([]);
 try
     switch string(transport.method)
         case "udpport"
-            bytes_available = double(transport.handle.NumBytesAvailable);
-            if bytes_available > 0
-                bytes_to_read = min(bytes_available, double(cfg.udp_max_rx_bytes));
-                raw_bytes = read(transport.handle, bytes_to_read, "uint8");
-                raw_bytes = uint8(raw_bytes(:));
+            datagram = [];
+            datagrams_available = double(transport.handle.NumDatagramsAvailable);
+
+            if datagrams_available > 0
+                datagram = read(transport.handle, 1, "uint8");
+            end
+
+            if ~isempty(datagram)
+                raw_bytes = uint8(datagram.Data(:));
+                transport.remote_ip = string(datagram.SenderAddress);
+                transport.remote_port = double(datagram.SenderPort);
                 transport.rx_count = transport.rx_count + 1;
+                diag.used_remote_ip = transport.remote_ip;
+                diag.used_remote_port = transport.remote_port;
             end
         case "udp"
             bytes_available = double(get(transport.handle, 'BytesAvailable'));
@@ -220,26 +228,36 @@ function [transport, diag] = local_send_json_text(transport, json_text, diag, cf
 diag.tx_attempted = true;
 diag.tx_kind = "probe";
 
+target_ip = string(cfg.udp_remote_ip);
+target_port = double(cfg.udp_remote_port);
+
+if strlength(string(transport.remote_ip)) > 0 && double(transport.remote_port) > 0
+    target_ip = string(transport.remote_ip);
+    target_port = double(transport.remote_port);
+end
+
 if diag.rx_valid
     diag.tx_kind = "reply";
+    target_ip = string(transport.remote_ip);
+    target_port = double(transport.remote_port);
 end
 
 warn_state = warning;
 cleanup_obj = onCleanup(@() warning(warn_state));
 warning('off', 'all');
 
-bytes_to_send = reshape(uint8(char(json_text)), 1, []);
+payload_text = char(json_text);
 
 try
     switch string(transport.method)
         case "udpport"
             write( ...
                 transport.handle, ...
-                bytes_to_send, ...
-                "uint8", ...
-                char(cfg.udp_remote_ip), ...
-                double(cfg.udp_remote_port));
+                payload_text, ...
+                char(target_ip), ...
+                target_port);
         case "udp"
+            bytes_to_send = reshape(uint8(payload_text), 1, []);
             fwrite(transport.handle, bytes_to_send, 'uint8');
         otherwise
             error( ...
@@ -250,15 +268,23 @@ try
 
     transport.tx_count = transport.tx_count + 1;
     diag.tx_ok = true;
+    diag.used_remote_ip = target_ip;
+    diag.used_remote_port = target_port;
 
     if diag.rx_valid
-        diag.tx_message = [ ...
-            "Ответная передача строки JSON выполнена после " ...
-            + "принятого двоичного пакета ArduPilot."];
+        diag.tx_message = append( ...
+            "Ответная передача строки JSON выполнена после принятого двоичного пакета ArduPilot на адрес ", ...
+            target_ip, ...
+            ":", ...
+            string(target_port), ...
+            ".");
     else
-        diag.tx_message = [ ...
-            "Исходящая пробная строка JSON была сформирована " ...
-            + "и отправлена без принятого пакета ArduPilot."];
+        diag.tx_message = append( ...
+            "Исходящая пробная строка JSON была сформирована и отправлена без принятого пакета ArduPilot на адрес ", ...
+            target_ip, ...
+            ":", ...
+            string(target_port), ...
+            ".");
     end
 catch tx_error
     diag.tx_ok = false;

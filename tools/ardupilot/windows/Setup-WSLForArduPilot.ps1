@@ -51,7 +51,7 @@ function Get-WslDistroInfo {
     try {
         $output = & wsl.exe -l -v 2>&1
         foreach ($line in $output) {
-            $text = [string]$line
+            $text = ([string]$line).Replace([string][char]0, '')
             if ([string]::IsNullOrWhiteSpace($text)) {
                 continue
             }
@@ -87,6 +87,22 @@ function Get-WslDistroInfo {
     return [pscustomobject]$result
 }
 
+function Test-WslTargetDistro {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$DistroName
+    )
+
+    try {
+        $output = & wsl.exe -d $DistroName -- bash -lc "printf ok" 2>&1
+        $text = (($output | ForEach-Object { ([string]$_).Replace([string][char]0, '') }) -join "")
+        return $text.Contains('ok')
+    }
+    catch {
+        return $false
+    }
+}
+
 $repoRoot = Get-RepoRoot
 if ([string]::IsNullOrWhiteSpace($LogPath)) {
     $logPath = Join-Path $repoRoot "artifacts/logs/task_13_setup_wsl_for_ardupilot.txt"
@@ -106,15 +122,19 @@ function Add-Line {
 $isAdmin = Test-IsAdministrator
 $wslInfo = Get-WslDistroInfo
 $targetDistro = $wslInfo.Distros | Where-Object { $_.Name -eq $DistroName } | Select-Object -First 1
+$targetDistroAvailable = $null -ne $targetDistro
+if (-not $targetDistroAvailable -and $wslInfo.HasWslCommand) {
+    $targetDistroAvailable = Test-WslTargetDistro -DistroName $DistroName
+}
 $commands = New-Object System.Collections.Generic.List[string]
 
 if (-not $wslInfo.HasWslCommand) {
     $commands.Add("wsl --install -d $DistroName")
 }
-elseif ($null -eq $targetDistro) {
+elseif (-not $targetDistroAvailable) {
     $commands.Add("wsl --install -d $DistroName")
 }
-elseif ($targetDistro.Version -ne $PreferWSLVersion) {
+elseif (($null -ne $targetDistro) -and ($targetDistro.Version -ne $PreferWSLVersion)) {
     $commands.Add("wsl --set-version $DistroName $PreferWSLVersion")
 }
 

@@ -28,7 +28,7 @@ function Get-WslInfo {
     try {
         $output = & wsl.exe -l -q 2>&1
         foreach ($line in $output) {
-            $text = [string]$line
+            $text = ([string]$line).Replace([string][char]0, '')
             if (-not [string]::IsNullOrWhiteSpace($text)) {
                 $result.Distros += $text.Trim()
             }
@@ -38,6 +38,22 @@ function Get-WslInfo {
     }
 
     return [pscustomobject]$result
+}
+
+function Test-WslTargetDistro {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$DistroName
+    )
+
+    try {
+        $output = & wsl.exe -d $DistroName -- bash -lc "printf ok" 2>&1
+        $text = (($output | ForEach-Object { ([string]$_).Replace([string][char]0, '') }) -join "")
+        return $text.Contains('ok')
+    }
+    catch {
+        return $false
+    }
 }
 
 function Test-PortBusy {
@@ -84,7 +100,8 @@ $scriptsToCheck = @(
 
 Write-Host 'Проверка готовности стенда ArduPilot SITL'
 Write-Host ("  WSL                                   : {0}" -f $(if ($wslInfo.HasWsl) { 'да' } else { 'нет' }))
-Write-Host ("  Ubuntu                                : {0}" -f $(if ($wslInfo.Distros -contains $DistroName) { 'да' } else { 'нет' }))
+$hasTargetDistro = ($wslInfo.Distros -contains $DistroName) -or (Test-WslTargetDistro -DistroName $DistroName)
+Write-Host ("  Ubuntu                                : {0}" -f $(if ($hasTargetDistro) { 'да' } else { 'нет' }))
 Write-Host ("  ArduPilot path hint                   : {0}" -f $(if ($ardupilotPathHint) { $ardupilotPathHint } else { '<не задан>' }))
 Write-Host ("  Mission Planner                       : {0}" -f $(if ($missionPlannerPath) { $missionPlannerPath } else { '<не найден>' }))
 Write-Host ("  QGroundControl                        : {0}" -f $(if ($qgcPath) { $qgcPath } else { '<не найден>' }))

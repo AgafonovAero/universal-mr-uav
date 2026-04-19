@@ -1,0 +1,6 @@
+Mission Planner installation check
+  mode                         : execute
+  official source              : http://firmware.ardupilot.org/Tools/MissionPlanner/MissionPlanner-latest.msi
+  installed                    : yes
+  path                         : C:\Program Files (x86)\Mission Planner\MissionPlanner.exe
+  installation step is not required.
