@@ -1,0 +1,63 @@
+runtests('tests')
+
+Всего проверок: 56
+Пройдено: 56
+Ошибок: 0
+Незавершенных: 0
+
+test_actuator_cmd_to_motor_radps/testLinearNorm01Mapping | passed=1 | failed=0 | incomplete=0 | duration_s=0.237048
+test_actuator_cmd_to_motor_radps/testInputSaturationHonorsMotorLimits | passed=1 | failed=0 | incomplete=0 | duration_s=0.024769
+test_altitude_filter_step/testAltitudeEstimateConvergesToBaro | passed=1 | failed=0 | incomplete=0 | duration_s=0.085990
+test_altitude_filter_step/testZeroVerticalAccelerationKeepsVzBounded | passed=1 | failed=0 | incomplete=0 | duration_s=0.049163
+test_ardupilot_decode_sitl_output_packet/testDecodePacketWith16Channels | passed=1 | failed=0 | incomplete=0 | duration_s=0.068426
+test_ardupilot_decode_sitl_output_packet/testDecodePacketWith32Channels | passed=1 | failed=0 | incomplete=0 | duration_s=0.005109
+test_ardupilot_decode_sitl_output_packet/testDecodeShortPacketReturnsInvalidWithoutThrow | passed=1 | failed=0 | incomplete=0 | duration_s=0.014097
+test_ardupilot_default_json_config/testDefaultConfigContainsRequiredFields | passed=1 | failed=0 | incomplete=0 | duration_s=0.053756
+test_ardupilot_encode_json_fdm_text/testJsonContainsRequiredFieldsAndNewline | passed=1 | failed=0 | incomplete=0 | duration_s=0.089001
+test_ardupilot_json_udp_availability/testAvailabilityReturnsStructuredResult | passed=1 | failed=0 | incomplete=0 | duration_s=0.052251
+test_ardupilot_loopback_runner/testLoopbackRunnerReturnsPacketsAndBoundedQuatNorms | passed=1 | failed=0 | incomplete=0 | duration_s=0.341758
+test_ardupilot_make_sitl_start_command/testCommandContainsJsonModel | passed=1 | failed=0 | incomplete=0 | duration_s=0.058492
+test_ardupilot_pack_json_fdm_packet/testPacketContainsRequiredTruthAndSensorFields | passed=1 | failed=0 | incomplete=0 | duration_s=0.056698
+test_ardupilot_pwm_to_motor_radps/testLinearMappingAndSaturation | passed=1 | failed=0 | incomplete=0 | duration_s=0.056086
+test_attitude_cf_step/testIdentityZeroGyroPreservesOrientation | passed=1 | failed=0 | incomplete=0 | duration_s=0.053683
+test_attitude_cf_step/testQuaternionNormRemainsNearUnity | passed=1 | failed=0 | incomplete=0 | duration_s=0.019205
+test_attitude_cf_step/testLevelHoverKeepsRollPitchNearZero | passed=1 | failed=0 | incomplete=0 | duration_s=0.025372
+test_attitude_cf_step/testAcceleratedPitchDoesNotCollapseBackToLevel | passed=1 | failed=0 | incomplete=0 | duration_s=0.015507
+test_baro_measure/testBaroAltitudeMatchesNegativeNedZ | passed=1 | failed=0 | incomplete=0 | duration_s=0.049497
+test_baro_measure/testPressureDecreasesWithAltitude | passed=1 | failed=0 | incomplete=0 | duration_s=0.000978
+test_build_mil_top/testBuildMilTopCreatesThinShellModel | passed=1 | failed=0 | incomplete=0 | duration_s=12.784900
+test_build_sil_top/testBuildSilTopCreatesThinBridgeModel | passed=1 | failed=0 | incomplete=0 | duration_s=2.865591
+test_demo_pitch_step_minus10deg/testPitchDemoProducesArtifactsAndTracksCommand | passed=1 | failed=0 | incomplete=0 | duration_s=3.067305
+test_demo_takeoff_to_50m/testTakeoffDemoProducesArtifactsAndBoundedState | passed=1 | failed=0 | incomplete=0 | duration_s=3.004362
+test_estimator_step/testEstimatorStepReturnsRequiredFields | passed=1 | failed=0 | incomplete=0 | duration_s=0.099034
+test_forces_moments_sum/testEqualRotorSpeedsProducePureNegativeZForce | passed=1 | failed=0 | incomplete=0 | duration_s=0.087604
+test_gnss_measure/testGnssReturnsPositionAndRotatedVelocityInNed | passed=1 | failed=0 | incomplete=0 | duration_s=0.090119
+test_hover_balance/testBaselineHoverThrustBalancesWeight | passed=1 | failed=0 | incomplete=0 | duration_s=0.099193
+test_imu_measure/testLevelHoverSpecificForceAndGyro | passed=1 | failed=0 | incomplete=0 | duration_s=0.095080
+test_inspect_ardupilot_sitl_environment/testInspectionReturnsStructuredStatusWithoutThrowing | passed=1 | failed=0 | incomplete=0 | duration_s=0.397408
+test_mag_measure/testIdentityQuaternionKeepsNedField | passed=1 | failed=0 | incomplete=0 | duration_s=0.081681
+test_make_bus_defs/testMakeBusDefsCreatesTopLevelBuses | passed=1 | failed=0 | incomplete=0 | duration_s=0.111154
+test_make_sil_bus_defs/testMakeSilBusDefsCreatesTopLevelBuses | passed=1 | failed=0 | incomplete=0 | duration_s=0.070716
+test_mixer_quad_x/testHoverMixDistributesThrustEqually | passed=1 | failed=0 | incomplete=0 | duration_s=0.073784
+test_mixer_quad_x/testMixerGeometryMatchesPresetParameters | passed=1 | failed=0 | incomplete=0 | duration_s=0.022523
+test_mixer_quad_x/testMixerReproducesRequestedMoments | passed=1 | failed=0 | incomplete=0 | duration_s=0.008048
+test_mixer_quad_x/testPureRollCommandIsSymmetricAcrossFrontAndRear | passed=1 | failed=0 | incomplete=0 | duration_s=0.007335
+test_motor_esc_step/testMotorEscStepConvergesMonotonically | passed=1 | failed=0 | incomplete=0 | duration_s=0.115195
+test_motor_esc_step/testMotorEscStepSaturatesAtMaximum | passed=1 | failed=0 | incomplete=0 | duration_s=0.003119
+test_plant_step/testTrimLikeHoverAccelerationIsNearZeroAfterSpool | passed=1 | failed=0 | incomplete=0 | duration_s=0.084079
+test_plant_step_struct/testPlantStepStructMatchesPackedPlantStep | passed=1 | failed=0 | incomplete=0 | duration_s=0.060114
+test_quat_tools/testQuatNormalizeReturnsUnitNorm | passed=1 | failed=0 | incomplete=0 | duration_s=0.061727
+test_quat_tools/testQuatToDcmProducesProperRotation | passed=1 | failed=0 | incomplete=0 | duration_s=0.027196
+test_run_ardupilot_json_udp_selfcheck/testSelfcheckScriptReturnsStructuredResult | passed=1 | failed=0 | incomplete=0 | duration_s=1.393719
+test_run_case_closed_loop_with_estimator/testClosedLoopRunnerReturnsDiagnosticsAndBoundedQuatNorms | passed=1 | failed=0 | incomplete=0 | duration_s=0.660014
+test_run_case_closed_loop_with_estimator/testDemoControllersUseEstimatorSensorInputsOnly | passed=1 | failed=0 | incomplete=0 | duration_s=0.002859
+test_run_case_hover/testHoverCaseKeepsQuatNormAndNearZeroVerticalAccel | passed=1 | failed=0 | incomplete=0 | duration_s=0.141992
+test_run_case_with_estimator/testHoverCaseReturnsEstimatorHistoryAndBoundedAltitude | passed=1 | failed=0 | incomplete=0 | duration_s=0.133526
+test_run_case_with_sensors/testHoverCaseReturnsSensorHistoryAndBoundedDrift | passed=1 | failed=0 | incomplete=0 | duration_s=0.112873
+test_run_case_yaw_step/testYawStepProducesPositiveYawRate | passed=1 | failed=0 | incomplete=0 | duration_s=0.131140
+test_run_mil_top_hover/testMilHoverRunMatchesCodeCentricKernel | passed=1 | failed=0 | incomplete=0 | duration_s=2.344047
+test_run_sil_stub_hover/testSilHoverRunCompletesAndKeepsQuatNormsNearOne | passed=1 | failed=0 | incomplete=0 | duration_s=1.649973
+test_sensors_step/testAggregatorContainsAllSensorsAndMatchesIndividualCalls | passed=1 | failed=0 | incomplete=0 | duration_s=0.089876
+test_stage15_sil_bridge/testBridgeMatchesCodeCentricReferenceLoop | passed=1 | failed=0 | incomplete=0 | duration_s=0.255831
+test_state_pack_unpack/testPackUnpackRoundTripIsConsistent | passed=1 | failed=0 | incomplete=0 | duration_s=0.089279
+test_state_pack_unpack/testStateValidateRejectsWrongQuaternionSize | passed=1 | failed=0 | incomplete=0 | duration_s=0.130686
