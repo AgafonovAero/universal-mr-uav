@@ -1,20 +1,32 @@
-# TASK-09H: чистка форматирования и текстовых артефактов
+# TASK-09H: исправление форматирования и текстовых артефактов
 
-## Что было очищено
+## Назначение PR
 
-Ветка `task/09h-repo-hygiene` предназначена только для repo-hygiene
-cleanup после функционального merge PR `#9`.
+Ветка `task/09h-repo-hygiene` предназначена только для repo-hygiene cleanup
+после функционального merge PR `#9`.
 
-В рамках TASK-09H были приведены к более читаемому и текстово-чистому
-виду:
+Этот PR не меняет:
+
+- математику модели;
+- коэффициенты;
+- алгоритмы estimator и controller;
+- тестовые критерии;
+- `.slx` thin shell;
+- demo-поведение.
+
+Задача PR - привести текстовые артефакты и ключевые MATLAB-файлы
+к нормальному reviewable виду.
+
+## Что очищено
+
+В рамках TASK-09H были переписаны в более читаемом формате:
 
 - `README.md`;
 - `artifacts/reports/task_09_summary_ru.md`;
-- `src/+uav/+est/attitude_cf_step.m`;
-- `src/+uav/+sim/run_case_closed_loop_with_estimator.m`;
-- `src/+uav/+ctrl/demo_pitch_hold_controller.m`.
+- `artifacts/reports/task_09h_summary_ru.md`;
+- `src/+uav/+est/attitude_cf_step.m`.
 
-Также были созданы отдельные raw logs для cleanup-задачи:
+Также были пересохранены cleanup-логи:
 
 - `artifacts/logs/task_09h_bootstrap.txt`;
 - `artifacts/logs/task_09h_runtests.txt`;
@@ -23,19 +35,29 @@ cleanup после функционального merge PR `#9`.
 - `artifacts/logs/task_09h_plot_demo_takeoff_to_50m.txt`;
 - `artifacts/logs/task_09h_plot_demo_pitch_step_minus10deg.txt`.
 
+Во всех перечисленных текстовых файлах удалены:
+
+- hidden и bidirectional Unicode символы категории `Cf`;
+- `NUL`;
+- `ESC` и ANSI escape sequences;
+- control characters кроме `LF` и `TAB`;
+- `BOM` внутри файла.
+
 ## Что не менялось
 
-TASK-09H не меняет:
+TASK-09H не меняет функциональность TASK-09.
 
-- математику модели;
-- численные коэффициенты;
-- алгоритмы estimator/controller;
-- test pass/fail criteria;
-- `.slx` thin-shell модели как source of truth;
-- физику demo и flight behavior.
+В частности, cleanup не меняет:
 
-Это чистая задача на readability, markdown hygiene и очистку текстовых
-артефактов от hidden/control Unicode.
+- quaternion-based math path;
+- specific-force gating logic;
+- estimator diagnostics;
+- controller thresholds;
+- verification thresholds;
+- форму и смысл demo-сценариев.
+
+Это именно hygiene-задача на readability,
+markdown formatting и текстовую чистоту raw logs.
 
 ## Какие проверки запускались
 
@@ -48,8 +70,8 @@ TASK-09H не меняет:
 5. `scripts/plot_demo_takeoff_to_50m.m`
 6. `scripts/plot_demo_pitch_step_minus10deg.m`
 
-Plot scripts запускались, потому что они выполняются быстро и без
-дополнительных ручных действий.
+После прогонов cleanup-логи были пересохранены как UTF-8 text без BOM
+и с нейтральными путями вместо абсолютных `D:\\WORK\\...`.
 
 ## Результаты тестов
 
@@ -59,8 +81,9 @@ Plot scripts запускались, потому что они выполняю
 - `failed = 0`
 - `incomplete = 0`
 
-Дополнительно repo-wide проверка текстовых файлов подтвердила отсутствие
-hidden/bidi/control Unicode в `.m`, `.md`, `.txt` и `.csv`.
+Дополнительно repo-wide проверка текстовых файлов подтвердила,
+что в `.m`, `.md`, `.txt` и `.csv`
+не осталось hidden, bidi и control Unicode.
 
 ## Результаты demo
 
@@ -76,24 +99,32 @@ hidden/bidi/control Unicode в `.m`, `.md`, `.txt` и `.csv`.
 - `final estimated pitch = -10.003234 deg`
 - `final pitch estimation error = -2.118220 deg`
 
-Итоговая динамика после TASK-09H осталась той же, что и после TASK-09,
-поскольку cleanup не меняет math path и контрольные thresholds.
+Итоговая динамика после TASK-09H осталась той же,
+что и после TASK-09,
+потому что cleanup не меняет math path
+и не трогает контрольные thresholds.
 
 ## Ключевые файлы cleanup
 
-Ключевыми файлами этой hygiene-задачи были:
+Ключевыми файлами этой hygiene-задачи являются:
 
 - `README.md` как основной входной документ репозитория;
-- `artifacts/reports/task_09_summary_ru.md` как summary предыдущей
-  функциональной задачи;
-- `src/+uav/+est/attitude_cf_step.m` как основной ревьюабельный MATLAB
-  файл estimator layer;
-- `src/+uav/+sim/run_case_closed_loop_with_estimator.m` как прозрачный
-  closed-loop runner;
-- `src/+uav/+ctrl/demo_pitch_hold_controller.m` как demo-level controller.
+- `artifacts/reports/task_09_summary_ru.md`
+  как summary предыдущей функциональной задачи;
+- `artifacts/reports/task_09h_summary_ru.md`
+  как summary текущего cleanup PR;
+- `src/+uav/+est/attitude_cf_step.m`
+  как главный reviewable MATLAB-файл estimator layer;
+- `artifacts/logs/task_09h_*.txt`
+  как фактическая запись локальных проверок cleanup-ветки.
 
 ## Вывод
 
-PR для TASK-09H не меняет функциональность, а делает код и текстовые
-артефакты более удобными для code review, поддержки и дальнейшей работы
-над внешними flight stack integration tasks.
+PR для TASK-09H не меняет инженерную суть TASK-09.
+Он делает код и текстовые артефакты
+более удобными для code review,
+поддержки и дальнейшей интеграционной работы.
+
+Именно в таком виде функциональный результат TASK-09
+становится чище как репозиторный артефакт,
+не изменяя математику и поведение demo-сценариев.

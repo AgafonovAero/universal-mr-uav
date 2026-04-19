@@ -6,8 +6,8 @@ Next MATLAB commands:
   run('scripts/run_case_yaw_step.m');
   results = runtests('tests');
   table(results)
-Saved PNG: D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\figures\demo_pitch_angle.png
-Saved PNG: D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\figures\demo_pitch_true_vs_estimated.png
-Saved PNG: D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\figures\demo_pitch_estimation_error.png
-Saved PNG: D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\figures\demo_pitch_altitude.png
-Saved PNG: D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\figures\demo_pitch_motor_cmd.png
+Saved PNG: <repo>\artifacts\figures\demo_pitch_angle.png
+Saved PNG: <repo>\artifacts\figures\demo_pitch_true_vs_estimated.png
+Saved PNG: <repo>\artifacts\figures\demo_pitch_estimation_error.png
+Saved PNG: <repo>\artifacts\figures\demo_pitch_altitude.png
+Saved PNG: <repo>\artifacts\figures\demo_pitch_motor_cmd.png

@@ -12,5 +12,5 @@ Demo takeoff to 50 m diagnostics:
   final estimated altitude [m]: 49.991800
   final accel weight [-]      : 1.000000
   final quat norms [-]        : true=1.000000000000 est=1.000000000000
-  saved MAT                   : D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\reports\demo_takeoff_to_50m.mat
-  saved CSV                   : D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\reports\demo_takeoff_to_50m.csv
+  saved MAT                   : <repo>\artifacts\reports\demo_takeoff_to_50m.mat
+  saved CSV                   : <repo>\artifacts\reports\demo_takeoff_to_50m.csv

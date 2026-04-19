@@ -15,5 +15,5 @@ Demo pitch step -10 deg diagnostics:
   max consistency metric [m/s^2]: 1.855700
   final altitude [m]            : 19.844794
   quat norms [-]                : true=1.000000000000 est=1.000000000000
-  saved MAT                     : D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\reports\demo_pitch_step_minus10deg.mat
-  saved CSV                     : D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\reports\demo_pitch_step_minus10deg.csv
+  saved MAT                     : <repo>\artifacts\reports\demo_pitch_step_minus10deg.mat
+  saved CSV                     : <repo>\artifacts\reports\demo_pitch_step_minus10deg.csv

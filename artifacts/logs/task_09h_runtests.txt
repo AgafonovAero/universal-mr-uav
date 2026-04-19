@@ -27,13 +27,13 @@ Done test_baro_measure
 __________
 
 Running test_build_mil_top
-Built thin MIL model: D:\WORK\AI_SOLUTION\universal-mr-uav\models\mil_top.slx
+Built thin MIL model: <repo>\models\mil_top.slx
 .
 Done test_build_mil_top
 __________
 
 Running test_build_sil_top
-Built thin SIL-prep model: D:\WORK\AI_SOLUTION\universal-mr-uav\models\sil_top.slx
+Built thin SIL-prep model: <repo>\models\sil_top.slx
 .
 Done test_build_sil_top
 __________
@@ -48,8 +48,8 @@ Demo pitch step -10 deg diagnostics:
   max consistency metric [m/s^2]: 1.855700
   final altitude [m]            : 19.844794
   quat norms [-]                : true=1.000000000000 est=1.000000000000
-  saved MAT                     : D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\reports\demo_pitch_step_minus10deg.mat
-  saved CSV                     : D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\reports\demo_pitch_step_minus10deg.csv
+  saved MAT                     : <repo>\artifacts\reports\demo_pitch_step_minus10deg.mat
+  saved CSV                     : <repo>\artifacts\reports\demo_pitch_step_minus10deg.csv
 .
 Done test_demo_pitch_step_minus10deg
 __________
@@ -61,8 +61,8 @@ Demo takeoff to 50 m diagnostics:
   final estimated altitude [m]: 49.991800
   final accel weight [-]      : 1.000000
   final quat norms [-]        : true=1.000000000000 est=1.000000000000
-  saved MAT                   : D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\reports\demo_takeoff_to_50m.mat
-  saved CSV                   : D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\reports\demo_takeoff_to_50m.csv
+  saved MAT                   : <repo>\artifacts\reports\demo_takeoff_to_50m.mat
+  saved CSV                   : <repo>\artifacts\reports\demo_takeoff_to_50m.csv
 .
 Done test_demo_takeoff_to_50m
 __________
@@ -158,7 +158,7 @@ Done test_run_case_yaw_step
 __________
 
 Running test_run_mil_top_hover
-Built thin MIL model: D:\WORK\AI_SOLUTION\universal-mr-uav\models\mil_top.slx
+Built thin MIL model: <repo>\models\mil_top.slx
 Thin MIL hover diagnostics:
   final position NED [m]      : [0.000000 0.000000 1.186404]
   final altitude [m]          : -1.186404
@@ -171,7 +171,7 @@ Done test_run_mil_top_hover
 __________
 
 Running test_run_sil_stub_hover
-Built thin SIL-prep model: D:\WORK\AI_SOLUTION\universal-mr-uav\models\sil_top.slx
+Built thin SIL-prep model: <repo>\models\sil_top.slx
 Thin SIL-prep hover diagnostics:
   final true position NED [m]      : [0.000000 0.000000 0.791605]
   final true altitude [m]          : -0.791605
@@ -212,5 +212,5 @@ ans =
 
 Totals:
    44 Passed, 0 Failed, 0 Incomplete.
-   26.3405 seconds testing time.
+   31.3361 seconds testing time.
 

@@ -1,59 +1,71 @@
 # Universal MR UAV
 
-`universal-mr-uav` — это kernel-first и code-centric репозиторий для
+`universal-mr-uav` - это kernel-first и code-centric репозиторий для
 универсальной многороторной математической модели движения в
 MATLAB/Simulink.
 
-На текущем этапе source of truth остается текстовым:
-
-- `.m`-код с физикой объекта управления, sensor layer и estimator layer;
-- markdown-документация;
-- raw logs локальных MATLAB/Simulink-прогонов;
-- CSV/MAT/PNG артефакты воспроизводимых demo и verification-сценариев.
-
-Simulink в проекте разрешен только как thin orchestration shell поверх
-существующего `.m`-ядра. Ни `models/mil_top.slx`, ни `models/sil_top.slx`
-не являются источником истины и поддерживаются только через
-script-generated `.m`-workflow.
+Главный архитектурный принцип проекта простой:
+source of truth должен оставаться в текстовом `.m`-коде и markdown-файлах,
+а Simulink допускается только как тонкая orchestration-оболочка.
 
 ## Текущая стадия
 
 Репозиторий находится на стадии `Stage-1.5+`.
 
-На этой стадии уже готовы:
+На этой стадии уже существуют:
 
-- code-centric ядро объекта управления;
+- code-centric ядро математической модели движения;
 - sensor layer в `.m`-коде;
 - estimator layer в `.m`-коде;
 - минимальный thin MIL shell;
 - SIL-prep interface layer для следующего шага по внешним flight stack;
-- estimator-driven closed-loop demo сценарии для takeoff и pitch-step.
+- estimator-driven closed-loop demo-сценарии для takeoff и pitch-step.
 
-## Roadmap по внешним flight stack
+## Что является source of truth
 
-Приоритет следующей интеграции задан явно:
+На текущем этапе источником истины считаются:
+
+- `.m`-функции с физикой объекта управления;
+- `.m`-реализация sensor layer;
+- `.m`-реализация estimator layer;
+- markdown-документация;
+- raw logs локальных прогонов;
+- воспроизводимые CSV, MAT и PNG артефакты.
+
+`models/mil_top.slx` и `models/sil_top.slx` не являются source of truth.
+Они поддерживаются только как thin shell поверх существующего
+code-centric ядра и не должны становиться местом ручного переноса физики.
+
+## Приоритет roadmap
+
+Следующие внешние интеграционные шаги зафиксированы так:
 
 1. `ArduPilot SIL`
 2. `PX4 SIL`
 3. `PX4 HIL`
 
-Важно: текущий этап не делает реальный runtime bridge по `MAVLink` или
-`UDP` и не запускает настоящие ArduPilot/PX4 runtimes. Здесь фиксируется
-архитектурная граница, интерфейсный слой и воспроизводимая база для
-следующего engineering step.
+Это означает, что текущая стадия не пытается поднять реальный runtime bridge
+через `MAVLink`, `UDP` или полноценный внешний автопилот.
+Сейчас фиксируются границы интерфейса, архитектура и воспроизводимая база
+для следующих инженерных шагов.
 
 ## Что уже есть в репозитории
 
 ### Code-centric ядро
 
-- математическая модель движения `6DOF` на кватернионах;
-- простая модель ВМГ `T = kT * omega^2`, `Q = kQ * omega^2`;
-- quad-X геометрия и code-centric суммирование сил и моментов;
-- отдельные пакеты для `core`, `vmg`, `env`, `sim`.
+В ядре уже реализованы:
+
+- математическая модель движения `6DOF`;
+- quaternion-based представление ориентации;
+- простая модель ВМГ
+  `T = kT * omega^2`, `Q = kQ * omega^2`;
+- quad-X геометрия;
+- code-centric суммирование сил и моментов;
+- пакетная структура `core`, `vmg`, `env`, `sim`.
 
 ### Sensor layer
 
-В code-centric sensor layer уже реализованы:
+В sensor layer уже присутствуют модели:
 
 - `IMU`;
 - `barometer`;
@@ -62,14 +74,14 @@ script-generated `.m`-workflow.
 
 ### Estimator layer
 
-В estimator layer уже есть:
+В estimator layer уже присутствуют:
 
 - complementary filter ориентации;
 - gating accelerometer correction по consistency specific force;
 - complementary filter высоты;
-- явная diagnostic-информация для postprocessing и verification.
+- явные диагностические поля для verification и postprocessing.
 
-### Demo-level controllers и runner
+### Demo-level controllers и closed-loop runner
 
 Для estimator-driven verification-сценариев добавлены:
 
@@ -77,16 +89,16 @@ script-generated `.m`-workflow.
 - `uav.ctrl.demo_pitch_hold_controller`;
 - `uav.sim.run_case_closed_loop_with_estimator`.
 
-### Thin Simulink shells
+### Thin Simulink shell
 
-В репозитории поддерживаются два thin shell уровня orchestration:
+В репозитории поддерживаются два orchestration-уровня:
 
-- thin MIL shell через `uav.sl.Stage15MILSystem` и script-generated
-  `models/mil_top.slx`;
+- thin MIL shell через `uav.sl.Stage15MILSystem` и
+  script-generated `models/mil_top.slx`;
 - thin SIL-prep shell через `uav.sil.*`,
   `uav.sl.Stage15SILBridgeSystem`,
-  `uav.sl.StubExternalFCSSystem` и script-generated
-  `models/sil_top.slx`.
+  `uav.sl.StubExternalFCSSystem` и
+  script-generated `models/sil_top.slx`.
 
 ### Verification и артефакты
 
@@ -94,38 +106,40 @@ script-generated `.m`-workflow.
 
 - unit tests и integration tests;
 - demo scripts для estimator-driven полета;
-- raw logs локальных прогонов;
-- PNG/MAT/CSV артефакты в `artifacts/`.
+- raw logs локальных MATLAB-прогонов;
+- PNG, MAT и CSV артефакты в `artifacts/`.
 
-## Архитектурный принцип
+## Архитектурные правила
 
 Репозиторий остается `kernel-first` и `text-first`.
 
-Это означает следующее:
+Практически это означает следующее:
 
-- физика объекта управления остается в `src/+uav/+core`,
+- физика объекта управления живет в `src/+uav/+core`,
   `src/+uav/+vmg` и `src/+uav/+sim`;
 - sensor layer остается в `src/+uav/+sensors`;
 - estimator layer остается в `src/+uav/+est`;
-- пакет `src/+uav/+sil` фиксирует канонический внешний интерфейс для
-  будущих adapters;
-- пакет `src/+uav/+sl` содержит только thin orchestration wrappers и bus
-  definitions;
-- `.slx` не должен содержать ручной block-diagram реализации physics,
-  sensor layer или estimator layer.
+- пакет `src/+uav/+sil` фиксирует канонический внешний интерфейс;
+- пакет `src/+uav/+sl` содержит только thin wrappers и bus definitions;
+- `.slx` не должны становиться местом ручной block-diagram реализации
+  physics, sensor layer или estimator layer.
 
 ## Канонические соглашения
 
 В проекте используются следующие базовые соглашения:
 
 - земная система координат в ядре: `NED`;
-- связанная система координат: `X` вперед, `Y` вправо, `Z` вниз;
+- связанная система координат:
+  `X` вперед,
+  `Y` вправо,
+  `Z` вниз;
 - внутренняя ориентация: quaternion `q_nb`;
-- углы Эйлера допустимы только для display, debug и selected interfaces;
+- Euler angles допускаются только для display, debug и отдельных
+  интерфейсов;
 - единицы измерения: только `SI`;
 - углы в коде: только `rad`.
 
-## Быстрый старт и базовая локальная проверка
+## Быстрый локальный старт
 
 Из корня репозитория в MATLAB:
 
@@ -150,6 +164,7 @@ table(results)
 - `runtests('tests')`
 - task-specific demo scripts
 - сохранение raw logs в `artifacts/logs/`
+- обновление task summary-файла в `artifacts/reports/`
 
 ## Как посмотреть estimator-driven flight demos
 
@@ -165,7 +180,7 @@ run('scripts/run_demo_pitch_step_minus10deg.m');
 run('scripts/plot_demo_pitch_step_minus10deg.m');
 ```
 
-После этого появятся воспроизводимые flight-demo артефакты.
+После этого появляются воспроизводимые flight-demo артефакты.
 
 PNG-графики сохраняются в `artifacts/figures/`:
 
@@ -191,39 +206,37 @@ PNG-графики сохраняются в `artifacts/figures/`:
 
 `объект управления -> sensor layer -> estimator layer -> demo controller -> ВМГ`
 
-Plot scripts не переносят физику в `.slx`: они только читают сохраненные
-MAT-артефакты и строят PNG.
+Plot scripts не переносят физику в `.slx`.
+Они только читают уже сохраненные MAT-артефакты и строят PNG-графики.
 
-Важно: demo controllers в TASK-09 больше не используют true-state
-feedback. Они получают только estimator outputs, reference signals и
-измеренные body rates IMU, что делает demos ближе к следующему шагу по
-внешней системе автоматического управления.
+Важно:
+demo controllers в TASK-09 больше не используют true-state feedback.
+Они получают только estimator outputs, reference signals и измеренные
+body rates IMU.
 
 ## Локальные артефакты и raw logs
 
-Для каждого завершенного engineering step в репозитории должны
-оставаться:
+Для каждого завершенного engineering step в репозитории должны оставаться:
 
 - raw logs локальных прогонов в `artifacts/logs/`;
 - markdown summary-файлы с ограничениями и допущениями;
-- воспроизводимые PNG/CSV/MAT артефакты demo и verification-сценариев.
+- воспроизводимые PNG, CSV и MAT артефакты demo и verification-сценариев.
 
-Это нужно для того, чтобы утверждения о локальных прогонах и верификации
-опирались не на пересказ, а на текстовые и численные артефакты внутри
-репозитория.
+Это нужно для того, чтобы утверждения о локальной проверке опирались
+не на пересказ, а на текстовые и численные артефакты внутри репозитория.
 
-## Что именно добавили TASK-08 и TASK-09
+## Что сделали TASK-08 и TASK-09
 
 ### TASK-08
 
-TASK-08 не интегрирует реальный flight stack. Он делает только
-подготовительный SIL interface layer:
+TASK-08 не интегрирует реальный flight stack.
+Он делает только подготовительный SIL interface layer:
 
 - канонический внешний actuator packet;
 - канонический внешний sensor packet;
 - прозрачный multi-rate scheduler для packet boundary;
 - bridge between external actuator command and code-centric
-  plant/sensors/estimator;
+  plant, sensors и estimator;
 - временный `StubExternalFCSSystem` для smoke tests;
 - отдельный `sil_top.slx`, не ломающий `mil_top.slx`.
 
@@ -233,10 +246,10 @@ TASK-09 делает следующий шаг к честной closed-loop ver
 
 - улучшает attitude estimator в ускоренном наклоненном полете;
 - переводит demo-сценарии на estimator-driven closed loop;
-- добавляет diagnostic-поля для оценки consistency/gating;
+- добавляет диагностические поля для consistency и gating;
 - сохраняет physics и estimator logic в `.m`-коде, а не в `.slx`.
 
-## Что важно не ломать в следующих задачах
+## Что важно не ломать дальше
 
 При дальнейшем движении к внешним flight stack важно сохранять уже
 зафиксированные ограничения:
@@ -244,7 +257,7 @@ TASK-09 делает следующий шаг к честной closed-loop ver
 - не переносить физику объекта управления в `.slx`;
 - не переносить sensor layer и estimator layer в ручные block diagrams;
 - не использовать `.slx` как source of truth;
-- не подменять estimator-driven контуры true-state feedback'ом в demo и
+- не подменять estimator-driven контуры true-state feedback в demo и
   verification-сценариях.
 
 Именно эти ограничения позволяют держать репозиторий reviewable,
@@ -271,9 +284,9 @@ artifacts/figures/
 artifacts/reports/
 ```
 
-## Документы
+## Ключевые документы
 
-Ключевые документы по архитектуре и API:
+Основные документы по архитектуре и API:
 
 - `docs/00_scope_ru.md`
 - `docs/10_frames_and_conventions_ru.md`
