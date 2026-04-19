@@ -70,6 +70,7 @@ rate_cmd_radps = local_clip(rate_cmd_radps, ...
 motor_cmd_radps = local_clip(motor_cmd_radps, ...
     params.motor.omega_min_radps, params.motor.omega_max_radps);
 
+% Pack compact diagnostics for demos, logs, and tests.
 diag = struct();
 diag.total_thrust_N = total_thrust_N;
 diag.up_accel_cmd_mps2 = up_accel_cmd_mps2;

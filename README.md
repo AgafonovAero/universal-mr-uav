@@ -144,6 +144,13 @@ results = runtests('tests');
 table(results)
 ```
 
+Минимальный обязательный набор локальной проверки для инженерной задачи:
+
+- `scripts/bootstrap_project.m`
+- `runtests('tests')`
+- task-specific demo scripts
+- сохранение raw logs в `artifacts/logs/`
+
 ## Как посмотреть estimator-driven flight demos
 
 Из корня репозитория в MATLAB:
@@ -239,6 +246,9 @@ TASK-09 делает следующий шаг к честной closed-loop ver
 - не использовать `.slx` как source of truth;
 - не подменять estimator-driven контуры true-state feedback'ом в demo и
   verification-сценариях.
+
+Именно эти ограничения позволяют держать репозиторий reviewable,
+воспроизводимым и пригодным для дальнейшей внешней интеграции.
 
 ## Структура репозитория
 

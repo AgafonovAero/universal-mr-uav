@@ -52,9 +52,11 @@ if acc_valid
         q_pred, accel_b_mps2, gravity_ned_mps2);
     accel_correction_weight = local_specific_force_weight( ...
         accel_consistency_metric, params);
+
     acc_alpha = local_complementary_alpha( ...
         params.estimator.attitude.k_acc, dt_s);
     acc_alpha = acc_alpha .* accel_correction_weight;
+
     acc_error_rad = [ ...
         local_wrap_angle_pi(roll_meas_rad - euler_pred(1)); ...
         local_wrap_angle_pi(pitch_meas_rad - euler_pred(2)); ...
@@ -175,7 +177,8 @@ if ~isfield(data, field_name)
 end
 
 value = data.(field_name);
-validateattributes(value, {'numeric'}, {'real', 'finite', 'numel', expected_len}, ...
+validateattributes( ...
+    value, {'numeric'}, {'real', 'finite', 'numel', expected_len}, ...
     mfilename, ['est_prev.' field_name]);
 value = value(:);
 end
@@ -210,6 +213,7 @@ elseif metric_mps2 >= zero_weight_mps2
 else
     blend = (zero_weight_mps2 - metric_mps2) / ...
         max(zero_weight_mps2 - full_weight_mps2, eps);
+
     weight = blend * blend * (3.0 - 2.0 * blend);
 end
 end
