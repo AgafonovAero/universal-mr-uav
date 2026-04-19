@@ -1,15 +1,23 @@
 function tests = test_inspect_ardupilot_sitl_environment
-%TEST_INSPECT_ARDUPILOT_SITL_ENVIRONMENT Tests for environment inspection.
+%TEST_INSPECT_ARDUPILOT_SITL_ENVIRONMENT Проверки локальной среды.
+% Description:
+%   Подтверждает, что функция проверки локальной среды возвращает
+%   структурированный результат и не завершается аварийно при отсутствии
+%   реального `ArduPilot`.
 
 tests = functiontests(localfunctions);
 end
 
 function setupOnce(~)
+%SETUPONCE Подключить каталог исходного кода.
+
 repoRoot = fileparts(fileparts(mfilename('fullpath')));
 addpath(fullfile(repoRoot, 'src'));
 end
 
 function testInspectionReturnsStructuredStatusWithoutThrowing(testCase)
+%TESTINSPECTIONRETURNSSTRUCTUREDSTATUSWITHOUTTHROWING Проверить результат.
+
 cfg = uav.ardupilot.default_json_config();
 info = uav.ardupilot.inspect_sitl_environment(cfg);
 
@@ -20,6 +28,7 @@ verifyTrue(testCase, isfield(info, 'has_python'));
 verifyTrue(testCase, isfield(info, 'has_sim_vehicle'));
 verifyTrue(testCase, isfield(info, 'ardupilot_root'));
 verifyTrue(testCase, isfield(info, 'messages'));
+
 verifyTrue(testCase, islogical(info.is_ready));
 verifyTrue(testCase, islogical(info.has_python));
 verifyTrue(testCase, islogical(info.has_sim_vehicle));
