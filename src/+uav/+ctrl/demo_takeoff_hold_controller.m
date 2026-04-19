@@ -25,6 +25,7 @@ function [motor_cmd_radps, ctrl_state, diag] = demo_takeoff_hold_controller( ...
 %   ctrl_input.reference contains altitude and vertical-speed references.
 
 ctrl_input = local_force_level_reference(ctrl_input);
+
 [motor_cmd_radps, ctrl_state, diag] = ...
     uav.ctrl.demo_pitch_hold_controller( ...
         ctrl_input, ctrl_state, dt_s, params, cfg);
@@ -47,4 +48,5 @@ end
 ctrl_input.reference.roll_ref_rad = 0.0;
 ctrl_input.reference.pitch_ref_rad = 0.0;
 ctrl_input.reference.yaw_ref_rad = 0.0;
+
 end

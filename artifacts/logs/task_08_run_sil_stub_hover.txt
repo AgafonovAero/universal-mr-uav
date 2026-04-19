@@ -1,4 +1,4 @@
-﻿Project paths added from repository root.
+Project paths added from repository root.
 
 Next MATLAB commands:
   params = uav.sim.default_params_quad_x250();

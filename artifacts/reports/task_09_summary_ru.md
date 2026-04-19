@@ -1,34 +1,34 @@
 # TASK-09: estimator-driven flight demos и улучшение оценки ориентации
 
-## Что было сделано
+## Что сделано
 
-- Обновлен `uav.est.attitude_cf_step`: добавлен прозрачный
-  `specific-force consistency gating` для accelerometer correction.
-- В diagnostics добавлены поля `accel_correction_weight` и
-  `accel_consistency_metric`.
+- Обновлен `uav.est.attitude_cf_step`.
+- Добавлен прозрачный `specific-force consistency gating` для
+  accelerometer correction.
+- В estimator diagnostics добавлены поля
+  `accel_correction_weight` и `accel_consistency_metric`.
 - Сохранен простой code-centric complementary-filter подход без black-box
   EKF.
-- Добавлен новый estimator-driven closed-loop runner:
+- Добавлен новый estimator-driven closed-loop runner
   `uav.sim.run_case_closed_loop_with_estimator`.
-- Добавлены demo-level controller functions:
+- Добавлены demo-level controller functions
   `uav.ctrl.demo_takeoff_hold_controller` и
   `uav.ctrl.demo_pitch_hold_controller`.
-- Flight demos переведены на честное замыкание:
+- Demo-сценарии переведены на честное замыкание по цепочке
   `объект управления -> sensor layer -> estimator layer -> demo controller -> ВМГ`.
 - Postprocessing и CSV export расширены полями
-  `accel_correction_weight`, `accel_consistency_metric`,
-  `pitch_estimation_error_deg` и `true_vs_est_pitch_deg`.
-- Plotting scripts расширены дополнительными PNG:
-  `artifacts/figures/demo_takeoff_altitude_error.png`,
-  `artifacts/figures/demo_pitch_true_vs_estimated.png`,
-  `artifacts/figures/demo_pitch_estimation_error.png`.
-- Добавлены и обновлены unit/integration tests, включая отдельный test на
-  установившийся ускоренный наклоненный полет.
+  `accel_correction_weight`,
+  `accel_consistency_metric`,
+  `pitch_estimation_error_deg`,
+  `true_vs_est_pitch_deg`.
+- Plotting scripts расширены дополнительными PNG для altitude error,
+  true-vs-estimated pitch и pitch estimation error.
+- Добавлены и обновлены unit/integration tests.
 - Обновлены `README.md` и `docs/40_estimator_api_ru.md`.
 
-## Что реально запускалось локально
+## Что запускалось
 
-Обязательные локальные прогоны выполнены и сохранены как UTF-8 raw logs:
+Локально выполнены обязательные прогоны:
 
 1. `scripts/bootstrap_project.m`
 2. `runtests('tests')`
@@ -37,7 +37,7 @@
 5. `scripts/plot_demo_takeoff_to_50m.m`
 6. `scripts/plot_demo_pitch_step_minus10deg.m`
 
-Файлы raw logs:
+Raw logs сохранены в текстовом виде:
 
 - `artifacts/logs/task_09_bootstrap.txt`
 - `artifacts/logs/task_09_runtests.txt`
@@ -46,56 +46,92 @@
 - `artifacts/logs/task_09_plot_demo_takeoff_to_50m.txt`
 - `artifacts/logs/task_09_plot_demo_pitch_step_minus10deg.txt`
 
-По `task_09_runtests.txt`:
+## Результаты тестов
 
-- `44` tests passed.
-- `failed = 0`.
-- `incomplete = 0`.
+По итогам `runtests('tests')`:
 
-## Что стало лучше относительно TASK-08b
+- `44 tests passed`
+- `failed = 0`
+- `incomplete = 0`
 
-Главное улучшение относится к сценарию `pitch = -10 deg`.
+Smoke и integration tests подтвердили:
 
-- В TASK-08b итоговый true pitch был около `-10 deg`, а estimated pitch
-  оставался около `0 deg`, то есть steady accelerated flight разрушал
-  оценку ориентации.
-- В TASK-09 accelerometer correction автоматически downweight'ится, когда
-  measured `specific force` перестает быть согласованным с gravity-only
-  гипотезой.
-- По фактическому локальному прогону pitch-demo получены значения:
-  `final true pitch = -12.121453 deg`,
-  `final estimated pitch = -10.003234 deg`,
-  `final pitch estimation error = -2.118220 deg`,
-  `min accel correction weight after step = 0.000000`,
-  `max consistency metric after step = 1.855700 m/s^2`.
-- Для takeoff-demo получены значения:
-  `final altitude = 49.992157 m`,
-  `final estimated altitude = 49.991800 m`,
-  `peak altitude error = 3.988082 m`.
-- Нормы true/estimated quaternion оставались близкими к `1.0` в пределах
-  численной точности.
+- estimator-driven closed-loop runner возвращает осмысленный log;
+- нормы true/estimated quaternion остаются близкими к единице;
+- takeoff-demo выходит к целевой высоте;
+- pitch-demo удерживает оценку pitch без возврата к нулю;
+- demo controllers не используют true-state feedback.
 
-Итог: demos действительно замыкаются на estimator outputs, а не на true
-state, и estimator больше не валит `pitch` к нулю в установившемся
-ускоренном наклоненном полете.
+## Результаты demo
 
-## Ограничения текущего estimator layer
+### Takeoff demo
+
+По локальному прогону `run_demo_takeoff_to_50m.m` получено:
+
+- `final altitude = 49.992157 m`
+- `final estimated altitude = 49.991800 m`
+- `peak altitude error = 3.988082 m`
+
+Дополнительно:
+
+- `final accel correction weight = 1.000000`
+- true/estimated quaternion norms остались близкими к `1.0`
+
+### Pitch-step demo
+
+По локальному прогону `run_demo_pitch_step_minus10deg.m` получено:
+
+- `final true pitch = -12.121453 deg`
+- `final estimated pitch = -10.003234 deg`
+- `final pitch estimation error = -2.118220 deg`
+
+Дополнительно:
+
+- `min accel correction weight after step = 0.000000`
+- `max consistency metric after step = 1.855700 m/s^2`
+- `final altitude = 19.844794 m`
+- true/estimated quaternion norms остались близкими к `1.0`
+
+## Что улучшено относительно TASK-08b
+
+Главное улучшение относится к установившемуся ускоренному наклоненному
+полету.
+
+В TASK-08b итоговый true pitch в сценарии `pitch = -10 deg` выходил к
+команде, но estimated pitch оставался около `0 deg`. Это означало, что
+steady specific force ломал attitude estimator и тянул оценку обратно к
+горизонту.
+
+В TASK-09 это поведение исправлено:
+
+- accelerometer correction автоматически downweight'ится, когда measured
+  `specific force` перестает быть согласованным с gravity-only гипотезой;
+- demo-контур теперь использует estimator outputs, а не true state;
+- demos перестали скрывать ошибки estimator layer за счет читерского
+  true-state feedback;
+- diagnostic-поля позволяют явно увидеть, когда accelerometer correction
+  trustworthy, а когда ее нужно ослаблять.
+
+Итог: estimator-driven demo-контур стал ближе к реальному flight stack
+boundary и больше не сваливает pitch к нулю в указанном режиме.
+
+## Ограничения
 
 - Это все еще не navigation EKF и не оцениватель траекторного движения.
 - Нет оценивания bias IMU и нет адаптации параметров.
 - Нет объединенного оценивания по `GNSS + IMU + baro + mag`.
 - При длительном ускоренном движении без внешнего aiding остаются
   фундаментальные ограничения наблюдаемости.
-- Demo controllers предназначены только для верификации и подготовки
+- Demo controllers предназначены только для verification и подготовки
   следующего шага, а не как production система автоматического управления.
 
-## Почему после TASK-09 можно идти дальше к внешним flight stacks
+## Следующий шаг
 
-- Интерфейс `sensor/estimator/controller` стал честнее и ближе к тому, как
-  внешний flight stack реально видит объект управления.
-- Demos больше не маскируют ошибку estimator layer true-state feedback'ом.
-- Диагностические поля явно показывают, когда accelerometer correction
-  trustworthy, а когда ее нужно downweight'ить.
-- Это дает более надежную базу для следующего шага по `ArduPilot SIL`, а
-  затем по `PX4 SIL`, где внешняя система автоматического управления уже
-  должна опираться на measurements и estimator boundary, а не на truth.
+После TASK-09 можно переходить к следующему integration step по внешним
+flight stack:
+
+- текущая граница `sensor/estimator/controller` стала честнее;
+- estimator-driven demos дают более правдоподобную verification-базу;
+- `.m`-код остается source of truth, а `.slx` остается только thin shell;
+- следующая логичная цель — опереться на этот слой при движении к
+  `ArduPilot SIL`, а затем к `PX4 SIL`.
