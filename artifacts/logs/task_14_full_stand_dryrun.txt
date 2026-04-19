@@ -1,0 +1,118 @@
+OneKeyArduPilotStand(full)
+============================================================
+Результат режима check:
+OneKeyArduPilotStand(check)
+============================================================
+Состояние внешней среды и стенда:
+  WSL: да
+  целевой дистрибутив WSL: нет
+  Git в Windows: да
+  Python в Windows: да
+  MATLAB: да
+  Git внутри WSL: нет
+  Python внутри WSL: нет
+  ArduPilot внутри WSL: нет
+  sim_vehicle.py: нет
+  Mission Planner: нет
+  QGroundControl: да
+  UDP в MATLAB: да
+  сценарий ожидания пакета: да
+  сценарий проверки обмена: да
+
+Диагностические сообщения:
+  - Windows: да
+  - PowerShell: да
+  - Git: обнаружено, путь: C:\Program Files\Git\cmd\git.exe
+  - Python: обнаружено, путь: C:\Users\O.Agaphonov\AppData\Local\Programs\Python\Python312\python.exe
+  - GitHub CLI: обнаружено, путь: C:\Program Files\GitHub CLI\gh.exe
+  - MATLAB: обнаружено, путь: D:\MATLAB\R2025b\bin\win64\MATLAB.exe
+  - WSL command: обнаружено, путь: C:\Windows\System32\wsl.exe
+  - Mission Planner: не обнаружена, процесс не запущен, путь: <не найдено>
+  - QGroundControl: обнаружена, процесс не запущен, путь: C:\Program Files\QGroundControl\QGroundControl.exe
+  - Предпочтительная доступная наземная станция управления: QGroundControl
+  - Команда WSL обнаружена.
+  - Список установленных дистрибутивов WSL не содержит записей.
+  - Целевой дистрибутив WSL не обнаружен: Ubuntu
+  - UDP в MATLAB: да
+  - Сценарий ожидания первого пакета: да
+  - Сценарий проверки обмена: да
+  - Сценарий полного запуска стенда: да
+  - Сценарий проверки наземной станции: да
+  - PowerShell-установка Mission Planner: да
+  - PowerShell-установка QGroundControl: да
+  - PowerShell-запуск стенда: да
+  - PowerShell-остановка стенда: да
+  - PowerShell-проверка стенда: да
+  - Bash-проверка ArduPilot внутри WSL: да
+  - Готовность к режиму install: да
+  - Готовность к режиму start: нет
+
+Результат режима install:
+OneKeyArduPilotStand(install)
+============================================================
+Режим install выполняется в безопасной последовательности.
+PowerShell-сценарий: tools/ardupilot/windows/Setup-WSLForArduPilot.ps1
+  код завершения: 1
+  пояснение: PowerShell-сценарий не найден: tools/ardupilot/windows/Setup-WSLForArduPilot.ps1
+  команда: 
+  журнал:
+    ArduPilot WSL setup wrapper
+      distro                       : Ubuntu
+      bash script                  : /mnt/d/WORK/AI_SOLUTION/universal-mr-uav/tools/ardupilot/wsl/setup_ardupilot_wsl.sh
+      mode                         : check
+      WSL command                  : wsl.exe -d "Ubuntu" -- bash "/mnt/d/WORK/AI_SOLUTION/universal-mr-uav/tools/ardupilot/wsl/setup_ardupilot_wsl.sh" --dry-run
+    
+    Dry-run mode: the WSL setup script was not executed.
+    
+
+PowerShell-сценарий: tools/ardupilot/windows/Invoke-ArduPilotWslSetup.ps1
+  код завершения: 1
+  пояснение: PowerShell-сценарий не найден: tools/ardupilot/windows/Invoke-ArduPilotWslSetup.ps1
+  команда: 
+  журнал:
+    ArduPilot WSL setup wrapper
+      distro                       : Ubuntu
+      bash script                  : /mnt/d/WORK/AI_SOLUTION/universal-mr-uav/tools/ardupilot/wsl/setup_ardupilot_wsl.sh
+      mode                         : check
+      WSL command                  : wsl.exe -d "Ubuntu" -- bash "/mnt/d/WORK/AI_SOLUTION/universal-mr-uav/tools/ardupilot/wsl/setup_ardupilot_wsl.sh" --dry-run
+    
+    Dry-run mode: the WSL setup script was not executed.
+    
+
+PowerShell-сценарий: tools/ardupilot/windows/Install-MissionPlanner.ps1
+  код завершения: 1
+  пояснение: PowerShell-сценарий не найден: tools/ardupilot/windows/Install-MissionPlanner.ps1
+  команда: 
+  журнал:
+    Mission Planner installation check
+      mode                         : check
+      official source              : http://firmware.ardupilot.org/Tools/MissionPlanner/MissionPlanner-latest.msi
+      installed                    : no
+      path                         : <not found>
+    
+    Dry-run mode: installation was not executed.
+      recommended command          : powershell -ExecutionPolicy Bypass -File "D:\WORK\AI_SOLUTION\universal-mr-uav\tools\ardupilot\windows\Install-MissionPlanner.ps1" -Execute
+    
+
+PowerShell-сценарий: tools/ardupilot/windows/Install-QGroundControl.ps1
+  код завершения: 1
+  пояснение: PowerShell-сценарий не найден: tools/ardupilot/windows/Install-QGroundControl.ps1
+  команда: 
+  журнал:
+    QGroundControl installation check
+      mode                         : check
+      installed                    : yes
+      path                         : C:\Program Files\QGroundControl\QGroundControl.exe
+      installation step is not required.
+    
+
+Требуется действие оператора:
+Для продолжения установки выполните перечисленные команды вручную или повторите режим install с разрешенным выполнением.
+  - Подготовьте дистрибутив Ubuntu через tools/ardupilot/windows/Setup-WSLForArduPilot.ps1 -Execute.
+  - При необходимости установите Mission Planner через tools/ardupilot/windows/Install-MissionPlanner.ps1 -Execute.
+
+Полный сценарий остановлен до фактического запуска стенда.
+Требуется действие оператора:
+Для продолжения выполните указанные действия оператора, затем повторите режим full или start.
+  - Подготовьте дистрибутив Ubuntu через tools/ardupilot/windows/Setup-WSLForArduPilot.ps1 -Execute.
+  - При необходимости установите Mission Planner через tools/ardupilot/windows/Install-MissionPlanner.ps1 -Execute.

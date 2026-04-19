@@ -1,0 +1,12 @@
+ArduPilot stand start command
+  mode                         : check
+  WSL distro                   : Ubuntu
+  JSON endpoint                : JSON:127.0.0.1
+  MAVLink UDP port             : 14550
+  Mission Planner found        : no
+  QGroundControl found         : yes
+  WSL command                  : wsl.exe -d Ubuntu -- bash /mnt/d/WORK/AI_SOLUTION/universal-mr-uav/tools/ardupilot/wsl/start_arducopter_json_sitl.sh --ip 127.0.0.1 --mavlink-port 14550 --dry-run
+
+Dry-run mode: the stand was not started.
+  Mission Planner manual path  : UDP -> Connect -> port 14550
+  QGroundControl normally auto-detects MAVLink when HEARTBEAT messages appear.

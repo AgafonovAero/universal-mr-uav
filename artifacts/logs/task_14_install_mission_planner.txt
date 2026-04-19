@@ -1,0 +1,8 @@
+Mission Planner installation check
+  mode                         : check
+  official source              : http://firmware.ardupilot.org/Tools/MissionPlanner/MissionPlanner-latest.msi
+  installed                    : no
+  path                         : <not found>
+
+Dry-run mode: installation was not executed.
+  recommended command          : powershell -ExecutionPolicy Bypass -File "D:\WORK\AI_SOLUTION\universal-mr-uav\tools\ardupilot\windows\Install-MissionPlanner.ps1" -Execute

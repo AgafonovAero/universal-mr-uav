@@ -1,15 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+EXECUTE=0
 ARDUPILOT_ROOT="${ARDUPILOT_ROOT:-$HOME/src/ardupilot}"
 IP_ADDRESS="127.0.0.1"
 VEHICLE="ArduCopter"
 FRAME="quad"
+MAVLINK_PORT="14550"
 USE_CONSOLE=1
 USE_MAP=1
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
+        --execute)
+            EXECUTE=1
+            shift
+            ;;
+        --dry-run)
+            EXECUTE=0
+            shift
+            ;;
         --no-console)
             USE_CONSOLE=0
             shift
@@ -28,6 +38,14 @@ while [[ $# -gt 0 ]]; do
             ;;
         --frame)
             FRAME="$2"
+            shift 2
+            ;;
+        --mavlink-port)
+            MAVLINK_PORT="$2"
+            shift 2
+            ;;
+        --root)
+            ARDUPILOT_ROOT="$2"
             shift 2
             ;;
         *)
@@ -49,7 +67,7 @@ if [[ ! -f "Tools/autotest/sim_vehicle.py" ]]; then
     exit 1
 fi
 
-COMMAND=(Tools/autotest/sim_vehicle.py -v "$VEHICLE" -f "$FRAME" --model "JSON:${IP_ADDRESS}")
+COMMAND=(Tools/autotest/sim_vehicle.py -v "$VEHICLE" -f "$FRAME" --model "JSON:${IP_ADDRESS}" --out "udp:127.0.0.1:${MAVLINK_PORT}")
 
 if [[ "$USE_CONSOLE" -eq 1 ]]; then
     COMMAND+=(--console)
@@ -61,6 +79,11 @@ fi
 
 echo "Запуск ArduPilot SITL в режиме JSON"
 echo "  каталог ArduPilot: ${ARDUPILOT_ROOT}"
+echo "  поток MAVLink UDP: 127.0.0.1:${MAVLINK_PORT}"
 echo "  команда: ${COMMAND[*]}"
 
-exec "${COMMAND[@]}"
+if [[ "${EXECUTE}" -eq 1 ]]; then
+    exec "${COMMAND[@]}"
+else
+    echo "Dry-run: команда не выполнена."
+fi

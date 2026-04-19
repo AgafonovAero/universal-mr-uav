@@ -1,0 +1,45 @@
+OneKeyArduPilotStand(check)
+============================================================
+Состояние внешней среды и стенда:
+  WSL: да
+  целевой дистрибутив WSL: нет
+  Git в Windows: да
+  Python в Windows: да
+  MATLAB: да
+  Git внутри WSL: нет
+  Python внутри WSL: нет
+  ArduPilot внутри WSL: нет
+  sim_vehicle.py: нет
+  Mission Planner: нет
+  QGroundControl: да
+  UDP в MATLAB: да
+  сценарий ожидания пакета: да
+  сценарий проверки обмена: да
+
+Диагностические сообщения:
+  - Windows: да
+  - PowerShell: да
+  - Git: обнаружено, путь: C:\Program Files\Git\cmd\git.exe
+  - Python: обнаружено, путь: C:\Users\O.Agaphonov\AppData\Local\Programs\Python\Python312\python.exe
+  - GitHub CLI: обнаружено, путь: C:\Program Files\GitHub CLI\gh.exe
+  - MATLAB: обнаружено, путь: D:\MATLAB\R2025b\bin\win64\MATLAB.exe
+  - WSL command: обнаружено, путь: C:\Windows\System32\wsl.exe
+  - Mission Planner: не обнаружена, процесс не запущен, путь: <не найдено>
+  - QGroundControl: обнаружена, процесс не запущен, путь: C:\Program Files\QGroundControl\QGroundControl.exe
+  - Предпочтительная доступная наземная станция управления: QGroundControl
+  - Команда WSL обнаружена.
+  - Список установленных дистрибутивов WSL не содержит записей.
+  - Целевой дистрибутив WSL не обнаружен: Ubuntu
+  - UDP в MATLAB: да
+  - Сценарий ожидания первого пакета: да
+  - Сценарий проверки обмена: да
+  - Сценарий полного запуска стенда: да
+  - Сценарий проверки наземной станции: да
+  - PowerShell-установка Mission Planner: да
+  - PowerShell-установка QGroundControl: да
+  - PowerShell-запуск стенда: да
+  - PowerShell-остановка стенда: да
+  - PowerShell-проверка стенда: да
+  - Bash-проверка ArduPilot внутри WSL: да
+  - Готовность к режиму install: да
+  - Готовность к режиму start: нет

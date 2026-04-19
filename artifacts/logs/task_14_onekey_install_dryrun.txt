@@ -1,0 +1,66 @@
+OneKeyArduPilotStand(install)
+============================================================
+Режим install выполняется в безопасной последовательности.
+PowerShell-сценарий: tools/ardupilot/windows/Setup-WSLForArduPilot.ps1
+  код завершения: 0
+  пояснение: PowerShell-сценарий завершился успешно.
+  команда: powershell -ExecutionPolicy Bypass -File "tools/ardupilot/windows/Setup-WSLForArduPilot.ps1" -DistroName Ubuntu
+  журнал:
+    WSL setup check for ArduPilot SITL
+      mode                         : check
+      target distro                : Ubuntu
+      preferred WSL version        : 2
+      administrator rights         : no
+      wsl.exe available            : yes
+      detected distros             : none
+      recommended commands:
+        wsl --install -d Ubuntu
+    
+    Dry-run mode: no system changes were applied.
+    
+
+PowerShell-сценарий: tools/ardupilot/windows/Invoke-ArduPilotWslSetup.ps1
+  код завершения: 0
+  пояснение: PowerShell-сценарий завершился успешно.
+  команда: powershell -ExecutionPolicy Bypass -File "tools/ardupilot/windows/Invoke-ArduPilotWslSetup.ps1" -DistroName Ubuntu
+  журнал:
+    ArduPilot WSL setup wrapper
+      distro                       : Ubuntu
+      bash script                  : /mnt/d/WORK/AI_SOLUTION/universal-mr-uav/tools/ardupilot/wsl/setup_ardupilot_wsl.sh
+      mode                         : check
+      WSL command                  : wsl.exe -d "Ubuntu" -- bash "/mnt/d/WORK/AI_SOLUTION/universal-mr-uav/tools/ardupilot/wsl/setup_ardupilot_wsl.sh" --dry-run
+    
+    Dry-run mode: the WSL setup script was not executed.
+    
+
+PowerShell-сценарий: tools/ardupilot/windows/Install-MissionPlanner.ps1
+  код завершения: 0
+  пояснение: PowerShell-сценарий завершился успешно.
+  команда: powershell -ExecutionPolicy Bypass -File "tools/ardupilot/windows/Install-MissionPlanner.ps1"
+  журнал:
+    Mission Planner installation check
+      mode                         : check
+      official source              : http://firmware.ardupilot.org/Tools/MissionPlanner/MissionPlanner-latest.msi
+      installed                    : no
+      path                         : <not found>
+    
+    Dry-run mode: installation was not executed.
+      recommended command          : powershell -ExecutionPolicy Bypass -File "D:\WORK\AI_SOLUTION\universal-mr-uav\tools\ardupilot\windows\Install-MissionPlanner.ps1" -Execute
+    
+
+PowerShell-сценарий: tools/ardupilot/windows/Install-QGroundControl.ps1
+  код завершения: 0
+  пояснение: PowerShell-сценарий завершился успешно.
+  команда: powershell -ExecutionPolicy Bypass -File "tools/ardupilot/windows/Install-QGroundControl.ps1"
+  журнал:
+    QGroundControl installation check
+      mode                         : check
+      installed                    : yes
+      path                         : C:\Program Files\QGroundControl\QGroundControl.exe
+      installation step is not required.
+    
+
+Требуется действие оператора:
+Для продолжения установки выполните перечисленные команды вручную или повторите режим install с разрешенным выполнением.
+  - Подготовьте дистрибутив Ubuntu через tools/ardupilot/windows/Setup-WSLForArduPilot.ps1 -Execute.
+  - При необходимости установите Mission Planner через tools/ardupilot/windows/Install-MissionPlanner.ps1 -Execute.

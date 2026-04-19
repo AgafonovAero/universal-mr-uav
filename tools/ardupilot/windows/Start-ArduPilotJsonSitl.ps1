@@ -4,7 +4,9 @@ param(
     [switch]$NoConsole,
     [switch]$NoMap,
     [string]$Ip = '127.0.0.1',
-    [switch]$Execute
+    [int]$MavlinkPort = 14550,
+    [switch]$Execute,
+    [string]$LogPath
 )
 
 $ErrorActionPreference = 'Stop'
@@ -47,7 +49,13 @@ function Write-Utf8NoBomFile {
 }
 
 $repoRoot = Get-RepoRoot
-$logPath = Join-Path $repoRoot 'artifacts/logs/task_13_start_ardupilot_json_sitl.txt'
+if ([string]::IsNullOrWhiteSpace($LogPath)) {
+    $logPath = Join-Path $repoRoot 'artifacts/logs/task_13_start_ardupilot_json_sitl.txt'
+}
+else {
+    $logPath = [System.IO.Path]::GetFullPath($LogPath)
+}
+
 $scriptPath = Join-Path $repoRoot 'tools/ardupilot/wsl/start_arducopter_json_sitl.sh'
 $scriptPathWsl = Convert-ToWslPath -WindowsPath $scriptPath
 
@@ -55,6 +63,8 @@ $argList = New-Object System.Collections.Generic.List[string]
 $argList.Add($scriptPathWsl)
 $argList.Add('--ip')
 $argList.Add($Ip)
+$argList.Add('--mavlink-port')
+$argList.Add($MavlinkPort.ToString())
 
 if ($NoConsole) {
     $argList.Add('--no-console')
@@ -62,6 +72,13 @@ if ($NoConsole) {
 
 if ($NoMap) {
     $argList.Add('--no-map')
+}
+
+if ($Execute) {
+    $argList.Add('--execute')
+}
+else {
+    $argList.Add('--dry-run')
 }
 
 $displayArgs = ($argList.ToArray() -join ' ')
@@ -73,23 +90,24 @@ function Add-Line {
     Write-Host $Text
 }
 
-Add-Line 'ArduCopter JSON SITL launch through WSL'
-Add-Line ("  distro                               : {0}" -f $DistroName)
-Add-Line ("  Bash script                          : {0}" -f $scriptPathWsl)
-Add-Line ("  execution mode                       : {0}" -f $(if ($Execute) { 'execute' } else { 'check' }))
-Add-Line ("  parameters                           : {0}" -f $displayArgs)
+Add-Line 'Запуск ArduCopter JSON SITL через WSL'
+Add-Line ("  дистрибутив                         : {0}" -f $DistroName)
+Add-Line ("  Bash-сценарий                       : {0}" -f $scriptPathWsl)
+Add-Line ("  режим выполнения                    : {0}" -f $(if ($Execute) { 'execute' } else { 'check' }))
+Add-Line ("  порт MAVLink UDP                    : {0}" -f $MavlinkPort)
+Add-Line ("  параметры                           : {0}" -f $displayArgs)
 
 if ($Execute) {
     Add-Line ''
-    Add-Line 'Executing ArduCopter JSON SITL launch command:'
+    Add-Line 'Выполняется команда запуска ArduCopter JSON SITL:'
     & wsl.exe -d $DistroName -- bash @($argList.ToArray()) 2>&1 | ForEach-Object {
         Add-Line ("  {0}" -f $_)
     }
 }
 else {
     Add-Line ''
-    Add-Line 'Check mode: launch script was not executed.'
-    Add-Line ("  Manual command: wsl.exe -d ""{0}"" -- bash {1}" -f $DistroName, $displayArgs)
+    Add-Line 'Режим проверки: сценарий запуска не выполнялся.'
+    Add-Line ("  Команда для ручного запуска: wsl.exe -d ""{0}"" -- bash {1}" -f $DistroName, $displayArgs)
 }
 
 $logText = ($lines -join [Environment]::NewLine) + [Environment]::NewLine
