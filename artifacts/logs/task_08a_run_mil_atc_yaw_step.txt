@@ -1,0 +1,18 @@
+﻿Project paths added from repository root.
+
+Next MATLAB commands:
+  params = uav.sim.default_params_quad_x250();
+  run('scripts/run_case_hover.m');
+  run('scripts/run_case_yaw_step.m');
+  results = runtests('tests');
+  table(results)
+Built thin ATC MIL model: D:\WORK\AI_SOLUTION\universal-mr-uav\models\mil_top_atc.slx
+Thin ATC MIL yaw-step diagnostics:
+  final estimated yaw [rad]        : 0.735861
+  final true yaw rate [rad/s]      : 0.729136
+  final true altitude [m]          : -8.320941
+  final estimated altitude [m]     : -8.110113
+  final ATC motor norm [-]         : [0.685768 0.715942 0.493527 0.536162]
+  final spool state [-]            : 3
+  final true quat norm [-]         : 1.000000000000
+  final estimated quat norm [-]    : 1.000000000000
