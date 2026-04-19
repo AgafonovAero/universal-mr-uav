@@ -125,7 +125,7 @@ script-generated `.m`-workflow.
 - единицы измерения: только `SI`;
 - углы в коде: только `rad`.
 
-## Быстрый старт
+## Быстрый старт и базовая локальная проверка
 
 Из корня репозитория в MATLAB:
 
@@ -180,8 +180,9 @@ PNG-графики сохраняются в `artifacts/figures/`:
 - `demo_pitch_step_minus10deg.csv`
 
 Оба demo работают через estimator-driven code-centric runner
-`uav.sim.run_case_closed_loop_with_estimator` по цепочке
-`объект управления -> sensor layer -> estimator layer -> demo controller -> ВМГ`.
+`uav.sim.run_case_closed_loop_with_estimator` по цепочке:
+
+`объект управления -> sensor layer -> estimator layer -> demo controller -> ВМГ`
 
 Plot scripts не переносят физику в `.slx`: они только читают сохраненные
 MAT-артефакты и строят PNG.
@@ -214,6 +215,17 @@ TASK-09 делает следующий шаг к честной closed-loop ver
 - переводит demo-сценарии на estimator-driven closed loop;
 - добавляет diagnostic-поля для оценки consistency/gating;
 - сохраняет physics и estimator logic в `.m`-коде, а не в `.slx`.
+
+## Что важно не ломать в следующих задачах
+
+При дальнейшем движении к внешним flight stack важно сохранять уже
+зафиксированные ограничения:
+
+- не переносить физику объекта управления в `.slx`;
+- не переносить sensor layer и estimator layer в ручные block diagrams;
+- не использовать `.slx` как source of truth;
+- не подменять estimator-driven контуры true-state feedback'ом в demo и
+  verification-сценариях.
 
 ## Структура репозитория
 

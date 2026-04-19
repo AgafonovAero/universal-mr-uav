@@ -37,15 +37,18 @@ estimator_diag_hist = repmat(local_empty_estimator_diag_sample(), n_steps, 1);
 controller_diag_hist = struct([]);
 controller_state_hist = struct([]);
 
+% Initialize estimator/controller state before the main simulation loop.
 est_prev = local_empty_estimator_sample();
 controller_state = case_cfg.controller_state0;
 is_initialized = false;
 
 for k = 1:n_steps
+    % Sample the current plant state through the code-centric sensor layer.
     state_k = uav.core.state_validate(state_hist(k));
     snapshot = local_snapshot_diag(state_k, case_cfg.params);
     sens_k = uav.sensors.sensors_step(state_k, snapshot, case_cfg.params);
 
+    % Update the estimator strictly from sensor outputs.
     if ~is_initialized
         est_prev = uav.est.estimator_init(case_cfg.params, sens_k);
         dt_est_s = 0.0;
@@ -56,6 +59,8 @@ for k = 1:n_steps
 
     [est_k, est_diag_k] = uav.est.estimator_step( ...
         est_prev, sens_k, dt_est_s, case_cfg.params);
+
+    % Build controller inputs only from estimator outputs and references.
     ref_k = case_cfg.reference_fun(time_s(k), est_k, sens_k, case_cfg.params);
     ctrl_input = struct( ...
         'time_s', time_s(k), ...
@@ -78,6 +83,7 @@ for k = 1:n_steps
         controller_state_hist = repmat(controller_state, n_steps, 1);
     end
 
+    % Store all histories needed for postprocessing and verification.
     sensor_hist(k) = sens_k;
     estimator_hist(k) = est_k;
     reference_hist(k) = ref_k;
@@ -88,6 +94,7 @@ for k = 1:n_steps
     quat_norm_est(k) = norm(est_k.q_nb);
     motor_cmd_hist_radps(k, :) = motor_cmd_k_radps.';
 
+    % Advance the plant if the simulation horizon is not finished yet.
     if k < n_steps
         [state_hist(k + 1), ~] = uav.sim.plant_step_struct( ...
             state_k, motor_cmd_k_radps, case_cfg.dt_s, case_cfg.params);
@@ -96,6 +103,7 @@ for k = 1:n_steps
     est_prev = est_k;
 end
 
+% Pack the final run log in one compact struct.
 log = struct();
 log.time_s = time_s;
 log.state = state_hist;

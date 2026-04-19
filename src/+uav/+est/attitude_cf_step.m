@@ -25,6 +25,7 @@ function [att_est, diag] = attitude_cf_step(est_prev, sens, dt_s, params)
 %   used only as a low-frequency roll/pitch reference when the measured
 %   specific force remains consistent with gravity-only flight.
 
+% Validate inputs and fetch the sensor channels used by the filter.
 est_prev = local_validate_attitude_state(est_prev);
 gyro_b_radps = local_validate_vec3(sens, {'imu', 'gyro_b_radps'}, ...
     'sens.imu.gyro_b_radps');
@@ -38,9 +39,12 @@ validateattributes(dt_s, {'numeric'}, ...
 local_validate_attitude_params(params);
 gravity_ned_mps2 = uav.env.gravity_ned(params.gravity_mps2);
 
+% First propagate the quaternion only with measured body gyro rates.
 q_pred = local_integrate_quaternion(est_prev.q_nb, gyro_b_radps, dt_s);
 euler_pred = local_quat_to_euler_rpy(q_pred);
 
+% Then apply accelerometer correction only when specific-force
+% consistency indicates gravity-only flight is still a good assumption.
 [roll_meas_rad, pitch_meas_rad, acc_valid] = ...
     local_accel_attitude(accel_b_mps2);
 if acc_valid
@@ -64,15 +68,20 @@ end
 euler_corr = euler_pred + acc_alpha .* acc_error_rad;
 euler_corr(1:2) = arrayfun(@local_wrap_angle_pi, euler_corr(1:2));
 
+% Finally correct yaw with the magnetometer on top of corrected roll/pitch.
 [yaw_meas_rad, mag_valid] = local_mag_yaw(mag_b_uT, euler_corr(1:2), params);
 if mag_valid
     mag_alpha = local_complementary_alpha(params.estimator.attitude.k_mag, dt_s);
-    mag_error_rad = [0.0; 0.0; local_wrap_angle_pi(yaw_meas_rad - euler_corr(3))];
+    mag_error_rad = [ ...
+        0.0; ...
+        0.0; ...
+        local_wrap_angle_pi(yaw_meas_rad - euler_corr(3))];
 else
     mag_alpha = 0.0;
     mag_error_rad = zeros(3, 1);
 end
 
+% Pack the updated attitude estimate and diagnostics.
 euler_corr(3) = local_wrap_angle_pi(euler_corr(3) + mag_alpha * mag_error_rad(3));
 q_est = uav.core.quat_normalize(local_euler_to_quat_rpy(euler_corr));
 euler_est = local_quat_to_euler_rpy(q_est);

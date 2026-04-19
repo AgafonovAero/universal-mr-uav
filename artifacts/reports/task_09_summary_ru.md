@@ -46,6 +46,9 @@ Raw logs сохранены в текстовом виде:
 - `artifacts/logs/task_09_plot_demo_takeoff_to_50m.txt`
 - `artifacts/logs/task_09_plot_demo_pitch_step_minus10deg.txt`
 
+Все перечисленные raw logs сохраняются как обычный UTF-8 text и
+используются как фактическая запись локально выполненных прогонов.
+
 ## Результаты тестов
 
 По итогам `runtests('tests')`:
@@ -135,3 +138,7 @@ flight stack:
 - `.m`-код остается source of truth, а `.slx` остается только thin shell;
 - следующая логичная цель — опереться на этот слой при движении к
   `ArduPilot SIL`, а затем к `PX4 SIL`.
+
+Практически это означает, что после TASK-09 можно двигаться от внутренней
+verification-сборки к внешнему flight stack boundary без возврата к
+true-state demo-контурам.
