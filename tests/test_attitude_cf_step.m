@@ -19,6 +19,8 @@ sens = local_static_sensor_sample([0.0; 0.0; 0.0], params);
 verifyEqual(testCase, att_est.q_nb, [1.0; 0.0; 0.0; 0.0], 'AbsTol', 1.0e-12);
 verifyEqual(testCase, att_est.euler_rpy_rad, zeros(3, 1), 'AbsTol', 1.0e-12);
 verifyEqual(testCase, diag.quat_norm, 1.0, 'AbsTol', 1.0e-12);
+verifyEqual(testCase, diag.accel_correction_weight, 1.0, 'AbsTol', 1.0e-12);
+verifyEqual(testCase, diag.accel_consistency_metric, 0.0, 'AbsTol', 1.0e-12);
 end
 
 function testQuaternionNormRemainsNearUnity(testCase)
@@ -28,7 +30,8 @@ sens = local_static_sensor_sample([0.0; 0.0; 20.0 * pi / 180.0], params);
 
 quat_norm_hist = zeros(300, 1);
 for k = 1:numel(quat_norm_hist)
-    [att_est, diag] = uav.est.attitude_cf_step(att_est, sens, params.demo.dt_s, params);
+    [att_est, diag] = uav.est.attitude_cf_step( ...
+        att_est, sens, params.demo.dt_s, params);
     quat_norm_hist(k) = diag.quat_norm;
 end
 
@@ -46,11 +49,32 @@ sens = uav.sensors.sensors_step(state, diag, params);
 att_est = uav.est.attitude_cf_init(params);
 
 for k = 1:200
-    [att_est, ~] = uav.est.attitude_cf_step(att_est, sens, params.demo.dt_s, params);
+    [att_est, diag] = uav.est.attitude_cf_step( ...
+        att_est, sens, params.demo.dt_s, params);
 end
 
 verifyLessThan(testCase, abs(att_est.euler_rpy_rad(1)), 1.0e-9);
 verifyLessThan(testCase, abs(att_est.euler_rpy_rad(2)), 1.0e-9);
+verifyGreaterThan(testCase, diag.accel_correction_weight, 0.99);
+end
+
+function testAcceleratedPitchDoesNotCollapseBackToLevel(testCase)
+params = local_zero_sensor_noise(uav.sim.default_params_quad_x250());
+pitch_rad = deg2rad(-10.0);
+att_est = uav.est.attitude_cf_init(params);
+att_est.q_nb = local_euler_to_quat_rpy([0.0; pitch_rad; 0.0]);
+att_est.euler_rpy_rad = [0.0; pitch_rad; 0.0];
+sens = local_accelerated_pitch_sensor_sample(pitch_rad, params);
+
+for k = 1:200
+    [att_est, diag] = uav.est.attitude_cf_step( ...
+        att_est, sens, params.demo.dt_s, params);
+end
+
+verifyLessThan(testCase, abs(att_est.euler_rpy_rad(2) - pitch_rad), deg2rad(0.5));
+verifyLessThan(testCase, diag.accel_correction_weight, 0.05);
+verifyGreaterThan(testCase, diag.accel_consistency_metric, ...
+    params.estimator.attitude.accel_consistency_zero_weight_mps2);
 end
 
 function params = local_zero_sensor_noise(params)
@@ -74,6 +98,20 @@ gravity_ned_mps2 = uav.env.gravity_ned(params.gravity_mps2);
 sens = struct();
 sens.imu = struct( ...
     'accel_b_mps2', -c_nb.' * gravity_ned_mps2, ...
+    'gyro_b_radps', zeros(3, 1));
+sens.mag = struct( ...
+    'field_b_uT', c_nb.' * params.env.mag_ned_uT(:));
+end
+
+function sens = local_accelerated_pitch_sensor_sample(pitch_rad, params)
+%LOCAL_ACCELERATED_PITCH_SENSOR_SAMPLE Build one pitched accelerated sample.
+
+q_nb = local_euler_to_quat_rpy([0.0; pitch_rad; 0.0]);
+c_nb = uav.core.quat_to_dcm(q_nb);
+
+sens = struct();
+sens.imu = struct( ...
+    'accel_b_mps2', [0.0; 0.0; -params.gravity_mps2 / cos(pitch_rad)], ...
     'gyro_b_radps', zeros(3, 1));
 sens.mag = struct( ...
     'field_b_uT', c_nb.' * params.env.mag_ned_uT(:));
