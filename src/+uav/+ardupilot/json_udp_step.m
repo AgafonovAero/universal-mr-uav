@@ -300,6 +300,10 @@ if diag.rx_valid || has_valid_remote
     diag.tx_kind = "reply";
 end
 
+warn_state = warning;
+cleanup_obj = onCleanup(@() warning(warn_state));
+warning('off', 'all');
+
 payload_text = char(json_text);
 payload_bytes = uint8(payload_text);
 diag.tx_payload_bytes = numel(payload_bytes);
@@ -359,5 +363,6 @@ catch tx_error
     end
 end
 
+clear cleanup_obj;
 diag.tx_elapsed_s = toc(tx_tic);
 end
