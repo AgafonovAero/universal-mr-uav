@@ -35,6 +35,21 @@ motor_cmd_hist_radps = nan(max_steps, cfg.motor_count);
 quat_norm_true = nan(max_steps, 1);
 quat_norm_est = nan(max_steps, 1);
 time_s = nan(max_steps, 1);
+loop_elapsed_s = nan(max_steps, 1);
+model_step_elapsed_s = nan(max_steps, 1);
+json_encode_elapsed_s = nan(max_steps, 1);
+udp_step_elapsed_s = nan(max_steps, 1);
+udp_read_elapsed_s = nan(max_steps, 1);
+udp_write_elapsed_s = nan(max_steps, 1);
+udp_rx_datagram_count_hist = zeros(max_steps, 1);
+udp_valid_rx_count_hist = zeros(max_steps, 1);
+udp_invalid_rx_count_hist = zeros(max_steps, 1);
+json_tx_timestamp_s = nan(max_steps, 1);
+response_tx_timestamp_s = nan(max_steps, 1);
+valid_rx_timestamp_s = nan(max_steps, 1);
+json_tx_time_count = 0;
+response_tx_time_count = 0;
+valid_rx_time_count = 0;
 
 transport = uav.ardupilot.json_udp_open(cfg);
 transport_message_open = string(transport.message);
@@ -95,11 +110,25 @@ if ~first_packet_received
     result.transport_message_close = string(transport.message);
     result.first_packet_received = false;
     result.first_packet_magic = 0;
+    result.time_s = zeros(0, 1);
+    result.loop_elapsed_s = zeros(0, 1);
+    result.model_step_elapsed_s = zeros(0, 1);
+    result.json_encode_elapsed_s = zeros(0, 1);
+    result.udp_step_elapsed_s = zeros(0, 1);
+    result.udp_read_elapsed_s = zeros(0, 1);
+    result.udp_write_elapsed_s = zeros(0, 1);
+    result.udp_rx_datagram_count_hist = zeros(0, 1);
+    result.udp_valid_rx_count_hist = zeros(0, 1);
+    result.udp_invalid_rx_count_hist = zeros(0, 1);
+    result.json_tx_timestamp_s = zeros(0, 1);
+    result.response_tx_timestamp_s = zeros(0, 1);
+    result.valid_rx_timestamp_s = zeros(0, 1);
     result.rx_datagram_count = rx_datagram_count;
     result.valid_rx_count = valid_rx_count;
     result.invalid_rx_count = invalid_rx_count;
     result.json_tx_count = 0;
     result.response_tx_count = 0;
+    result.json_probe_tx_count = 0;
     result.last_sender_address = last_sender_address;
     result.last_sender_port = last_sender_port;
     result.last_magic = last_magic;
@@ -143,7 +172,9 @@ while toc(wall_start) < duration_s
 
     step_index = step_index + 1;
     time_s(step_index) = elapsed_s;
+    loop_tic = tic;
 
+    model_tic = tic;
     [state_next, ~] = uav.sim.plant_step_struct( ...
         state, ...
         held_motor_cmd_radps, ...
@@ -176,7 +207,11 @@ while toc(wall_start) < duration_s
         physics_time_s, ...
         params, ...
         cfg);
+    model_step_elapsed_s(step_index) = toc(model_tic);
+
+    json_tic = tic;
     json_text_k = uav.ardupilot.encode_json_fdm_text(packet_k);
+    json_encode_elapsed_s(step_index) = toc(json_tic);
 
     [transport, sitl_output_k, udp_diag_k] = uav.ardupilot.json_udp_step( ...
         transport, ...
@@ -221,6 +256,29 @@ while toc(wall_start) < duration_s
     motor_cmd_hist_radps(step_index, :) = held_motor_cmd_radps(:).';
     quat_norm_true(step_index) = norm(state.q_nb);
     quat_norm_est(step_index) = norm(est_k.q_nb);
+    udp_step_elapsed_s(step_index) = double(udp_diag_k.step_elapsed_s);
+    udp_read_elapsed_s(step_index) = double(udp_diag_k.rx_elapsed_s);
+    udp_write_elapsed_s(step_index) = double(udp_diag_k.tx_elapsed_s);
+    udp_rx_datagram_count_hist(step_index) = double(udp_diag_k.rx_datagram_count);
+    udp_valid_rx_count_hist(step_index) = double(udp_diag_k.rx_valid_count);
+    udp_invalid_rx_count_hist(step_index) = double(udp_diag_k.rx_invalid_count);
+
+    if logical(udp_diag_k.tx_ok)
+        json_tx_time_count = json_tx_time_count + 1;
+        json_tx_timestamp_s(json_tx_time_count) = elapsed_s;
+    end
+
+    if logical(udp_diag_k.tx_ok && udp_diag_k.rx_valid)
+        response_tx_time_count = response_tx_time_count + 1;
+        response_tx_timestamp_s(response_tx_time_count) = elapsed_s;
+    end
+
+    if logical(udp_diag_k.rx_valid)
+        valid_rx_time_count = valid_rx_time_count + 1;
+        valid_rx_timestamp_s(valid_rx_time_count) = elapsed_s;
+    end
+
+    loop_elapsed_s(step_index) = toc(loop_tic);
 
     state_est_prev = est_k;
     next_tick_s = next_tick_s + dt_s;
@@ -239,6 +297,18 @@ exchange_status_hist = exchange_status_hist(1:step_index);
 motor_cmd_hist_radps = motor_cmd_hist_radps(1:step_index, :);
 quat_norm_true = quat_norm_true(1:step_index);
 quat_norm_est = quat_norm_est(1:step_index);
+loop_elapsed_s = loop_elapsed_s(1:step_index);
+model_step_elapsed_s = model_step_elapsed_s(1:step_index);
+json_encode_elapsed_s = json_encode_elapsed_s(1:step_index);
+udp_step_elapsed_s = udp_step_elapsed_s(1:step_index);
+udp_read_elapsed_s = udp_read_elapsed_s(1:step_index);
+udp_write_elapsed_s = udp_write_elapsed_s(1:step_index);
+udp_rx_datagram_count_hist = udp_rx_datagram_count_hist(1:step_index);
+udp_valid_rx_count_hist = udp_valid_rx_count_hist(1:step_index);
+udp_invalid_rx_count_hist = udp_invalid_rx_count_hist(1:step_index);
+json_tx_timestamp_s = json_tx_timestamp_s(1:json_tx_time_count);
+response_tx_timestamp_s = response_tx_timestamp_s(1:response_tx_time_count);
+valid_rx_timestamp_s = valid_rx_timestamp_s(1:valid_rx_time_count);
 
 result = struct();
 result.cfg = cfg;
@@ -257,11 +327,24 @@ result.exchange_status = exchange_status_hist;
 result.motor_cmd_radps = motor_cmd_hist_radps;
 result.quat_norm_true = quat_norm_true;
 result.quat_norm_est = quat_norm_est;
+result.loop_elapsed_s = loop_elapsed_s;
+result.model_step_elapsed_s = model_step_elapsed_s;
+result.json_encode_elapsed_s = json_encode_elapsed_s;
+result.udp_step_elapsed_s = udp_step_elapsed_s;
+result.udp_read_elapsed_s = udp_read_elapsed_s;
+result.udp_write_elapsed_s = udp_write_elapsed_s;
+result.udp_rx_datagram_count_hist = udp_rx_datagram_count_hist;
+result.udp_valid_rx_count_hist = udp_valid_rx_count_hist;
+result.udp_invalid_rx_count_hist = udp_invalid_rx_count_hist;
+result.json_tx_timestamp_s = json_tx_timestamp_s;
+result.response_tx_timestamp_s = response_tx_timestamp_s;
+result.valid_rx_timestamp_s = valid_rx_timestamp_s;
 result.rx_datagram_count = rx_datagram_count;
 result.valid_rx_count = valid_rx_count;
 result.invalid_rx_count = invalid_rx_count;
 result.json_tx_count = json_tx_count;
 result.response_tx_count = response_tx_count;
+result.json_probe_tx_count = json_tx_count - response_tx_count;
 result.last_sender_address = last_sender_address;
 result.last_sender_port = last_sender_port;
 result.last_magic = last_magic;
@@ -440,4 +523,8 @@ diag.last_sender_address = "";
 diag.last_sender_port = 0;
 diag.last_magic = 0;
 diag.last_frame_count = 0;
+diag.rx_elapsed_s = 0.0;
+diag.tx_elapsed_s = 0.0;
+diag.step_elapsed_s = 0.0;
+diag.tx_payload_bytes = 0;
 end

@@ -6,6 +6,7 @@ param(
     [string]$Ip = '127.0.0.1',
     [int]$MavlinkPort = 14550,
     [int]$SecondaryMavlinkPort = 14552,
+    [string]$ExtraDefaultsParmPath = '',
     [switch]$Execute,
     [string]$LogPath
 )
@@ -100,6 +101,12 @@ if ($SecondaryMavlinkPort -gt 0) {
     $argList.Add($SecondaryMavlinkPort.ToString())
 }
 
+if (-not [string]::IsNullOrWhiteSpace($ExtraDefaultsParmPath)) {
+    $resolvedExtraDefaults = [System.IO.Path]::GetFullPath($ExtraDefaultsParmPath)
+    $argList.Add('--defaults-extra')
+    $argList.Add((Convert-ToWslPath -WindowsPath $resolvedExtraDefaults))
+}
+
 if ($NoConsole) {
     $argList.Add('--no-console')
 }
@@ -134,6 +141,9 @@ Add-Line ("  effective Windows host IP      : {0}" -f $effectiveIp)
 Add-Line ("  MAVLink UDP port               : {0}" -f $MavlinkPort)
 if ($SecondaryMavlinkPort -gt 0) {
     Add-Line ("  дополнительный MAVLink порт   : {0}" -f $SecondaryMavlinkPort)
+}
+if (-not [string]::IsNullOrWhiteSpace($ExtraDefaultsParmPath)) {
+    Add-Line ("  дополнительный defaults parm   : {0}" -f $ExtraDefaultsParmPath)
 }
 Add-Line ("  arguments                      : {0}" -f $displayArgs)
 

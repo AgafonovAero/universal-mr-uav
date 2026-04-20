@@ -66,6 +66,7 @@ cfg.sitl_frame = "quad";
 cfg.ardupilot_vehicle = cfg.sitl_vehicle;
 cfg.sitl_enable_console = true;
 cfg.sitl_enable_map = true;
+cfg.sitl_extra_defaults_path = "";
 
 cfg.ardupilot_root = "~/src/ardupilot";
 cfg.wsl_distro_name = "Ubuntu";

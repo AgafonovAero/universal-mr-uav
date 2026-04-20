@@ -32,6 +32,7 @@ cfg = local_validate_cfg(cfg);
 transport = local_validate_transport(transport);
 rx_out = uav.ardupilot.decode_sitl_output_packet([], cfg);
 diag = local_make_empty_diag(cfg, transport);
+step_tic = tic;
 
 if ~isstring(json_text) && ~ischar(json_text)
     error( ...
@@ -82,6 +83,8 @@ else
             "Входящий двоичный пакет ArduPilot не получен.";
     end
 end
+
+diag.step_elapsed_s = toc(step_tic);
 end
 
 function transport = local_validate_transport(transport)
@@ -165,6 +168,10 @@ diag.last_sender_address = "";
 diag.last_sender_port = 0;
 diag.last_magic = 0;
 diag.last_frame_count = 0;
+diag.rx_elapsed_s = 0.0;
+diag.tx_elapsed_s = 0.0;
+diag.step_elapsed_s = 0.0;
+diag.tx_payload_bytes = 0;
 
 if isfield(transport, 'remote_ip')
     diag.used_remote_ip = string(transport.remote_ip);
@@ -180,6 +187,7 @@ function [transport, rx_out, diag] = local_receive_and_decode(transport, rx_out,
 
 last_invalid = uav.ardupilot.decode_sitl_output_packet([], cfg);
 last_invalid_bytes = 0;
+rx_tic = tic;
 
 try
     switch string(transport.method)
@@ -257,6 +265,8 @@ catch rx_error
     diag.rx_message = "Ошибка приема UDP: " + string(rx_error.message);
 end
 
+diag.rx_elapsed_s = toc(rx_tic);
+
 if ~diag.rx_valid && diag.rx_invalid_count > 0
     rx_out = last_invalid;
     diag.rx_received = true;
@@ -290,12 +300,10 @@ if diag.rx_valid || has_valid_remote
     diag.tx_kind = "reply";
 end
 
-warn_state = warning;
-cleanup_obj = onCleanup(@() warning(warn_state));
-warning('off', 'all');
-
 payload_text = char(json_text);
 payload_bytes = uint8(payload_text);
+diag.tx_payload_bytes = numel(payload_bytes);
+tx_tic = tic;
 
 try
     switch string(transport.method)
@@ -351,5 +359,5 @@ catch tx_error
     end
 end
 
-clear cleanup_obj;
+diag.tx_elapsed_s = toc(tx_tic);
 end
