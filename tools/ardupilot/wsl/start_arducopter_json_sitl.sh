@@ -8,6 +8,7 @@ VEHICLE="ArduCopter"
 FRAME="quad"
 MAVLINK_PORT="14550"
 SECONDARY_MAVLINK_PORT="14552"
+EXTRA_DEFAULTS=""
 USE_CONSOLE=1
 USE_MAP=1
 
@@ -61,6 +62,10 @@ while [[ $# -gt 0 ]]; do
             SECONDARY_MAVLINK_PORT="$2"
             shift 2
             ;;
+        --defaults-extra)
+            EXTRA_DEFAULTS="$2"
+            shift 2
+            ;;
         --root)
             ARDUPILOT_ROOT="$2"
             shift 2
@@ -104,13 +109,18 @@ fi
 
 cd "${ARDUPILOT_ROOT}/ArduCopter"
 
+DEFAULTS_ARG="../Tools/autotest/default_params/copter.parm"
+if [[ -n "${EXTRA_DEFAULTS}" ]]; then
+    DEFAULTS_ARG="${DEFAULTS_ARG},${EXTRA_DEFAULTS}"
+fi
+
 COMMAND=(
     ../build/sitl/bin/arducopter
     --model "JSON:${IP_ADDRESS}"
     --speedup 1
     --slave 0
     --serial0="udpclient:${IP_ADDRESS}:${MAVLINK_PORT}"
-    --defaults ../Tools/autotest/default_params/copter.parm
+    --defaults "${DEFAULTS_ARG}"
     --sim-address="${IP_ADDRESS}"
     -I0
 )
@@ -127,6 +137,9 @@ echo "  транспорт JSON/UDP к MATLAB: ${IP_ADDRESS}:9002"
 echo "  поток MAVLink UDP к Windows: ${IP_ADDRESS}:${MAVLINK_PORT}"
 if [[ -n "${SECONDARY_MAVLINK_PORT}" && "${SECONDARY_MAVLINK_PORT}" != "0" ]]; then
     echo "  дополнительный поток MAVLink: ${IP_ADDRESS}:${SECONDARY_MAVLINK_PORT}"
+fi
+if [[ -n "${EXTRA_DEFAULTS}" ]]; then
+    echo "  дополнительный файл параметров: ${EXTRA_DEFAULTS}"
 fi
 echo "  тип аппарата: ${VEHICLE}"
 echo "  схема аппарата: ${FRAME}"

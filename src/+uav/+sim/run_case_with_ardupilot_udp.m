@@ -287,4 +287,8 @@ diag.last_sender_address = "";
 diag.last_sender_port = 0;
 diag.last_magic = 0;
 diag.last_frame_count = 0;
+diag.rx_elapsed_s = 0.0;
+diag.tx_elapsed_s = 0.0;
+diag.step_elapsed_s = 0.0;
+diag.tx_payload_bytes = 0;
 end

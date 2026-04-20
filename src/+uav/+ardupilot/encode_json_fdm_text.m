@@ -40,7 +40,8 @@ json_packet.quaternion = local_row(packet.q_nb);
 json_packet.no_time_sync = true;
 json_packet.no_lockstep = true;
 
-json_text = newline + string(jsonencode(json_packet)) + newline;
+json_char = jsonencode(json_packet);
+json_text = string([json_char, newline]);
 end
 
 function local_require_fields(data, field_names)

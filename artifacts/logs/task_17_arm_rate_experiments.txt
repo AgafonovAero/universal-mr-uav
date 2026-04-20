@@ -1,0 +1,74 @@
+Серия опытов TASK-17 по частоте обмена и взведению ArduPilot
+============================================================
+Опыт A. Базовая конфигурация TASK-16
+  команда запуска                   : powershell -ExecutionPolicy Bypass -File "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\windows\Start-ArduPilotJsonSitl.ps1" -DistroName Ubuntu -Ip 172.19.208.1 -MavlinkPort 14550 -SecondaryMavlinkPort 14552 -NoConsole -NoMap -Execute -ExtraDefaultsParmPath "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task16_arducopter_loop_rate.parm" -LogPath "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\artifacts\logs\task_17_case_a_start.txt"
+  файл параметров                   : D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task16_arducopter_loop_rate.parm
+  update_rate_hz MATLAB             : 120
+  запуск процесса                   : да
+  PID arducopter                    : 457
+  valid_rx_count                    : 1
+  json_tx_count                     : 1829
+  response_tx_count                 : 0
+  средняя частота обмена [Hz]       : 0.0000
+  p95 периода обмена [s]            : NaN
+  gyro_rate_hz по STATUSTEXT        : 0
+  взведение подтверждено            : нет
+  arducopter жив после опыта        : нет
+  код завершения процесса           : 
+  last_frame_count                  : 0
+  motor_pwm до [us]                 : [NaN..NaN, NaN..NaN, NaN..NaN, NaN..NaN]
+  motor_pwm после [us]              : [NaN..NaN, NaN..NaN, NaN..NaN, NaN..NaN]
+  motor_cmd до [rad/s]              : [0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000]
+  motor_cmd после [rad/s]           : [0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000]
+  итоговый статус обмена            : непрерывный обмен не подтвержден; принят только единичный двоичный пакет
+  причина                           : [Errno 104] Connection reset by peer
+
+Опыт B. Ускоренный обмен, SCHED_LOOP_RATE = 50
+  команда запуска                   : powershell -ExecutionPolicy Bypass -File "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\windows\Start-ArduPilotJsonSitl.ps1" -DistroName Ubuntu -Ip 172.19.208.1 -MavlinkPort 14550 -SecondaryMavlinkPort 14552 -NoConsole -NoMap -Execute -ExtraDefaultsParmPath "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task17_loop_rate_50.parm" -LogPath "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\artifacts\logs\task_17_case_b_start.txt"
+  файл параметров                   : D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task17_loop_rate_50.parm
+  update_rate_hz MATLAB             : 160
+  запуск процесса                   : да
+  PID arducopter                    : 405
+  valid_rx_count                    : 1
+  json_tx_count                     : 1862
+  response_tx_count                 : 0
+  средняя частота обмена [Hz]       : 0.0000
+  p95 периода обмена [s]            : NaN
+  gyro_rate_hz по STATUSTEXT        : 0
+  взведение подтверждено            : нет
+  arducopter жив после опыта        : нет
+  код завершения процесса           : 
+  last_frame_count                  : 0
+  motor_pwm до [us]                 : [NaN..NaN, NaN..NaN, NaN..NaN, NaN..NaN]
+  motor_pwm после [us]              : [NaN..NaN, NaN..NaN, NaN..NaN, NaN..NaN]
+  motor_cmd до [rad/s]              : [0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000]
+  motor_cmd после [rad/s]           : [0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000]
+  итоговый статус обмена            : непрерывный обмен не подтвержден; принят только единичный двоичный пакет
+  причина                           : [Errno 104] Connection reset by peer
+
+Опыт C. Ускоренный обмен, SCHED_LOOP_RATE = 30
+  команда запуска                   : powershell -ExecutionPolicy Bypass -File "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\windows\Start-ArduPilotJsonSitl.ps1" -DistroName Ubuntu -Ip 172.19.208.1 -MavlinkPort 14550 -SecondaryMavlinkPort 14552 -NoConsole -NoMap -Execute -ExtraDefaultsParmPath "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task17_loop_rate_30.parm" -LogPath "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\artifacts\logs\task_17_case_c_start.txt"
+  файл параметров                   : D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task17_loop_rate_30.parm
+  update_rate_hz MATLAB             : 160
+  запуск процесса                   : да
+  PID arducopter                    : 428
+  valid_rx_count                    : 1
+  json_tx_count                     : 1864
+  response_tx_count                 : 0
+  средняя частота обмена [Hz]       : 0.0000
+  p95 периода обмена [s]            : NaN
+  gyro_rate_hz по STATUSTEXT        : 0
+  взведение подтверждено            : нет
+  arducopter жив после опыта        : нет
+  код завершения процесса           : 
+  last_frame_count                  : 0
+  motor_pwm до [us]                 : [NaN..NaN, NaN..NaN, NaN..NaN, NaN..NaN]
+  motor_pwm после [us]              : [NaN..NaN, NaN..NaN, NaN..NaN, NaN..NaN]
+  motor_cmd до [rad/s]              : [0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000]
+  motor_cmd после [rad/s]           : [0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000]
+  итоговый статус обмена            : непрерывный обмен не подтвержден; принят только единичный двоичный пакет
+  причина                           : [Errno 104] Connection reset by peer
+
+Лучший опыт: A
+Взведение подтверждено: нет
+Лучшая конфигурация параметров: D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task16_arducopter_loop_rate.parm

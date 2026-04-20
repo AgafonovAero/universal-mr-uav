@@ -1,0 +1,55 @@
+case_id,case_title,extra_defaults_path,update_rate_hz,launch_command,launch_status,launch_pid,process_started,process_alive_after_case,start_output,valid_rx_count,json_tx_count,response_tx_count,average_exchange_rate_hz,p95_exchange_period_s,gyro_rate_hz,ack_result,arm_succeeded,failure_reason,status_texts,last_frame_count,motor_pwm_before_min_us,motor_pwm_before_max_us,motor_pwm_after_min_us,motor_pwm_after_max_us,motor_cmd_before_min_radps,motor_cmd_before_max_radps,motor_cmd_after_min_radps,motor_cmd_after_max_radps,last_exchange_status
+A,"Базовая конфигурация TASK-16",D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task16_arducopter_loop_rate.parm,120,"powershell -ExecutionPolicy Bypass -File ""D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\windows\Start-ArduPilotJsonSitl.ps1"" -DistroName Ubuntu -Ip 172.19.208.1 -MavlinkPort 14550 -SecondaryMavlinkPort 14552 -NoConsole -NoMap -Execute -ExtraDefaultsParmPath ""D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task16_arducopter_loop_rate.parm"" -LogPath ""D:\WORK\AI_SOLUTION\universal-mr-uav-task17\artifacts\logs\task_17_case_a_start.txt""",0,457,1,0,"Start ArduCopter JSON SITL through WSL
+  distro                         : Ubuntu
+  bash script                    : /mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task17/tools/ardupilot/wsl/start_arducopter_json_sitl.sh
+  mode                           : execute
+  requested IP                   : 172.19.208.1
+  effective Windows host IP      : 172.19.208.1
+  MAVLink UDP port               : 14550
+  Р?Р?РїР?Р>Р?РёС'РчР>С?Р?С<Р№ MAVLink РїР?С?С'   : 14552
+  Р?Р?РїР?Р>Р?РёС'РчР>С?Р?С<Р№ defaults parm   : D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task16_arducopter_loop_rate.parm
+  arguments                      : /mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task17/tools/ardupilot/wsl/start_arducopter_json_sitl.sh --ip 172.19.208.1 --mavlink-port 14550 --secondary-mavlink-port 14552 --defaults-extra /mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task17/tools/ardupilot/wsl/task16_arducopter_loop_rate.parm --no-console --no-map --execute
+
+Starting ArduCopter SITL in non-blocking mode.
+  wsl.exe process id             : 21556
+your 131072x1 screen size is bogus. expect trouble
+  SITL process confirmed         : yes
+  detected WSL processes:
+        457 arducopter      ../build/sitl/bin/arducopter --model JSON:172.19.208.1 --speedup 1 --slave 0 --serial0=udpclient:172.19.208.1:14550 --defaults ../Tools/autotest/default_params/copter.parm,/mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task17/tools/ardupilot/wsl/task16_arducopter_loop_rate.parm --sim-address=172.19.208.1 -I0 --serial1=udpclient:172.19.208.1:14552
+",1,1829,0,0,NaN,0,NaN,0,[Errno 104] Connection reset by peer,,0,NaN,NaN,NaN,NaN,0,0,0,0,непрерывный обмен не подтвержден; принят только единичный двоичный пакет
+B,"Ускоренный обмен, SCHED_LOOP_RATE = 50",D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task17_loop_rate_50.parm,160,"powershell -ExecutionPolicy Bypass -File ""D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\windows\Start-ArduPilotJsonSitl.ps1"" -DistroName Ubuntu -Ip 172.19.208.1 -MavlinkPort 14550 -SecondaryMavlinkPort 14552 -NoConsole -NoMap -Execute -ExtraDefaultsParmPath ""D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task17_loop_rate_50.parm"" -LogPath ""D:\WORK\AI_SOLUTION\universal-mr-uav-task17\artifacts\logs\task_17_case_b_start.txt""",0,405,1,0,"Start ArduCopter JSON SITL through WSL
+  distro                         : Ubuntu
+  bash script                    : /mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task17/tools/ardupilot/wsl/start_arducopter_json_sitl.sh
+  mode                           : execute
+  requested IP                   : 172.19.208.1
+  effective Windows host IP      : 172.19.208.1
+  MAVLink UDP port               : 14550
+  Р?Р?РїР?Р>Р?РёС'РчР>С?Р?С<Р№ MAVLink РїР?С?С'   : 14552
+  Р?Р?РїР?Р>Р?РёС'РчР>С?Р?С<Р№ defaults parm   : D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task17_loop_rate_50.parm
+  arguments                      : /mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task17/tools/ardupilot/wsl/start_arducopter_json_sitl.sh --ip 172.19.208.1 --mavlink-port 14550 --secondary-mavlink-port 14552 --defaults-extra /mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task17/tools/ardupilot/wsl/task17_loop_rate_50.parm --no-console --no-map --execute
+
+Starting ArduCopter SITL in non-blocking mode.
+  wsl.exe process id             : 19700
+your 131072x1 screen size is bogus. expect trouble
+  SITL process confirmed         : yes
+  detected WSL processes:
+        405 arducopter      ../build/sitl/bin/arducopter --model JSON:172.19.208.1 --speedup 1 --slave 0 --serial0=udpclient:172.19.208.1:14550 --defaults ../Tools/autotest/default_params/copter.parm,/mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task17/tools/ardupilot/wsl/task17_loop_rate_50.parm --sim-address=172.19.208.1 -I0 --serial1=udpclient:172.19.208.1:14552
+",1,1862,0,0,NaN,0,NaN,0,[Errno 104] Connection reset by peer,,0,NaN,NaN,NaN,NaN,0,0,0,0,непрерывный обмен не подтвержден; принят только единичный двоичный пакет
+C,"Ускоренный обмен, SCHED_LOOP_RATE = 30",D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task17_loop_rate_30.parm,160,"powershell -ExecutionPolicy Bypass -File ""D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\windows\Start-ArduPilotJsonSitl.ps1"" -DistroName Ubuntu -Ip 172.19.208.1 -MavlinkPort 14550 -SecondaryMavlinkPort 14552 -NoConsole -NoMap -Execute -ExtraDefaultsParmPath ""D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task17_loop_rate_30.parm"" -LogPath ""D:\WORK\AI_SOLUTION\universal-mr-uav-task17\artifacts\logs\task_17_case_c_start.txt""",0,428,1,0,"Start ArduCopter JSON SITL through WSL
+  distro                         : Ubuntu
+  bash script                    : /mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task17/tools/ardupilot/wsl/start_arducopter_json_sitl.sh
+  mode                           : execute
+  requested IP                   : 172.19.208.1
+  effective Windows host IP      : 172.19.208.1
+  MAVLink UDP port               : 14550
+  Р?Р?РїР?Р>Р?РёС'РчР>С?Р?С<Р№ MAVLink РїР?С?С'   : 14552
+  Р?Р?РїР?Р>Р?РёС'РчР>С?Р?С<Р№ defaults parm   : D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task17_loop_rate_30.parm
+  arguments                      : /mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task17/tools/ardupilot/wsl/start_arducopter_json_sitl.sh --ip 172.19.208.1 --mavlink-port 14550 --secondary-mavlink-port 14552 --defaults-extra /mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task17/tools/ardupilot/wsl/task17_loop_rate_30.parm --no-console --no-map --execute
+
+Starting ArduCopter SITL in non-blocking mode.
+  wsl.exe process id             : 23092
+your 131072x1 screen size is bogus. expect trouble
+  SITL process confirmed         : yes
+  detected WSL processes:
+        428 arducopter      ../build/sitl/bin/arducopter --model JSON:172.19.208.1 --speedup 1 --slave 0 --serial0=udpclient:172.19.208.1:14550 --defaults ../Tools/autotest/default_params/copter.parm,/mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task17/tools/ardupilot/wsl/task17_loop_rate_30.parm --sim-address=172.19.208.1 -I0 --serial1=udpclient:172.19.208.1:14552
+",1,1864,0,0,NaN,0,NaN,0,[Errno 104] Connection reset by peer,,0,NaN,NaN,NaN,NaN,0,0,0,0,непрерывный обмен не подтвержден; принят только единичный двоичный пакет
