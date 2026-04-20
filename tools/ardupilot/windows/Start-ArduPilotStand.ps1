@@ -156,20 +156,34 @@ if ($Execute) {
     Add-Line ("  WSL process id               : {0}" -f $wslProcess.Id)
 
     if ($LaunchMissionPlanner -and $missionPlannerPath) {
-        $mpProcess = Start-Process -FilePath $missionPlannerPath -PassThru
-        $state.mission_planner_process_id = $mpProcess.Id
-        $state.mission_planner_launched = $true
-        Add-Line ("  Mission Planner started      : yes, PID {0}" -f $mpProcess.Id)
+        $existingMissionPlanner = Get-Process -Name MissionPlanner -ErrorAction SilentlyContinue | Select-Object -First 1
+        if ($existingMissionPlanner) {
+            $state.mission_planner_process_id = $existingMissionPlanner.Id
+            Add-Line ("  Mission Planner reused       : yes, PID {0}" -f $existingMissionPlanner.Id)
+        }
+        else {
+            $mpProcess = Start-Process -FilePath $missionPlannerPath -PassThru
+            $state.mission_planner_process_id = $mpProcess.Id
+            $state.mission_planner_launched = $true
+            Add-Line ("  Mission Planner started      : yes, PID {0}" -f $mpProcess.Id)
+        }
     }
     elseif ($LaunchMissionPlanner) {
         Add-Line "  Mission Planner start skipped: executable not found."
     }
 
     if ($LaunchQGroundControl -and $qgcPath) {
-        $qgcProcess = Start-Process -FilePath $qgcPath -PassThru
-        $state.qgroundcontrol_process_id = $qgcProcess.Id
-        $state.qgroundcontrol_launched = $true
-        Add-Line ("  QGroundControl started       : yes, PID {0}" -f $qgcProcess.Id)
+        $existingQgc = Get-Process -Name QGroundControl -ErrorAction SilentlyContinue | Select-Object -First 1
+        if ($existingQgc) {
+            $state.qgroundcontrol_process_id = $existingQgc.Id
+            Add-Line ("  QGroundControl reused        : yes, PID {0}" -f $existingQgc.Id)
+        }
+        else {
+            $qgcProcess = Start-Process -FilePath $qgcPath -PassThru
+            $state.qgroundcontrol_process_id = $qgcProcess.Id
+            $state.qgroundcontrol_launched = $true
+            Add-Line ("  QGroundControl started       : yes, PID {0}" -f $qgcProcess.Id)
+        }
     }
     elseif ($LaunchQGroundControl) {
         Add-Line "  QGroundControl start skipped: executable not found."

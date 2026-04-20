@@ -62,15 +62,15 @@ if ($state -and $state.wsl_process_id) {
     $candidatePids.Add([int]$state.wsl_process_id)
 }
 
-Add-Line 'Остановка стенда ArduPilot SITL'
-Add-Line ("  режим выполнения                    : {0}" -f $(if ($Execute) { 'execute' } else { 'check' }))
-Add-Line ("  файл состояния                      : {0}" -f $StatePath)
+Add-Line 'Stop ArduPilot SITL stand'
+Add-Line ("  execution mode                      : {0}" -f $(if ($Execute) { 'execute' } else { 'check' }))
+Add-Line ("  state file                          : {0}" -f $StatePath)
 
 if ($candidatePids.Count -eq 0) {
-    Add-Line '  кандидаты на остановку не найдены.'
+    Add-Line '  no stop candidates were found.'
 }
 else {
-    Add-Line '  кандидаты на остановку:'
+    Add-Line '  stop candidates:'
     foreach ($pidValue in $candidatePids) {
         Add-Line ("    PID {0}" -f $pidValue)
     }
@@ -80,10 +80,10 @@ if ($Execute) {
     foreach ($pidValue in $candidatePids) {
         try {
             Stop-Process -Id $pidValue -Force -ErrorAction Stop
-            Add-Line ("  процесс остановлен                 : PID {0}" -f $pidValue)
+            Add-Line ("  process stopped                    : PID {0}" -f $pidValue)
         }
         catch {
-            Add-Line ("  процесс не остановлен              : PID {0}" -f $pidValue)
+            Add-Line ("  process was not stopped            : PID {0}" -f $pidValue)
         }
     }
 
@@ -93,17 +93,17 @@ if ($Execute) {
             if ($pidValue) {
                 try {
                     Stop-Process -Id ([int]$pidValue) -Force -ErrorAction Stop
-                    Add-Line ("  наземная станция остановлена      : PID {0}" -f $pidValue)
+                    Add-Line ("  ground station stopped            : PID {0}" -f $pidValue)
                 }
                 catch {
-                    Add-Line ("  наземная станция не остановлена   : PID {0}" -f $pidValue)
+                    Add-Line ("  ground station was not stopped    : PID {0}" -f $pidValue)
                 }
             }
         }
     }
 }
 else {
-    Add-Line '  режим проверки: фактическое завершение процессов не выполнялось.'
+    Add-Line '  dry-run: no processes were terminated.'
 }
 
 $logText = ($lines -join [Environment]::NewLine) + [Environment]::NewLine

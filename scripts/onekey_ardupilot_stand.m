@@ -1,9 +1,9 @@
 function result = onekey_ardupilot_stand(mode, varargin)
 %ONEKEY_ARDUPILOT_STAND Выполнить однокнопочный сценарий стенда TASK-14.
 % Назначение:
-%   Реализует режимы check, install, start, stop, status и full для
-%   подготовки и запуска стенда ArduPilot SITL, MATLAB-модели и наземных
-%   станций управления.
+%   Реализует режимы check, install, start, stop, status, full,
+%   stand-check, fly-internal и fly-json-model для подготовки и запуска
+%   стенда ArduPilot SITL, MATLAB-модели и наземных станций управления.
 %
 % Входы:
 %   mode     - строковый режим работы
@@ -26,12 +26,21 @@ switch mode
     case "check"
         [result, lines] = local_run_check_mode(cfg);
         log_path = cfg.log_check;
+    case "stand-check"
+        [result, lines] = local_run_stand_check_mode(cfg);
+        log_path = "artifacts/logs/task_18_stand_check.txt";
     case "install"
         [result, lines] = local_run_install_mode(cfg);
         log_path = cfg.log_install;
     case "start"
         [result, lines] = local_run_start_mode(cfg);
         log_path = cfg.log_start;
+    case "fly-internal"
+        [result, lines] = local_run_fly_internal_mode(cfg);
+        log_path = "artifacts/logs/task_18_fly_internal_onekey.txt";
+    case "fly-json-model"
+        [result, lines] = local_run_fly_json_mode(cfg);
+        log_path = "artifacts/logs/task_18_fly_json_model_onekey.txt";
     case "stop"
         [result, lines] = local_run_stop_mode(cfg);
         log_path = cfg.log_stop_stand;
@@ -117,7 +126,8 @@ function mode = local_normalize_mode(mode)
 %LOCAL_NORMALIZE_MODE Нормализовать строку режима.
 
 mode = lower(string(mode));
-allowed = ["check"; "install"; "start"; "stop"; "status"; "full"];
+allowed = ["check"; "install"; "start"; "stop"; "status"; "full"; ...
+    "stand-check"; "fly-internal"; "fly-json-model"];
 
 if ~any(mode == allowed)
     error( ...
@@ -157,6 +167,33 @@ lines = [lines; "  - " + status_info.messages(:)];
 
 result = struct();
 result.success = true;
+result.status_info = status_info;
+result.requires_operator_action = false;
+result.operator_actions = strings(0, 1);
+
+fprintf('%s\n', char(strjoin(lines, newline)));
+end
+
+function [result, lines] = local_run_stand_check_mode(cfg)
+%LOCAL_RUN_STAND_CHECK_MODE Выполнить практическую проверку двух режимов стенда.
+
+[status_result, status_lines] = local_run_status_mode(cfg);
+status_info = status_result.status_info;
+
+lines = strings(0, 1);
+lines = local_add_header(lines, "OneKeyArduPilotStand(stand-check)");
+lines = local_add_line(lines, "Практическая проверка среды для двух режимов стенда:");
+lines = local_add_line(lines, "  штатный fly-internal возможен: " + local_bool_text( ...
+    status_info.wsl.has_target_distro ...
+    && status_info.wsl.has_ardupilot_root ...
+    && status_info.ground_stations.mission_planner.is_installed));
+lines = local_add_line(lines, "  режим fly-json-model возможен: " + local_bool_text( ...
+    status_info.ready_for_start ...
+    && status_info.ground_stations.mission_planner.is_installed));
+lines = [lines; ""; status_lines];
+
+result = struct();
+result.success = status_result.success;
 result.status_info = status_info;
 result.requires_operator_action = false;
 result.operator_actions = strings(0, 1);
@@ -291,6 +328,109 @@ end
 fprintf('%s\n', char(strjoin(lines, newline)));
 end
 
+function [result, lines] = local_run_fly_internal_mode(cfg)
+%LOCAL_RUN_FLY_INTERNAL_MODE Выполнить практический режим штатного SITL.
+
+lines = strings(0, 1);
+lines = local_add_header(lines, "OneKeyArduPilotStand(fly-internal)");
+
+if ~cfg.execute_start
+    lines = local_add_line(lines, "Режим fly-internal работает только с Execute=true.");
+    lines = local_add_line(lines, "Повторите запуск:");
+    lines = local_add_line(lines, "  OneKeyArduPilotStand(""fly-internal"", ""Execute"", true, ""GroundStation"", ""MissionPlanner"")");
+
+    result = struct();
+    result.success = false;
+    result.requires_operator_action = true;
+    result.operator_actions = "Повторите режим fly-internal с Execute=true.";
+    fprintf('%s\n', char(strjoin(lines, newline)));
+    return;
+end
+
+[payload, block_lines] = local_execute_matlab_script( ...
+    cfg, ...
+    "scripts/run_ardupilot_internal_sitl_demo.m", ...
+    fullfile(char(cfg.repo_root), 'artifacts/logs/task_18_internal_sitl_start.txt'), ...
+    'ardupilot_internal_sitl_demo');
+lines = [lines; block_lines];
+
+demo_result = [];
+if payload.success
+    demo_result = payload.base_value;
+    lines = local_add_line(lines, "");
+    lines = local_add_line(lines, "Итог режима fly-internal:");
+    lines = local_add_line(lines, "  SITL запущен: " + local_bool_text(demo_result.sitl_started));
+    lines = local_add_line(lines, "  Mission Planner запущен: " + local_bool_text(demo_result.mission_planner_started));
+    lines = local_add_line(lines, "  arm: " + local_bool_text(demo_result.arm_succeeded));
+    lines = local_add_line(lines, "  takeoff 5 м: " + local_bool_text(demo_result.takeoff_succeeded));
+    lines = local_add_line(lines, "  max relative altitude [m]: " + string(demo_result.max_relative_alt_m));
+end
+
+result = struct();
+result.success = payload.success ...
+    && ~isempty(demo_result) ...
+    && demo_result.sitl_started ...
+    && demo_result.arm_succeeded ...
+    && demo_result.takeoff_succeeded;
+result.demo_result = demo_result;
+result.requires_operator_action = false;
+result.operator_actions = strings(0, 1);
+
+fprintf('%s\n', char(strjoin(lines, newline)));
+end
+
+function [result, lines] = local_run_fly_json_mode(cfg)
+%LOCAL_RUN_FLY_JSON_MODE Выполнить практический режим JSON/UDP с MATLAB-моделью.
+
+lines = strings(0, 1);
+lines = local_add_header(lines, "OneKeyArduPilotStand(fly-json-model)");
+
+if ~cfg.execute_start
+    lines = local_add_line(lines, "Режим fly-json-model работает только с Execute=true.");
+    lines = local_add_line(lines, "Повторите запуск:");
+    lines = local_add_line(lines, "  OneKeyArduPilotStand(""fly-json-model"", ""Execute"", true, ""GroundStation"", ""MissionPlanner"")");
+
+    result = struct();
+    result.success = false;
+    result.requires_operator_action = true;
+    result.operator_actions = "Повторите режим fly-json-model с Execute=true.";
+    fprintf('%s\n', char(strjoin(lines, newline)));
+    return;
+end
+
+[payload, block_lines] = local_execute_matlab_script( ...
+    cfg, ...
+    "scripts/run_ardupilot_json_model_demo.m", ...
+    fullfile(char(cfg.repo_root), 'artifacts/logs/task_18_json_model_exchange.txt'), ...
+    'ardupilot_json_model_demo');
+lines = [lines; block_lines];
+
+demo_result = [];
+if payload.success
+    demo_result = payload.base_value;
+    metrics = demo_result.json_metrics;
+    lines = local_add_line(lines, "");
+    lines = local_add_line(lines, "Итог режима fly-json-model:");
+    lines = local_add_line(lines, "  valid_rx_count: " + string(metrics.valid_rx_count));
+    lines = local_add_line(lines, "  response_tx_count: " + string(metrics.response_tx_count));
+    lines = local_add_line(lines, "  Mission Planner запущен: " ...
+        + local_bool_text(contains(demo_result.mission_planner_status, "Mission Planner запущен: да")));
+    lines = local_add_line(lines, "  arm выполнен: " + local_bool_text(demo_result.arm_attempt.arm_succeeded));
+    lines = local_add_line(lines, "  причина: " + string(demo_result.arm_attempt.failure_reason));
+end
+
+result = struct();
+result.success = payload.success ...
+    && ~isempty(demo_result) ...
+    && demo_result.json_metrics.valid_rx_count > 50 ...
+    && demo_result.json_metrics.response_tx_count > 50;
+result.demo_result = demo_result;
+result.requires_operator_action = false;
+result.operator_actions = strings(0, 1);
+
+fprintf('%s\n', char(strjoin(lines, newline)));
+end
+
 function [result, lines] = local_run_stop_mode(cfg)
 %LOCAL_RUN_STOP_MODE Выполнить режим stop.
 
@@ -306,13 +446,30 @@ end
     cfg.execute_stop, ...
     fullfile(repo_root, char(cfg.log_stop_stand)));
 
+wsl_stop_result = struct('status_code', 0, 'message', "Остановка процессов WSL не выполнялась.", 'output_text', "");
+if cfg.execute_stop
+    cleanup_command = "pkill arducopter >/dev/null 2>&1 || true; exit 0";
+    wsl_stop_result = uav.setup.run_wsl_command( ...
+        cleanup_command, ...
+        'DistroName', cfg.wsl_distro_name, ...
+        'WorkDir', repo_root);
+end
+
 lines = strings(0, 1);
 lines = local_add_header(lines, "OneKeyArduPilotStand(stop)");
 lines = [lines; stop_block];
+lines = local_add_line(lines, "");
+lines = local_add_line(lines, "WSL cleanup:");
+lines = local_add_line(lines, "  код завершения: " + string(wsl_stop_result.status_code));
+lines = local_add_line(lines, "  пояснение: " + string(wsl_stop_result.message));
+if strlength(string(wsl_stop_result.output_text)) > 0
+    lines = [lines; splitlines(string(wsl_stop_result.output_text))];
+end
 
 result = struct();
-result.success = stop_result.success;
+result.success = stop_result.success && wsl_stop_result.status_code == 0;
 result.stop_result = stop_result;
+result.wsl_stop_result = wsl_stop_result;
 result.requires_operator_action = ~cfg.execute_stop;
 result.operator_actions = "Повторите режим stop с разрешенным выполнением, если требуется фактическая остановка процессов.";
 
@@ -604,25 +761,24 @@ end
 function cfg = local_apply_ground_station(cfg, value)
 %LOCAL_APPLY_GROUND_STATION Настроить выбор наземной станции управления.
 
-station_name = lower(string(value));
+station_name = lower(strtrim(string(value)));
 
-switch station_name
-    case ["missionplanner"; "mission_planner"]
-        cfg.prefer_ground_station = "MissionPlanner";
-        cfg.launch_mission_planner = true;
-        cfg.launch_qgroundcontrol = false;
-    case ["qgroundcontrol"; "qgc"]
-        cfg.prefer_ground_station = "QGroundControl";
-        cfg.launch_mission_planner = false;
-        cfg.launch_qgroundcontrol = true;
-    case ["both"; "all"]
-        cfg.prefer_ground_station = "MissionPlanner";
-        cfg.launch_mission_planner = true;
-        cfg.launch_qgroundcontrol = true;
-    otherwise
-        error( ...
-            'uav:setup:onekey_ardupilot_stand:GroundStation', ...
-            'Неподдерживаемое значение GroundStation: %s.', ...
-            station_name);
+if any(station_name == ["missionplanner"; "mission_planner"])
+    cfg.prefer_ground_station = "MissionPlanner";
+    cfg.launch_mission_planner = true;
+    cfg.launch_qgroundcontrol = false;
+elseif any(station_name == ["qgroundcontrol"; "qgc"])
+    cfg.prefer_ground_station = "QGroundControl";
+    cfg.launch_mission_planner = false;
+    cfg.launch_qgroundcontrol = true;
+elseif any(station_name == ["both"; "all"])
+    cfg.prefer_ground_station = "MissionPlanner";
+    cfg.launch_mission_planner = true;
+    cfg.launch_qgroundcontrol = true;
+else
+    error( ...
+        'uav:setup:onekey_ardupilot_stand:GroundStation', ...
+        'Неподдерживаемое значение GroundStation: %s.', ...
+        station_name);
 end
 end

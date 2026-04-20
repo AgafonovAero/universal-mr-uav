@@ -6,7 +6,7 @@ function result = OneKeyArduPilotStand(mode, varargin)
 %
 % Входы:
 %   mode     - строковый режим работы: check, install, start, stop,
-%              status или full
+%              status, full, stand-check, fly-internal или fly-json-model
 %   varargin - необязательная структура с переопределением конфигурации
 %
 % Выходы:
