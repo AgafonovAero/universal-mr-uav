@@ -1,0 +1,26 @@
+Запуск ArduPilot SITL для опыта TASK-17
+============================================================
+идентификатор опыта                : A
+описание опыта                     : Базовая конфигурация TASK-16
+команда запуска                    : powershell -ExecutionPolicy Bypass -File "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\windows\Start-ArduPilotJsonSitl.ps1" -DistroName Ubuntu -Ip 172.19.208.1 -MavlinkPort 14550 -SecondaryMavlinkPort 14552 -NoConsole -NoMap -Execute -ExtraDefaultsParmPath "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task16_arducopter_loop_rate.parm" -LogPath "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\artifacts\logs\task_17_case_a_start.txt"
+дополнительный файл параметров     : D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task16_arducopter_loop_rate.parm
+update_rate_hz MATLAB              : 120
+статус запуска PowerShell          : 0
+PID arducopter                     : 457
+процесс arducopter жив             : да
+  Start ArduCopter JSON SITL through WSL
+  distro                         : Ubuntu
+  bash script                    : /mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task17/tools/ardupilot/wsl/start_arducopter_json_sitl.sh
+  mode                           : execute
+  requested IP                   : 172.19.208.1
+  effective Windows host IP      : 172.19.208.1
+  MAVLink UDP port               : 14550
+  Р?Р?РїР?Р>Р?РёС'РчР>С?Р?С<Р№ MAVLink РїР?С?С'   : 14552
+  Р?Р?РїР?Р>Р?РёС'РчР>С?Р?С<Р№ defaults parm   : D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task16_arducopter_loop_rate.parm
+  arguments                      : /mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task17/tools/ardupilot/wsl/start_arducopter_json_sitl.sh --ip 172.19.208.1 --mavlink-port 14550 --secondary-mavlink-port 14552 --defaults-extra /mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task17/tools/ardupilot/wsl/task16_arducopter_loop_rate.parm --no-console --no-map --execute
+  Starting ArduCopter SITL in non-blocking mode.
+  wsl.exe process id             : 21556
+  your 131072x1 screen size is bogus. expect trouble
+  SITL process confirmed         : yes
+  detected WSL processes:
+  457 arducopter      ../build/sitl/bin/arducopter --model JSON:172.19.208.1 --speedup 1 --slave 0 --serial0=udpclient:172.19.208.1:14550 --defaults ../Tools/autotest/default_params/copter.parm,/mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task17/tools/ardupilot/wsl/task16_arducopter_loop_rate.parm --sim-address=172.19.208.1 -I0 --serial1=udpclient:172.19.208.1:14552
