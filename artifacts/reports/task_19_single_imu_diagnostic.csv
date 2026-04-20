@@ -1,0 +1,2 @@
+parm_path,baseline_valid_rx_count,baseline_response_tx_count,baseline_last_frame_count,arm_succeeded,ack_result,failure_reason,motor_pwm_min_us,motor_pwm_max_us,motor_cmd_min_radps,motor_cmd_max_radps
+D:\WORK\AI_SOLUTION\universal-mr-uav-task19\tools\ardupilot\wsl\task19_single_imu_diagnostic.parm,507,492,500,0,4,Arm: Accels inconsistent,1000,1000,0,0

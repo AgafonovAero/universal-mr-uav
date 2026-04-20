@@ -1,0 +1,11 @@
+TASK-19: диагностический профиль одного виртуального ИНС
+============================================================
+Файл параметров: D:\WORK\AI_SOLUTION\universal-mr-uav-task19\tools\ardupilot\wsl\task19_single_imu_diagnostic.parm
+baseline valid_rx_count: 507
+baseline response_tx_count: 492
+baseline last_frame_count: 500
+arm выполнен: нет
+ACK: 4
+Причина: Arm: Accels inconsistent
+Диапазон motor_pwm_us: [1000.000000 1000.000000]
+Диапазон motor_cmd_radps: [0.000000 0.000000]

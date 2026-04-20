@@ -32,6 +32,7 @@ sitl_output_hist = repmat(uav.ardupilot.decode_sitl_output_packet([], cfg), max_
 exchange_diag_hist = repmat(local_empty_exchange_diag(cfg), max_steps, 1);
 exchange_status_hist = strings(max_steps, 1);
 motor_cmd_hist_radps = nan(max_steps, cfg.motor_count);
+prearm_hold_hist = false(max_steps, 1);
 quat_norm_true = nan(max_steps, 1);
 quat_norm_est = nan(max_steps, 1);
 time_s = nan(max_steps, 1);
@@ -175,12 +176,16 @@ while toc(wall_start) < duration_s
     loop_tic = tic;
 
     model_tic = tic;
-    [state_next, ~] = uav.sim.plant_step_struct( ...
-        state, ...
-        held_motor_cmd_radps, ...
-        dt_s, ...
-        params);
-    state = state_next;
+    prearm_hold_active = local_is_prearm_hold_active(cfg, last_pwm_us);
+    prearm_hold_hist(step_index) = prearm_hold_active;
+    if ~prearm_hold_active
+        [state_next, ~] = uav.sim.plant_step_struct( ...
+            state, ...
+            held_motor_cmd_radps, ...
+            dt_s, ...
+            params);
+        state = state_next;
+    end
     physics_time_s = physics_time_s + dt_s;
 
     snapshot = local_snapshot_diag(state, params);
@@ -325,6 +330,7 @@ result.sitl_output = sitl_output_hist;
 result.exchange_diag = exchange_diag_hist;
 result.exchange_status = exchange_status_hist;
 result.motor_cmd_radps = motor_cmd_hist_radps;
+result.prearm_hold_hist = prearm_hold_hist(1:step_index);
 result.quat_norm_true = quat_norm_true;
 result.quat_norm_est = quat_norm_est;
 result.loop_elapsed_s = loop_elapsed_s;
@@ -428,6 +434,19 @@ if evalin('base', 'exist(''ardupilot_live_backend_update_rate_hz'', ''var'')')
         mfilename, 'ardupilot_live_backend_update_rate_hz');
     cfg.update_rate_hz = double(candidate_value);
 end
+
+if evalin('base', 'exist(''ardupilot_json_cfg_override'', ''var'')')
+    override_cfg = evalin('base', 'ardupilot_json_cfg_override');
+    if ~isstruct(override_cfg) || ~isscalar(override_cfg)
+        error('uav:task15:live_backend:CfgOverride', ...
+            'Ожидалась скалярная структура ardupilot_json_cfg_override.');
+    end
+
+    field_names = fieldnames(override_cfg);
+    for idx = 1:numel(field_names)
+        cfg.(field_names{idx}) = override_cfg.(field_names{idx});
+    end
+end
 end
 
 function text_value = local_final_exchange_status(valid_rx_count, response_tx_count, last_frame_count, fallback_status)
@@ -527,4 +546,24 @@ diag.rx_elapsed_s = 0.0;
 diag.tx_elapsed_s = 0.0;
 diag.step_elapsed_s = 0.0;
 diag.tx_payload_bytes = 0;
+end
+
+function is_hold = local_is_prearm_hold_active(cfg, last_pwm_us)
+%LOCAL_IS_PREARM_HOLD_ACTIVE Detect whether the plant should stay on the ground.
+
+is_hold = false;
+if ~isfield(cfg, 'json_prearm_hold_enabled') || ~logical(cfg.json_prearm_hold_enabled)
+    return;
+end
+
+if isempty(last_pwm_us) || ~all(isfinite(last_pwm_us))
+    return;
+end
+
+threshold_us = 1005.0;
+if isfield(cfg, 'json_prearm_pwm_threshold_us')
+    threshold_us = double(cfg.json_prearm_pwm_threshold_us);
+end
+
+is_hold = max(double(last_pwm_us(:))) <= threshold_us;
 end

@@ -1,0 +1,22 @@
+Диагностика виртуальных ИНС ArduPilot
+============================================================
+Режим accel_body: current
+baseline valid_rx_count: 520
+baseline response_tx_count: 501
+baseline last_frame_count: 516
+HEARTBEAT получен: да
+INS_USE: 1
+INS_USE2: 0
+INS_USE3: 0
+INS_ENABLE_MASK: 127
+SCALED_IMU2 присутствует: да
+SCALED_IMU3 присутствует: да
+Разность SCALED_IMU и SCALED_IMU2 по норме: NaN
+Разность SCALED_IMU и SCALED_IMU3 по норме: NaN
+ACK arm: 4
+Arm выполнен: нет
+Причина: Arm: Accels inconsistent
+Команда Python: powershell -NoProfile -ExecutionPolicy Bypass -File "D:\WORK\AI_SOLUTION\universal-mr-uav-task19\artifacts\logs\task_19_ins_instances_helper_launcher.ps1"
+
+STATUSTEXT:
+  Arm: Accels inconsistent

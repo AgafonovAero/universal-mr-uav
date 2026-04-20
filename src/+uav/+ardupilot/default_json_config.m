@@ -54,6 +54,14 @@ cfg.loopback_yaw_delta_us = 60.0;
 
 cfg.update_rate_hz = 100.0;
 cfg.use_ardupilot_json = true;
+cfg.json_accel_mode = "current";
+cfg.json_ground_contact_window_s = 60.0;
+cfg.json_ground_contact_alt_tol_m = 0.25;
+cfg.json_ground_contact_speed_tol_mps = 1.0;
+cfg.json_ground_contact_rate_tol_radps = 1.0;
+cfg.json_ground_contact_motor_tol_radps = 1.0;
+cfg.json_prearm_hold_enabled = false;
+cfg.json_prearm_pwm_threshold_us = 1005.0;
 
 cfg.sitl_magic_16 = 18458;
 cfg.sitl_magic_32 = 29569;

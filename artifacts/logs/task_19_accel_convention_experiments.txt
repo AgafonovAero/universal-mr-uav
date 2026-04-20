@@ -1,0 +1,112 @@
+Опыты TASK-19 по соглашению accel_body
+============================================================
+Задержка перед arm [s]: 30.000
+Выбранный вариант: current
+Причина выбора: Arm не подтвержден; выбран первый устойчивый вариант обмена для дальнейшей диагностики.
+
+Вариант: current
+  baseline restored: да
+  baseline valid_rx_count: 516
+  baseline response_tx_count: 513
+  valid_rx_count: 528
+  response_tx_count: 523
+  last_frame_count: 1034
+  ACK: 4
+  arm succeeded: нет
+  has Accels inconsistent: да
+  motor_pwm_us range after arm: [1000.000, 1000.000]
+  motor_cmd_radps range after arm: [0.000, 0.000]
+  accel_norm range [m/s^2]: [0.000000, 0.000000]
+  failure reason: Arm: Accels inconsistent
+  STATUSTEXT: Arm: Accels inconsistent
+  STATUSTEXT: GPS 1: probing for u-blox at 230400 baud
+  STATUSTEXT: GPS 1: detected u-blox
+
+Вариант: specific_force_frd
+  baseline restored: да
+  baseline valid_rx_count: 518
+  baseline response_tx_count: 517
+  valid_rx_count: 513
+  response_tx_count: 512
+  last_frame_count: 1027
+  ACK: 4
+  arm succeeded: нет
+  has Accels inconsistent: да
+  motor_pwm_us range after arm: [1000.000, 1000.000]
+  motor_cmd_radps range after arm: [0.000, 0.000]
+  accel_norm range [m/s^2]: [0.000000, 0.000000]
+  failure reason: Arm: Accels inconsistent
+  STATUSTEXT: Arm: Accels inconsistent
+  STATUSTEXT: GPS 1: probing for u-blox at 230400 baud
+  STATUSTEXT: GPS 1: detected u-blox
+  STATUSTEXT: EKF3 IMU0 forced reset
+  STATUSTEXT: EKF3 IMU0 initialised
+  STATUSTEXT: EKF3 IMU1 forced reset
+  STATUSTEXT: EKF3 IMU1 initialised
+
+Вариант: minus_specific_force_frd
+  baseline restored: да
+  baseline valid_rx_count: 519
+  baseline response_tx_count: 518
+  valid_rx_count: 509
+  response_tx_count: 508
+  last_frame_count: 1022
+  ACK: 4
+  arm succeeded: нет
+  has Accels inconsistent: да
+  motor_pwm_us range after arm: [1000.000, 1000.000]
+  motor_cmd_radps range after arm: [0.000, 0.000]
+  accel_norm range [m/s^2]: [0.000000, 0.000000]
+  failure reason: Arm: Accels inconsistent
+  STATUSTEXT: Arm: Accels inconsistent
+  STATUSTEXT: GPS 1: probing for u-blox at 230400 baud
+  STATUSTEXT: GPS 1: detected u-blox
+  STATUSTEXT: EKF3 IMU0 forced reset
+  STATUSTEXT: EKF3 IMU0 initialised
+  STATUSTEXT: EKF3 IMU1 forced reset
+  STATUSTEXT: EKF3 IMU1 initialised
+
+Вариант: linear_accel_body
+  baseline restored: да
+  baseline valid_rx_count: 520
+  baseline response_tx_count: 519
+  valid_rx_count: 527
+  response_tx_count: 526
+  last_frame_count: 1039
+  ACK: 4
+  arm succeeded: нет
+  has Accels inconsistent: да
+  motor_pwm_us range after arm: [1000.000, 1000.000]
+  motor_cmd_radps range after arm: [0.000, 0.000]
+  accel_norm range [m/s^2]: [0.000000, 0.000000]
+  failure reason: Arm: Accels inconsistent
+  STATUSTEXT: Arm: Accels inconsistent
+  STATUSTEXT: GPS 1: probing for u-blox at 230400 baud
+  STATUSTEXT: GPS 1: detected u-blox
+  STATUSTEXT: EKF3 IMU0 forced reset
+  STATUSTEXT: EKF3 IMU0 initialised
+  STATUSTEXT: EKF3 IMU1 forced reset
+  STATUSTEXT: EKF3 IMU1 initialised
+
+Вариант: zero_on_ground
+  baseline restored: да
+  baseline valid_rx_count: 522
+  baseline response_tx_count: 521
+  valid_rx_count: 513
+  response_tx_count: 506
+  last_frame_count: 1018
+  ACK: 4
+  arm succeeded: нет
+  has Accels inconsistent: да
+  motor_pwm_us range after arm: [1000.000, 1000.000]
+  motor_cmd_radps range after arm: [0.000, 0.000]
+  accel_norm range [m/s^2]: [0.000000, 0.000000]
+  failure reason: Arm: Accels inconsistent
+  STATUSTEXT: Arm: Accels inconsistent
+  STATUSTEXT: GPS 1: probing for u-blox at 230400 baud
+  STATUSTEXT: GPS 1: detected u-blox
+  STATUSTEXT: EKF3 IMU0 forced reset
+  STATUSTEXT: EKF3 IMU0 initialised
+  STATUSTEXT: EKF3 IMU1 forced reset
+  STATUSTEXT: EKF3 IMU1 initialised
+
