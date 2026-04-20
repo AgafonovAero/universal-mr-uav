@@ -1,73 +1,106 @@
 Серия опытов TASK-17 по частоте обмена и взведению ArduPilot
 ============================================================
 Опыт A. Базовая конфигурация TASK-16
-  команда запуска                   : powershell -ExecutionPolicy Bypass -File "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\windows\Start-ArduPilotJsonSitl.ps1" -DistroName Ubuntu -Ip 172.19.208.1 -MavlinkPort 14550 -SecondaryMavlinkPort 14552 -NoConsole -NoMap -Execute -ExtraDefaultsParmPath "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task16_arducopter_loop_rate.parm" -LogPath "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\artifacts\logs\task_17_case_a_start.txt"
+  команда запуска                   : cd ~/src/ardupilot/ArduCopter && ../build/sitl/bin/arducopter --model JSON:172.19.208.1 --speedup 1 --slave 0 --serial0=udpclient:172.19.208.1:14550 --defaults ../Tools/autotest/default_params/copter.parm,/mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task17/tools/ardupilot/wsl/task16_arducopter_loop_rate.parm --sim-address=172.19.208.1 -I0
   файл параметров                   : D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task16_arducopter_loop_rate.parm
   update_rate_hz MATLAB             : 120
   запуск процесса                   : да
-  PID arducopter                    : 457
-  valid_rx_count                    : 1
-  json_tx_count                     : 1829
-  response_tx_count                 : 0
-  средняя частота обмена [Hz]       : 0.0000
-  p95 периода обмена [s]            : NaN
+  PID arducopter                    : 430
+  valid_rx_count                    : 515
+  json_tx_count                     : 1757
+  response_tx_count                 : 512
+  средняя частота обмена [Hz]       : 25.9187
+  p95 периода обмена [s]            : 0.070064
   gyro_rate_hz по STATUSTEXT        : 0
+  ack_result                        : 4
   взведение подтверждено            : нет
-  arducopter жив после опыта        : нет
+  arducopter жив после опыта        : да
   код завершения процесса           : 
-  last_frame_count                  : 0
-  motor_pwm до [us]                 : [NaN..NaN, NaN..NaN, NaN..NaN, NaN..NaN]
-  motor_pwm после [us]              : [NaN..NaN, NaN..NaN, NaN..NaN, NaN..NaN]
+  last_frame_count                  : 508
+  motor_pwm до [us]                 : [0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000]
+  motor_pwm после [us]              : [1000.000000..1000.000000, 1000.000000..1000.000000, 1000.000000..1000.000000, 1000.000000..1000.000000]
   motor_cmd до [rad/s]              : [0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000]
   motor_cmd после [rad/s]           : [0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000]
-  итоговый статус обмена            : непрерывный обмен не подтвержден; принят только единичный двоичный пакет
-  причина                           : [Errno 104] Connection reset by peer
+  итоговый статус обмена            : устойчивый обмен подтвержден
+  причина                           : Arm: System not initialised
+  последние STATUSTEXT:
+    Arm: System not initialised
+    Calibrating barometer
+    Barometer 1 calibration complete
+    Barometer 2 calibration complete
+    ArduPilot Ready
+    Field Elevation Set: 584m
+    RC7: SaveWaypoint LOW
+    EKF3 IMU0 initialised
+    EKF3 IMU1 initialised
 
 Опыт B. Ускоренный обмен, SCHED_LOOP_RATE = 50
-  команда запуска                   : powershell -ExecutionPolicy Bypass -File "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\windows\Start-ArduPilotJsonSitl.ps1" -DistroName Ubuntu -Ip 172.19.208.1 -MavlinkPort 14550 -SecondaryMavlinkPort 14552 -NoConsole -NoMap -Execute -ExtraDefaultsParmPath "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task17_loop_rate_50.parm" -LogPath "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\artifacts\logs\task_17_case_b_start.txt"
+  команда запуска                   : cd ~/src/ardupilot/ArduCopter && ../build/sitl/bin/arducopter --model JSON:172.19.208.1 --speedup 1 --slave 0 --serial0=udpclient:172.19.208.1:14550 --defaults ../Tools/autotest/default_params/copter.parm,/mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task17/tools/ardupilot/wsl/task17_loop_rate_50.parm --sim-address=172.19.208.1 -I0
   файл параметров                   : D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task17_loop_rate_50.parm
   update_rate_hz MATLAB             : 160
   запуск процесса                   : да
-  PID arducopter                    : 405
-  valid_rx_count                    : 1
-  json_tx_count                     : 1862
-  response_tx_count                 : 0
-  средняя частота обмена [Hz]       : 0.0000
-  p95 периода обмена [s]            : NaN
+  PID arducopter                    : 599
+  valid_rx_count                    : 523
+  json_tx_count                     : 1768
+  response_tx_count                 : 510
+  средняя частота обмена [Hz]       : 25.5301
+  p95 периода обмена [s]            : 0.071257
   gyro_rate_hz по STATUSTEXT        : 0
+  ack_result                        : 4
   взведение подтверждено            : нет
-  arducopter жив после опыта        : нет
+  arducopter жив после опыта        : да
   код завершения процесса           : 
-  last_frame_count                  : 0
-  motor_pwm до [us]                 : [NaN..NaN, NaN..NaN, NaN..NaN, NaN..NaN]
-  motor_pwm после [us]              : [NaN..NaN, NaN..NaN, NaN..NaN, NaN..NaN]
+  last_frame_count                  : 513
+  motor_pwm до [us]                 : [0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000]
+  motor_pwm после [us]              : [1000.000000..1000.000000, 1000.000000..1000.000000, 1000.000000..1000.000000, 1000.000000..1000.000000]
   motor_cmd до [rad/s]              : [0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000]
   motor_cmd после [rad/s]           : [0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000]
-  итоговый статус обмена            : непрерывный обмен не подтвержден; принят только единичный двоичный пакет
-  причина                           : [Errno 104] Connection reset by peer
+  итоговый статус обмена            : устойчивый обмен подтвержден
+  причина                           : Arm: System not initialised
+  последние STATUSTEXT:
+    Arm: System not initialised
+    Barometer 1 calibration complete
+    Barometer 2 calibration complete
+    ArduPilot Ready
+    Field Elevation Set: 584m
+    RC7: SaveWaypoint LOW
+    EKF3 IMU0 initialised
+    EKF3 IMU1 initialised
 
 Опыт C. Ускоренный обмен, SCHED_LOOP_RATE = 30
-  команда запуска                   : powershell -ExecutionPolicy Bypass -File "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\windows\Start-ArduPilotJsonSitl.ps1" -DistroName Ubuntu -Ip 172.19.208.1 -MavlinkPort 14550 -SecondaryMavlinkPort 14552 -NoConsole -NoMap -Execute -ExtraDefaultsParmPath "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task17_loop_rate_30.parm" -LogPath "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\artifacts\logs\task_17_case_c_start.txt"
+  команда запуска                   : cd ~/src/ardupilot/ArduCopter && ../build/sitl/bin/arducopter --model JSON:172.19.208.1 --speedup 1 --slave 0 --serial0=udpclient:172.19.208.1:14550 --defaults ../Tools/autotest/default_params/copter.parm,/mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task17/tools/ardupilot/wsl/task17_loop_rate_30.parm --sim-address=172.19.208.1 -I0
   файл параметров                   : D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task17_loop_rate_30.parm
   update_rate_hz MATLAB             : 160
   запуск процесса                   : да
-  PID arducopter                    : 428
-  valid_rx_count                    : 1
-  json_tx_count                     : 1864
-  response_tx_count                 : 0
-  средняя частота обмена [Hz]       : 0.0000
-  p95 периода обмена [s]            : NaN
+  PID arducopter                    : 765
+  valid_rx_count                    : 515
+  json_tx_count                     : 1773
+  response_tx_count                 : 502
+  средняя частота обмена [Hz]       : 25.1152
+  p95 периода обмена [s]            : 0.074716
   gyro_rate_hz по STATUSTEXT        : 0
+  ack_result                        : 4
   взведение подтверждено            : нет
-  arducopter жив после опыта        : нет
+  arducopter жив после опыта        : да
   код завершения процесса           : 
-  last_frame_count                  : 0
-  motor_pwm до [us]                 : [NaN..NaN, NaN..NaN, NaN..NaN, NaN..NaN]
-  motor_pwm после [us]              : [NaN..NaN, NaN..NaN, NaN..NaN, NaN..NaN]
+  last_frame_count                  : 502
+  motor_pwm до [us]                 : [0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000]
+  motor_pwm после [us]              : [1000.000000..1000.000000, 1000.000000..1000.000000, 1000.000000..1000.000000, 1000.000000..1000.000000]
   motor_cmd до [rad/s]              : [0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000]
   motor_cmd после [rad/s]           : [0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000, 0.000000..0.000000]
-  итоговый статус обмена            : непрерывный обмен не подтвержден; принят только единичный двоичный пакет
-  причина                           : [Errno 104] Connection reset by peer
+  итоговый статус обмена            : устойчивый обмен подтвержден
+  причина                           : Arm: System not initialised
+  последние STATUSTEXT:
+    Arm: System not initialised
+    Calibrating barometer
+    Initialising ArduPilot
+    Barometer 1 calibration complete
+    Barometer 2 calibration complete
+    ArduPilot Ready
+    Field Elevation Set: 584m
+    RC7: SaveWaypoint LOW
+    EKF3 IMU0 initialised
+    EKF3 IMU1 initialised
 
 Лучший опыт: A
 Взведение подтверждено: нет
