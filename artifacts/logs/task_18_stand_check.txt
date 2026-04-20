@@ -1,0 +1,41 @@
+OneKeyArduPilotStand(stand-check)
+============================================================
+Практическая проверка среды для двух режимов стенда:
+  штатный fly-internal возможен: да
+  режим fly-json-model возможен: да
+
+OneKeyArduPilotStand(status)
+============================================================
+WSL: да
+Ubuntu в WSL: да
+ArduPilot в WSL: да
+sim_vehicle.py: да
+Mission Planner установлен: да
+QGroundControl установлен: да
+Mission Planner запущен: да
+QGroundControl запущен: нет
+UDP в MATLAB: да
+Готовность к install: да
+Готовность к start: да
+
+Порты:
+  порт 14550: да
+  порт 9002: нет
+  порт 9003: нет
+
+Связанные процессы:
+  "MissionPlanner.exe","23308","Console","2","539 204 КБ"
+
+Последние журналы:
+  log_check -> 20-апр-2026 16:44:52
+  log_install -> 20-апр-2026 16:44:52
+  log_start -> 20-апр-2026 16:44:52
+  log_status -> 20-апр-2026 16:44:52
+  log_full -> 20-апр-2026 16:44:52
+  log_install_mission_planner -> 20-апр-2026 16:44:52
+  log_install_qgroundcontrol -> 20-апр-2026 16:44:52
+  log_install_ardupilot_wsl -> 20-апр-2026 16:44:52
+  log_start_stand -> 20-апр-2026 16:44:52
+  log_wait_after_start -> отсутствует
+  log_handshake_after_start -> отсутствует
+  log_ground_station_check -> отсутствует

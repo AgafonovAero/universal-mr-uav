@@ -42,12 +42,24 @@ cfg.udp_remote_ip = local_resolve_windows_host_ip(cfg.wsl_distro_name, cfg.udp_r
 cfg.mavlink_udp_ip = cfg.udp_remote_ip;
 cfg.mavlink_monitor_udp_port = 0;
 
-diag_log_path = fullfile(logs_dir, 'task_17_task15_baseline_exchange.txt');
-csv_report_path = fullfile(reports_dir, 'task_17_task15_baseline_exchange.csv');
-mat_report_path = fullfile(reports_dir, 'task_17_task15_baseline_exchange.mat');
-wait_log_path = fullfile(logs_dir, 'task_17_task15_baseline_wait_for_packet.txt');
-handshake_log_path = fullfile(logs_dir, 'task_17_task15_baseline_handshake.txt');
-live_log_path = fullfile(logs_dir, 'task_17_task15_baseline_live_backend.txt');
+diag_log_path = local_read_base_text_override( ...
+    'ardupilot_task15_baseline_diag_log_path', ...
+    fullfile(logs_dir, 'task_17_task15_baseline_exchange.txt'));
+csv_report_path = local_read_base_text_override( ...
+    'ardupilot_task15_baseline_csv_report_path', ...
+    fullfile(reports_dir, 'task_17_task15_baseline_exchange.csv'));
+mat_report_path = local_read_base_text_override( ...
+    'ardupilot_task15_baseline_mat_report_path', ...
+    fullfile(reports_dir, 'task_17_task15_baseline_exchange.mat'));
+wait_log_path = local_read_base_text_override( ...
+    'ardupilot_task15_baseline_wait_log_path', ...
+    fullfile(logs_dir, 'task_17_task15_baseline_wait_for_packet.txt'));
+handshake_log_path = local_read_base_text_override( ...
+    'ardupilot_task15_baseline_handshake_log_path', ...
+    fullfile(logs_dir, 'task_17_task15_baseline_handshake.txt'));
+live_log_path = local_read_base_text_override( ...
+    'ardupilot_task15_baseline_live_log_path', ...
+    fullfile(logs_dir, 'task_17_task15_baseline_live_backend.txt'));
 
 wsl_log_path = '/home/oaleg/task17_task15_baseline_arducopter.log';
 wsl_pid_path = '/home/oaleg/task17_task15_baseline_arducopter.pid';
@@ -278,6 +290,18 @@ function local_remove_wsl_files(distro_name, files_expr)
 %LOCAL_REMOVE_WSL_FILES Удалить временные файлы наблюдаемого запуска.
 
 local_wsl_command(distro_name, "rm -f " + string(files_expr) + " >/dev/null 2>&1 || true"); %#ok<NASGU>
+end
+
+function value = local_read_base_text_override(var_name, default_value)
+%LOCAL_READ_BASE_TEXT_OVERRIDE Прочитать текстовое переопределение из base workspace.
+
+value = char(string(default_value));
+if evalin('base', sprintf('exist(''%s'', ''var'')', var_name))
+    override_value = evalin('base', var_name);
+    if ~isempty(override_value)
+        value = char(string(override_value));
+    end
+end
 end
 
 function output_text = local_wsl_command(distro_name, bash_command)

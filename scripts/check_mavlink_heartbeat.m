@@ -19,6 +19,9 @@
 %   на cfg.mavlink_monitor_udp_port.
 
 cfg = uav.ardupilot.default_json_config();
+if evalin('base', 'exist(''ardupilot_mavlink_monitor_udp_port'', ''var'')')
+    cfg.mavlink_monitor_udp_port = evalin('base', 'ardupilot_mavlink_monitor_udp_port');
+end
 availability = uav.ardupilot.json_udp_is_available();
 
 result = struct();
@@ -56,6 +59,9 @@ end
 cleanup_obj = onCleanup(@() clear('listener')); %#ok<NASGU>
 
 timeout_s = 8.0;
+if evalin('base', 'exist(''ardupilot_mavlink_heartbeat_timeout_s'', ''var'')')
+    timeout_s = double(evalin('base', 'ardupilot_mavlink_heartbeat_timeout_s'));
+end
 start_tic = tic;
 
 while toc(start_tic) < timeout_s

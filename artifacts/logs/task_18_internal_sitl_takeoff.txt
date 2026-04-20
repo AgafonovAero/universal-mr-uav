@@ -1,0 +1,31 @@
+Проверка arm/takeoff штатного ArduPilot SITL
+Команда pymavlink:
+wsl.exe -d "Ubuntu" -- bash --noprofile --norc -lc "python3 /mnt/c/Users/O.Agaphonov/AppData/Local/Temp/tp06e0faac_a5f7_440b_afee_e61518a69e34.py"
+
+HEARTBEAT получен: да
+взведение выполнено: да
+причина: 
+arm ACK: 0
+takeoff ACK: 0
+максимальная относительная высота [m]: 5.046
+Последние STATUSTEXT:
+  - ArduPilot Ready
+  - AHRS: DCM active
+  - RC7: SaveWaypoint LOW
+  - EKF3 IMU0 initialised
+  - EKF3 IMU1 initialised
+  - AHRS: EKF3 active
+  - EKF3 IMU1 tilt alignment complete
+  - EKF3 IMU0 tilt alignment complete
+  - EKF3 IMU1 MAG0 initial yaw alignment complete
+  - EKF3 IMU0 MAG0 initial yaw alignment complete
+  - GPS 1: probing for u-blox at 230400 baud
+  - GPS 1: detected u-blox
+  - EKF3 IMU1 origin set
+  - Field Elevation Set: 584m
+  - EKF3 IMU0 origin set
+  - EKF3 IMU0 is using GPS
+  - EKF3 IMU1 is using GPS
+  - Arming motors
+  - EKF3 IMU1 MAG0 in-flight yaw alignment complete
+  - EKF3 IMU0 MAG0 in-flight yaw alignment complete

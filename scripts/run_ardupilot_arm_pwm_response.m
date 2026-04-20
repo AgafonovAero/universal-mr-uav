@@ -164,10 +164,13 @@ python_lines(end + 1, 1) = "                is_armed = bool(int(msg.base_mode) &
 python_lines(end + 1, 1) = "                if is_armed:";
 python_lines(end + 1, 1) = "                    result['arm_succeeded'] = True";
 python_lines(end + 1, 1) = "                    break";
-python_lines(end + 1, 1) = "        if (not result['arm_succeeded']) and result['status_texts']:";
-python_lines(end + 1, 1) = "            result['failure_reason'] = result['status_texts'][-1]";
+python_lines(end + 1, 1) = "        arm_status = [text for text in result['status_texts'] if str(text).startswith('Arm:')]";
+python_lines(end + 1, 1) = "        if (not result['arm_succeeded']) and arm_status:";
+python_lines(end + 1, 1) = "            result['failure_reason'] = arm_status[-1]";
 python_lines(end + 1, 1) = "        elif (not result['arm_succeeded']) and (result['ack_result'] is not None):";
 python_lines(end + 1, 1) = "            result['failure_reason'] = f""Команда взведения отклонена с кодом {result['ack_result']}.""";
+python_lines(end + 1, 1) = "        elif (not result['arm_succeeded']) and result['status_texts']:";
+python_lines(end + 1, 1) = "            result['failure_reason'] = result['status_texts'][-1]";
 python_lines(end + 1, 1) = "        elif not result['arm_succeeded']:";
 python_lines(end + 1, 1) = "            result['failure_reason'] = 'ArduPilot не подтвердил состояние взведения.'";
 python_lines(end + 1, 1) = "except Exception as exc:";
