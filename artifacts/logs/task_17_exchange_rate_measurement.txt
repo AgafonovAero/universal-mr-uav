@@ -1,30 +1,36 @@
 Измерение частоты обмена ArduPilot JSON/UDP
 ============================================================
-Команда запуска ArduPilot           : powershell -ExecutionPolicy Bypass -File "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\windows\Start-ArduPilotJsonSitl.ps1" -DistroName Ubuntu -Ip 172.19.208.1 -MavlinkPort 14550 -SecondaryMavlinkPort 14552 -NoConsole -NoMap -Execute -ExtraDefaultsParmPath "D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task16_arducopter_loop_rate.parm"
-Дополнительный файл параметров      : D:\WORK\AI_SOLUTION\universal-mr-uav-task17\tools\ardupilot\wsl\task16_arducopter_loop_rate.parm
-Целевой update_rate_hz MATLAB       : 120
-PID arducopter                      : 395
-Процесс arducopter жив              : да
-valid_rx_count                      : 1
-json_tx_count                       : 1792
-response_tx_count                   : 0
-invalid_rx_count                    : 0
-udp_rx_datagram_count               : 1
-Средняя частота valid_rx [Hz]       : 0.0000
-Средняя частота json_tx [Hz]        : 89.6058
-Средняя частота response_tx [Hz]    : 0.0000
-Средний период valid_rx [s]         : NaN
-95-процентиль valid_rx [s]          : NaN
-Средний период response_tx [s]      : NaN
-95-процентиль response_tx [s]       : NaN
-Средний период json_tx [s]          : 0.011160
-95-процентиль json_tx [s]           : 0.013028
-Среднее время шага модели [s]       : 0.00079773
-Среднее время кодирования JSON [s]  : 0.00015310
-Среднее время чтения UDP [s]        : 0.00002556
-Среднее время записи UDP [s]        : 0.01000251
-Приращение frame_count              : 0
-Последний frame_count               : 0
-Кватернион истинного состояния      : да
-Кватернион оценивания               : да
-Итоговый статус обмена              : непрерывный обмен не подтвержден; принят только единичный двоичный пакет
+Baseline TASK-15 восстановлен      : да
+Адрес Windows-хоста для WSL2       : 127.0.0.1
+Команда запуска ArduPilot          : cd ~/src/ardupilot/ArduCopter && ../build/sitl/bin/arducopter --model JSON:172.19.208.1 --speedup 1 --slave 0 --serial0=udpclient:172.19.208.1:14550 --defaults ../Tools/autotest/default_params/copter.parm --sim-address=172.19.208.1 -I0
+PID arducopter                     : 474
+Процесс жив после запуска          : да
+Процесс жив после 20 секунд        : да
+valid_rx_count                     : 509
+json_tx_count                      : 1733
+response_tx_count                  : 508
+invalid_rx_count                   : 0
+udp_rx_datagram_count              : 509
+Средняя частота valid_rx [Hz]      : 25.6625
+Средняя частота json_tx [Hz]       : 86.6511
+Средняя частота response_tx [Hz]   : 25.6625
+Средний период valid_rx [s]        : 0.038967
+95-процентиль valid_rx [s]         : 0.074513
+Средний период response_tx [s]     : 0.038967
+95-процентиль response_tx [s]      : 0.074513
+Среднее время шага модели [s]      : 0.00112409
+Среднее время кодирования JSON [s] : 0.00019858
+Среднее время чтения UDP [s]       : 0.00025334
+Среднее время записи UDP [s]       : 0.00961474
+Среднее время цикла MATLAB [s]     : 0.01153584
+Прирост frame_count                : 0
+Последний frame_count              : 507
+Последний sender address           : 172.19.219.165
+Последний sender port              : 54429
+Последний magic                    : 18458
+Последние ШИМ [us]                 : [1000.000000 1000.000000 1000.000000 1000.000000]
+Последние motor_cmd [rad/s]        : [0.000000 0.000000 0.000000 0.000000]
+Норма истинного кватерниона конечна: да
+Норма оцененного кватерниона конечна: да
+Итоговый статус обмена             : устойчивый обмен подтвержден
+Первая причина отказа              : 

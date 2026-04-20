@@ -29,193 +29,6 @@ Done test_ardupilot_environment_bootstrap_check
 __________
 
 Running test_ardupilot_handshake_status_semantics
-[Warning: DRAIN timed-out while waiting for data to be sent. All remaining data will be flushed.] 
-[> In matlabshared.asyncio.internal/OutputStream/drain (line 234)
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/writeAsync
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/write
-In matlabshared.network.internal/UDPBase/write
-In udpport/UDPPortCommon/write
-In udpport.datagram/UDPPort/write (line 406)
-In uav.ardupilot.json_udp_step>local_send_json_text (line 311)
-In uav.ardupilot.json_udp_step (line 56)
-In uav.sim.run_case_with_ardupilot_udp (line 81)
-In test_ardupilot_handshake_status_semantics>testRealHandshakeScenarioDoesNotClaimConfirmedExchangeWithoutPacket (line 33)]
-[Warning: DRAIN timed-out while waiting for data to be sent. All remaining data will be flushed.] 
-[> In matlabshared.asyncio.internal/OutputStream/drain (line 234)
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/writeAsync
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/write
-In matlabshared.network.internal/UDPBase/write
-In udpport/UDPPortCommon/write
-In udpport.datagram/UDPPort/write (line 406)
-In uav.ardupilot.json_udp_step>local_send_json_text (line 311)
-In uav.ardupilot.json_udp_step (line 56)
-In uav.sim.run_case_with_ardupilot_udp (line 81)
-In test_ardupilot_handshake_status_semantics>testRealHandshakeScenarioDoesNotClaimConfirmedExchangeWithoutPacket (line 33)]
-[Warning: DRAIN timed-out while waiting for data to be sent. All remaining data will be flushed.] 
-[> In matlabshared.asyncio.internal/OutputStream/drain (line 234)
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/writeAsync
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/write
-In matlabshared.network.internal/UDPBase/write
-In udpport/UDPPortCommon/write
-In udpport.datagram/UDPPort/write (line 406)
-In uav.ardupilot.json_udp_step>local_send_json_text (line 311)
-In uav.ardupilot.json_udp_step (line 56)
-In uav.sim.run_case_with_ardupilot_udp (line 81)
-In test_ardupilot_handshake_status_semantics>testRealHandshakeScenarioDoesNotClaimConfirmedExchangeWithoutPacket (line 33)]
-[Warning: DRAIN timed-out while waiting for data to be sent. All remaining data will be flushed.] 
-[> In matlabshared.asyncio.internal/OutputStream/drain (line 234)
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/writeAsync
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/write
-In matlabshared.network.internal/UDPBase/write
-In udpport/UDPPortCommon/write
-In udpport.datagram/UDPPort/write (line 406)
-In uav.ardupilot.json_udp_step>local_send_json_text (line 311)
-In uav.ardupilot.json_udp_step (line 56)
-In uav.sim.run_case_with_ardupilot_udp (line 81)
-In test_ardupilot_handshake_status_semantics>testRealHandshakeScenarioDoesNotClaimConfirmedExchangeWithoutPacket (line 33)]
-[Warning: DRAIN timed-out while waiting for data to be sent. All remaining data will be flushed.] 
-[> In matlabshared.asyncio.internal/OutputStream/drain (line 234)
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/writeAsync
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/write
-In matlabshared.network.internal/UDPBase/write
-In udpport/UDPPortCommon/write
-In udpport.datagram/UDPPort/write (line 406)
-In uav.ardupilot.json_udp_step>local_send_json_text (line 311)
-In uav.ardupilot.json_udp_step (line 56)
-In uav.sim.run_case_with_ardupilot_udp (line 81)
-In test_ardupilot_handshake_status_semantics>testRealHandshakeScenarioDoesNotClaimConfirmedExchangeWithoutPacket (line 33)]
-[Warning: DRAIN timed-out while waiting for data to be sent. All remaining data will be flushed.] 
-[> In matlabshared.asyncio.internal/OutputStream/drain (line 234)
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/writeAsync
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/write
-In matlabshared.network.internal/UDPBase/write
-In udpport/UDPPortCommon/write
-In udpport.datagram/UDPPort/write (line 406)
-In uav.ardupilot.json_udp_step>local_send_json_text (line 311)
-In uav.ardupilot.json_udp_step (line 56)
-In uav.sim.run_case_with_ardupilot_udp (line 81)
-In test_ardupilot_handshake_status_semantics>testRealHandshakeScenarioDoesNotClaimConfirmedExchangeWithoutPacket (line 33)]
-[Warning: DRAIN timed-out while waiting for data to be sent. All remaining data will be flushed.] 
-[> In matlabshared.asyncio.internal/OutputStream/drain (line 234)
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/writeAsync
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/write
-In matlabshared.network.internal/UDPBase/write
-In udpport/UDPPortCommon/write
-In udpport.datagram/UDPPort/write (line 406)
-In uav.ardupilot.json_udp_step>local_send_json_text (line 311)
-In uav.ardupilot.json_udp_step (line 56)
-In uav.sim.run_case_with_ardupilot_udp (line 81)
-In test_ardupilot_handshake_status_semantics>testRealHandshakeScenarioDoesNotClaimConfirmedExchangeWithoutPacket (line 33)]
-[Warning: DRAIN timed-out while waiting for data to be sent. All remaining data will be flushed.] 
-[> In matlabshared.asyncio.internal/OutputStream/drain (line 234)
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/writeAsync
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/write
-In matlabshared.network.internal/UDPBase/write
-In udpport/UDPPortCommon/write
-In udpport.datagram/UDPPort/write (line 406)
-In uav.ardupilot.json_udp_step>local_send_json_text (line 311)
-In uav.ardupilot.json_udp_step (line 56)
-In uav.sim.run_case_with_ardupilot_udp (line 81)
-In test_ardupilot_handshake_status_semantics>testRealHandshakeScenarioDoesNotClaimConfirmedExchangeWithoutPacket (line 33)]
-[Warning: DRAIN timed-out while waiting for data to be sent. All remaining data will be flushed.] 
-[> In matlabshared.asyncio.internal/OutputStream/drain (line 234)
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/writeAsync
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/write
-In matlabshared.network.internal/UDPBase/write
-In udpport/UDPPortCommon/write
-In udpport.datagram/UDPPort/write (line 406)
-In uav.ardupilot.json_udp_step>local_send_json_text (line 311)
-In uav.ardupilot.json_udp_step (line 56)
-In uav.sim.run_case_with_ardupilot_udp (line 81)
-In test_ardupilot_handshake_status_semantics>testRealHandshakeScenarioDoesNotClaimConfirmedExchangeWithoutPacket (line 33)]
-[Warning: DRAIN timed-out while waiting for data to be sent. All remaining data will be flushed.] 
-[> In matlabshared.asyncio.internal/OutputStream/drain (line 234)
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/writeAsync
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/write
-In matlabshared.network.internal/UDPBase/write
-In udpport/UDPPortCommon/write
-In udpport.datagram/UDPPort/write (line 406)
-In uav.ardupilot.json_udp_step>local_send_json_text (line 311)
-In uav.ardupilot.json_udp_step (line 56)
-In uav.sim.run_case_with_ardupilot_udp (line 81)
-In test_ardupilot_handshake_status_semantics>testRealHandshakeScenarioDoesNotClaimConfirmedExchangeWithoutPacket (line 33)]
-[Warning: DRAIN timed-out while waiting for data to be sent. All remaining data will be flushed.] 
-[> In matlabshared.asyncio.internal/OutputStream/drain (line 234)
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/writeAsync
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/write
-In matlabshared.network.internal/UDPBase/write
-In udpport/UDPPortCommon/write
-In udpport.datagram/UDPPort/write (line 406)
-In uav.ardupilot.json_udp_step>local_send_json_text (line 311)
-In uav.ardupilot.json_udp_step (line 56)
-In uav.sim.run_case_with_ardupilot_udp (line 81)
-In test_ardupilot_handshake_status_semantics>testRealHandshakeScenarioDoesNotClaimConfirmedExchangeWithoutPacket (line 33)]
-[Warning: DRAIN timed-out while waiting for data to be sent. All remaining data will be flushed.] 
-[> In matlabshared.asyncio.internal/OutputStream/drain (line 234)
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/writeAsync
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/write
-In matlabshared.network.internal/UDPBase/write
-In udpport/UDPPortCommon/write
-In udpport.datagram/UDPPort/write (line 406)
-In uav.ardupilot.json_udp_step>local_send_json_text (line 311)
-In uav.ardupilot.json_udp_step (line 56)
-In uav.sim.run_case_with_ardupilot_udp (line 81)
-In test_ardupilot_handshake_status_semantics>testRealHandshakeScenarioDoesNotClaimConfirmedExchangeWithoutPacket (line 33)]
-[Warning: DRAIN timed-out while waiting for data to be sent. All remaining data will be flushed.] 
-[> In matlabshared.asyncio.internal/OutputStream/drain (line 234)
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/writeAsync
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/write
-In matlabshared.network.internal/UDPBase/write
-In udpport/UDPPortCommon/write
-In udpport.datagram/UDPPort/write (line 406)
-In uav.ardupilot.json_udp_step>local_send_json_text (line 311)
-In uav.ardupilot.json_udp_step (line 56)
-In uav.sim.run_case_with_ardupilot_udp (line 81)
-In test_ardupilot_handshake_status_semantics>testRealHandshakeScenarioDoesNotClaimConfirmedExchangeWithoutPacket (line 33)]
-[Warning: DRAIN timed-out while waiting for data to be sent. All remaining data will be flushed.] 
-[> In matlabshared.asyncio.internal/OutputStream/drain (line 234)
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/writeAsync
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/write
-In matlabshared.network.internal/UDPBase/write
-In udpport/UDPPortCommon/write
-In udpport.datagram/UDPPort/write (line 406)
-In uav.ardupilot.json_udp_step>local_send_json_text (line 311)
-In uav.ardupilot.json_udp_step (line 56)
-In uav.sim.run_case_with_ardupilot_udp (line 81)
-In test_ardupilot_handshake_status_semantics>testRealHandshakeScenarioDoesNotClaimConfirmedExchangeWithoutPacket (line 33)]
-[Warning: DRAIN timed-out while waiting for data to be sent. All remaining data will be flushed.] 
-[> In matlabshared.asyncio.internal/OutputStream/drain (line 234)
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/writeAsync
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/write
-In matlabshared.network.internal/UDPBase/write
-In udpport/UDPPortCommon/write
-In udpport.datagram/UDPPort/write (line 406)
-In uav.ardupilot.json_udp_step>local_send_json_text (line 311)
-In uav.ardupilot.json_udp_step (line 56)
-In uav.sim.run_case_with_ardupilot_udp (line 81)
-In test_ardupilot_handshake_status_semantics>testRealHandshakeScenarioDoesNotClaimConfirmedExchangeWithoutPacket (line 33)]
-[Warning: DRAIN timed-out while waiting for data to be sent. All remaining data will be flushed.] 
-[> In matlabshared.asyncio.internal/OutputStream/drain (line 234)
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/writeAsync
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/write
-In matlabshared.network.internal/UDPBase/write
-In udpport/UDPPortCommon/write
-In udpport.datagram/UDPPort/write (line 406)
-In uav.ardupilot.json_udp_step>local_send_json_text (line 311)
-In uav.ardupilot.json_udp_step (line 56)
-In uav.sim.run_case_with_ardupilot_udp (line 81)
-In test_ardupilot_handshake_status_semantics>testRealHandshakeScenarioDoesNotClaimConfirmedExchangeWithoutPacket (line 33)]
-[Warning: DRAIN timed-out while waiting for data to be sent. All remaining data will be flushed.] 
-[> In matlabshared.asyncio.internal/OutputStream/drain (line 234)
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/writeAsync
-In matlabshared.transportlib.internal.asyncIOTransportChannel/AsyncIOTransportChannel/write
-In matlabshared.network.internal/UDPBase/write
-In udpport/UDPPortCommon/write
-In udpport.datagram/UDPPort/write (line 406)
-In uav.ardupilot.json_udp_step>local_send_json_text (line 311)
-In uav.ardupilot.json_udp_step (line 56)
-In uav.sim.run_case_with_ardupilot_udp (line 81)
-In test_ardupilot_handshake_status_semantics>testRealHandshakeScenarioDoesNotClaimConfirmedExchangeWithoutPacket (line 33)]
 ..
 Done test_ardupilot_handshake_status_semantics
 __________
@@ -281,13 +94,13 @@ Done test_baro_measure
 __________
 
 Running test_build_mil_top
-Built thin MIL model: D:\WORK\AI_SOLUTION\universal-mr-uav-task17\models\mil_top.slx
+Built thin MIL model: D:\WORK\AI_SOLUTION\universal-mr-uav-task17b\models\mil_top.slx
 .
 Done test_build_mil_top
 __________
 
 Running test_build_sil_top
-Built thin SIL-prep model: D:\WORK\AI_SOLUTION\universal-mr-uav-task17\models\sil_top.slx
+Built thin SIL-prep model: D:\WORK\AI_SOLUTION\universal-mr-uav-task17b\models\sil_top.slx
 .
 Done test_build_sil_top
 __________
@@ -302,8 +115,8 @@ Demo pitch step -10 deg diagnostics:
   max consistency metric [m/s^2]: 1.855700
   final altitude [m]            : 19.844794
   quat norms [-]                : true=1.000000000000 est=1.000000000000
-  saved MAT                     : D:\WORK\AI_SOLUTION\universal-mr-uav-task17\artifacts\reports\demo_pitch_step_minus10deg.mat
-  saved CSV                     : D:\WORK\AI_SOLUTION\universal-mr-uav-task17\artifacts\reports\demo_pitch_step_minus10deg.csv
+  saved MAT                     : D:\WORK\AI_SOLUTION\universal-mr-uav-task17b\artifacts\reports\demo_pitch_step_minus10deg.mat
+  saved CSV                     : D:\WORK\AI_SOLUTION\universal-mr-uav-task17b\artifacts\reports\demo_pitch_step_minus10deg.csv
 .
 Done test_demo_pitch_step_minus10deg
 __________
@@ -315,8 +128,8 @@ Demo takeoff to 50 m diagnostics:
   final estimated altitude [m]: 49.991800
   final accel weight [-]      : 1.000000
   final quat norms [-]        : true=1.000000000000 est=1.000000000000
-  saved MAT                   : D:\WORK\AI_SOLUTION\universal-mr-uav-task17\artifacts\reports\demo_takeoff_to_50m.mat
-  saved CSV                   : D:\WORK\AI_SOLUTION\universal-mr-uav-task17\artifacts\reports\demo_takeoff_to_50m.csv
+  saved MAT                   : D:\WORK\AI_SOLUTION\universal-mr-uav-task17b\artifacts\reports\demo_takeoff_to_50m.mat
+  saved CSV                   : D:\WORK\AI_SOLUTION\universal-mr-uav-task17b\artifacts\reports\demo_takeoff_to_50m.csv
 .
 Done test_demo_takeoff_to_50m
 __________
@@ -457,7 +270,7 @@ Done test_run_case_yaw_step
 __________
 
 Running test_run_mil_top_hover
-Built thin MIL model: D:\WORK\AI_SOLUTION\universal-mr-uav-task17\models\mil_top.slx
+Built thin MIL model: D:\WORK\AI_SOLUTION\universal-mr-uav-task17b\models\mil_top.slx
 Thin MIL hover diagnostics:
   final position NED [m]      : [0.000000 0.000000 1.186404]
   final altitude [m]          : -1.186404
@@ -470,7 +283,7 @@ Done test_run_mil_top_hover
 __________
 
 Running test_run_sil_stub_hover
-Built thin SIL-prep model: D:\WORK\AI_SOLUTION\universal-mr-uav-task17\models\sil_top.slx
+Built thin SIL-prep model: D:\WORK\AI_SOLUTION\universal-mr-uav-task17b\models\sil_top.slx
 Thin SIL-prep hover diagnostics:
   final true position NED [m]      : [0.000000 0.000000 0.791605]
   final true altitude [m]          : -0.791605
@@ -497,19 +310,4 @@ Running test_state_pack_unpack
 Done test_state_pack_unpack
 __________
 
-
-ans = 
-
-  172 TestResult array with properties:
-
-    Name
-    Passed
-    Failed
-    Incomplete
-    Duration
-    Details
-
-Totals:
-   72 Passed, 0 Failed, 0 Incomplete.
-   154.8131 seconds testing time.
-
+Passed=72 Failed=0 Incomplete=0
