@@ -1,12 +1,8 @@
-%% RUN_ARDUPILOT_JSON_UDP_HANDSHAKE Выполнить попытку обмена с ArduPilot.
+%% RUN_ARDUPILOT_JSON_UDP_HANDSHAKE Выполнить единичную ответную передачу после первого пакета.
 % Назначение:
-%   Выполняет короткую попытку обмена с уже запущенным `ArduPilot JSON SITL`
-%   без установки внешнего программного комплекса и без заявлений о
-%   готовности к устойчивому автоматическому полету.
-%   Сценарий различает:
-%   - отсутствие подтвержденного приема;
-%   - исходящую пробную передачу строки JSON;
-%   - ответную передачу после принятого пакета.
+%   Ожидает первый валидный двоичный пакет от уже запущенного `ArduPilot
+%   SITL`, затем формирует одну строку `JSON` и выполняет ответную
+%   передачу на адрес фактического отправителя.
 %
 % Входы:
 %   none
@@ -15,12 +11,9 @@
 %   ardupilot_json_udp_handshake - структура результата в базовом рабочем
 %   пространстве MATLAB
 %
-% Единицы измерения:
-%   длительности импульсов ШИМ задаются в микросекундах
-%
 % Допущения:
-%   При отсутствии ответа от `ArduPilot` сценарий завершается штатно и
-%   честно фиксирует отсутствие принятого двоичного пакета.
+%   Сценарий не подменяет реальный пакет искусственными данными и не
+%   подтверждает устойчивый обмен без фактического приема пакета.
 
 params = uav.sim.make_deterministic_demo_params();
 cfg = uav.ardupilot.default_json_config();
@@ -28,46 +21,74 @@ availability = uav.ardupilot.json_udp_is_available();
 env_info = uav.ardupilot.inspect_sitl_environment(cfg);
 start_cmd = uav.ardupilot.make_sitl_start_command(cfg);
 
-case_cfg = struct();
-case_cfg.params = params;
-case_cfg.state0 = uav.core.state_unpack(params.demo.initial_state_plant);
-case_cfg.dt_s = 1.0 / cfg.update_rate_hz;
-case_cfg.t_final_s = max( ...
-    cfg.udp_handshake_timeout_s, ...
-    cfg.handshake_max_steps / cfg.update_rate_hz);
-case_cfg.ardupilot_cfg = cfg;
+transport = uav.ardupilot.json_udp_open(cfg);
+transport_message_open = string(transport.message);
 
-log = uav.sim.run_case_with_ardupilot_udp(case_cfg);
-diag_hist = log.exchange_diag;
-status_values = arrayfun(@(item) string(item.status), diag_hist);
+state = uav.core.state_unpack(params.demo.initial_state_plant);
+snapshot = local_snapshot_diag(state, params);
+sensors = uav.sensors.sensors_step(state, snapshot, params);
+estimator = uav.est.estimator_init(params, sensors);
+json_packet = uav.ardupilot.pack_json_fdm_packet( ...
+    state, ...
+    sensors, ...
+    estimator, ...
+    0.0, ...
+    params, ...
+    cfg);
+json_text = uav.ardupilot.encode_json_fdm_text(json_packet);
 
-reply_indices = find([diag_hist.handshake_confirmed], 1, 'first');
-probe_indices = find(status_values == "исходящая пробная передача", 1, 'first');
-packet_indices = find([diag_hist.rx_valid], 1, 'first');
+wait_start = tic;
+wait_diag = local_empty_exchange_diag(cfg);
+rx_out = uav.ardupilot.decode_sitl_output_packet([], cfg);
+packet_received = false;
 
-packet_received = ~isempty(packet_indices);
-reply_json_sent = ~isempty(reply_indices);
-probe_json_sent = ~isempty(probe_indices);
+while toc(wait_start) < cfg.udp_handshake_timeout_s
+    [transport, rx_candidate, diag_candidate] = uav.ardupilot.json_udp_step( ...
+        transport, ...
+        "", ...
+        cfg);
+    wait_diag = diag_candidate;
+
+    if rx_candidate.valid
+        rx_out = rx_candidate;
+        packet_received = true;
+        break;
+    end
+
+    pause(cfg.udp_receive_pause_s);
+end
+
+probe_json_sent = false;
+reply_json_sent = false;
+exchange_status = string(wait_diag.status);
+exchange_status_message = string(wait_diag.status_message);
+reply_diag = wait_diag;
 
 if packet_received
-    rx_out = log.sitl_output(packet_indices);
-    exchange_status = string(diag_hist(packet_indices).status);
-    exchange_status_message = string(diag_hist(packet_indices).status_message);
-else
-    rx_out = uav.ardupilot.decode_sitl_output_packet([], cfg);
-    exchange_status = string(diag_hist(end).status);
-    exchange_status_message = string(diag_hist(end).status_message);
+    [transport, ~, reply_diag] = uav.ardupilot.json_udp_step( ...
+        transport, ...
+        json_text, ...
+        cfg);
+    probe_json_sent = logical(reply_diag.tx_ok && reply_diag.tx_kind == "probe");
+    reply_json_sent = logical(reply_diag.tx_ok && reply_diag.tx_kind == "reply");
+    exchange_status = string(reply_diag.status);
+    exchange_status_message = string(reply_diag.status_message);
 end
+
+transport = uav.ardupilot.json_udp_close(transport);
 
 result = struct();
 result.availability = availability;
 result.env_info = env_info;
 result.start_command = start_cmd;
-result.log = log;
+result.transport_message_open = transport_message_open;
+result.transport_message_close = string(transport.message);
 result.packet_received = logical(packet_received);
 result.probe_json_sent = logical(probe_json_sent);
 result.reply_json_sent = logical(reply_json_sent);
 result.rx_out = rx_out;
+result.wait_diag = wait_diag;
+result.reply_diag = reply_diag;
 result.exchange_status = exchange_status;
 result.exchange_status_message = exchange_status_message;
 
@@ -98,11 +119,9 @@ if packet_received
         char(exchange_status_message));
 else
     fprintf('  прием не подтвержден                     : да\n');
-    fprintf('  исходящая пробная строка JSON отправлена : %s\n', ...
-        local_bool_text(probe_json_sent));
+    fprintf('  исходящая пробная строка JSON отправлена : нет\n');
     fprintf('  ответная передача JSON выполнена         : нет\n');
-    fprintf([ ...
-        '  ответ на принятый двоичный пакет ArduPilot не проверен, ' ...
+    fprintf(['  ответ на принятый двоичный пакет ArduPilot не проверен, ' ...
         'так как входной пакет не был получен.\n']);
     fprintf('  команда запуска для отдельного прогона   : %s\n', ...
         char(start_cmd.command_text));
@@ -125,4 +144,43 @@ if flag_value
 else
     text_value = 'нет';
 end
+end
+
+function snapshot = local_snapshot_diag(state, params)
+%LOCAL_SNAPSHOT_DIAG Сформировать диагностический снимок состояния.
+
+fm = uav.core.forces_moments_sum(state.omega_m_radps, params);
+
+snapshot = struct();
+snapshot.forces_b_N = fm.forces_b_N;
+snapshot.moments_b_Nm = fm.moments_b_Nm;
+snapshot.quat_norm = norm(state.q_nb);
+end
+
+function diag = local_empty_exchange_diag(cfg)
+%LOCAL_EMPTY_EXCHANGE_DIAG Построить пустую диагностику шага обмена.
+
+diag = struct();
+diag.status = "прием не подтвержден";
+diag.status_message = "";
+diag.rx_received = false;
+diag.rx_valid = false;
+diag.rx_bytes_count = 0;
+diag.rx_message = "";
+diag.rx_datagram_count = 0;
+diag.rx_valid_count = 0;
+diag.rx_invalid_count = 0;
+diag.tx_attempted = false;
+diag.tx_ok = false;
+diag.tx_count = 0;
+diag.response_tx_count = 0;
+diag.tx_kind = "none";
+diag.tx_message = "";
+diag.handshake_confirmed = false;
+diag.used_remote_ip = string(cfg.udp_remote_ip);
+diag.used_remote_port = double(cfg.udp_remote_port);
+diag.last_sender_address = "";
+diag.last_sender_port = 0;
+diag.last_magic = 0;
+diag.last_frame_count = 0;
 end

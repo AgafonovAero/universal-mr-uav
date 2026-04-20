@@ -1,0 +1,7 @@
+ArduPilot WSL setup wrapper
+  distro                       : Ubuntu
+  bash script                  : /mnt/d/WORK/AI_SOLUTION/universal-mr-uav/tools/ardupilot/wsl/setup_ardupilot_wsl.sh
+  mode                         : check
+  WSL command                  : wsl.exe -d "Ubuntu" -- bash "/mnt/d/WORK/AI_SOLUTION/universal-mr-uav/tools/ardupilot/wsl/setup_ardupilot_wsl.sh" --dry-run
+
+Dry-run mode: the WSL setup script was not executed.

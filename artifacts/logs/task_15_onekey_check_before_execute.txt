@@ -1,0 +1,61 @@
+OneKeyArduPilotStand(check)
+============================================================
+����ﭨ� ���譥� �।� � �⥭��:
+  WSL: ��
+  楫���� ����ਡ�⨢ WSL: ��
+  Git � Windows: ��
+  Python � Windows: ��
+  MATLAB: ��
+  Git ����� WSL: ��
+  Python ����� WSL: ��
+  ArduPilot ����� WSL: ��
+  sim_vehicle.py: ��
+  Mission Planner: ��
+  QGroundControl: ��
+  UDP � MATLAB: ��
+  �業�਩ �������� �����: ��
+  �業�਩ �஢�ન ������: ��
+
+���������᪨� ᮮ�饭��:
+  - Windows: ��
+  - PowerShell: ��
+  - Git: �����㦥��, ����: C:\Program Files\Git\cmd\git.exe
+  - Python: �����㦥��, ����: C:\Users\O.Agaphonov\AppData\Local\Programs\Python\Python312\python.exe
+  - GitHub CLI: �����㦥��, ����: C:\Program Files\GitHub CLI\gh.exe
+  - MATLAB: �����㦥��, ����: D:\MATLAB\R2025b\bin\win64\MATLAB.exe
+  - WSL command: �����㦥��, ����: C:\Windows\System32\wsl.exe
+  - Mission Planner: �����㦥��, ����� ����饭, ����: C:\Program Files (x86)\Mission Planner\MissionPlanner.exe
+  - QGroundControl: �����㦥��, ����� �� ����饭, ����: C:\Program Files\QGroundControl\QGroundControl.exe
+  - �।����⥫쭠� ����㯭�� �������� �⠭�� �ࠢ�����: MissionPlanner
+  - ������� WSL �����㦥��.
+  - ����㯭� ����ਡ�⨢� WSL: U
+  - ������� ����ਡ�⨢ WSL ���⢥ত�� ���� �맮���: Ubuntu
+  - Git ����� WSL: ��
+  - Python ����� WSL: ��
+  - ��⠫�� ArduPilot ����� WSL: ��
+  - sim_vehicle.py ����� WSL: ��
+  - UDP � MATLAB: ��
+  - �業�਩ �������� ��ࢮ�� �����: ��
+  - �業�਩ �஢�ન ������: ��
+  - �業�਩ ������� ����᪠ �⥭��: ��
+  - �業�਩ �஢�ન �������� �⠭樨: ��
+  - PowerShell-��⠭���� Mission Planner: ��
+  - PowerShell-��⠭���� QGroundControl: ��
+  - PowerShell-����� �⥭��: ��
+  - PowerShell-��⠭���� �⥭��: ��
+  - PowerShell-�஢�ઠ �⥭��: ��
+  - Bash-�஢�ઠ ArduPilot ����� WSL: ��
+  - ��⮢����� � ०��� install: ��
+  - ��⮢����� � ०��� start: ��
+
+ans = 
+
+  struct with fields:
+
+                     success: 1
+                 status_info: [11 struct]
+    requires_operator_action: 0
+            operator_actions: [01 string]
+                        mode: "check"
+                         cfg: [11 struct]
+

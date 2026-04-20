@@ -1,0 +1,5 @@
+QGroundControl installation check
+  mode                         : check
+  installed                    : yes
+  path                         : C:\Program Files\QGroundControl\QGroundControl.exe
+  installation step is not required.

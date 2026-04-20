@@ -1,0 +1,47 @@
+OneKeyArduPilotStand(status)
+============================================================
+WSL: ��
+Ubuntu � WSL: ��
+ArduPilot � WSL: ��
+sim_vehicle.py: ��
+Mission Planner ��⠭�����: ��
+QGroundControl ��⠭�����: ��
+Mission Planner ����饭: ���
+QGroundControl ����饭: ���
+UDP � MATLAB: ��
+��⮢����� � install: ��
+��⮢����� � start: ��
+
+�����:
+  ���� 14550: ���
+  ���� 9002: ���
+  ���� 9003: ���
+
+��易��� ������:
+  �� �����㦥��
+
+��᫥���� ��ୠ��:
+  log_check -> 19-���-2026 19:17:32
+  log_install -> 19-���-2026 16:26:34
+  log_start -> 19-���-2026 19:02:53
+  log_status -> 19-���-2026 19:17:32
+  log_full -> 19-���-2026 18:29:53
+  log_install_mission_planner -> 19-���-2026 16:26:34
+  log_install_qgroundcontrol -> 19-���-2026 16:26:34
+  log_install_ardupilot_wsl -> 19-���-2026 16:26:34
+  log_start_stand -> 19-���-2026 19:02:37
+  log_wait_after_start -> 19-���-2026 19:02:41
+  log_handshake_after_start -> 19-���-2026 19:02:48
+  log_ground_station_check -> 19-���-2026 19:02:53
+
+ans = 
+
+  struct with fields:
+
+                     success: 1
+                 status_info: [11 struct]
+    requires_operator_action: 0
+            operator_actions: [01 string]
+                        mode: "status"
+                         cfg: [11 struct]
+

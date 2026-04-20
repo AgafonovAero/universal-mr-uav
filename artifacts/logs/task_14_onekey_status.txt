@@ -1,0 +1,35 @@
+OneKeyArduPilotStand(status)
+============================================================
+WSL: да
+Ubuntu в WSL: нет
+ArduPilot в WSL: нет
+sim_vehicle.py: нет
+Mission Planner установлен: нет
+QGroundControl установлен: да
+Mission Planner запущен: нет
+QGroundControl запущен: нет
+UDP в MATLAB: да
+Готовность к install: да
+Готовность к start: нет
+
+Порты:
+  порт 14550: нет
+  порт 9002: нет
+  порт 9003: нет
+
+Связанные процессы:
+  не обнаружены
+
+Последние журналы:
+  log_check -> 19-апр-2026 16:13:58
+  log_install -> 19-апр-2026 16:19:26
+  log_start -> 19-апр-2026 16:19:22
+  log_status -> 19-апр-2026 16:13:58
+  log_full -> 19-апр-2026 16:19:28
+  log_install_mission_planner -> 19-апр-2026 16:19:27
+  log_install_qgroundcontrol -> 19-апр-2026 16:19:28
+  log_install_ardupilot_wsl -> 19-апр-2026 16:19:27
+  log_start_stand -> 19-апр-2026 16:19:22
+  log_wait_after_start -> отсутствует
+  log_handshake_after_start -> отсутствует
+  log_ground_station_check -> отсутствует

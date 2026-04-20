@@ -1,0 +1,15 @@
+ArduPilot WSL setup wrapper
+  distro                       : Ubuntu
+  bash script                  : /mnt/d/WORK/AI_SOLUTION/universal-mr-uav/tools/ardupilot/wsl/setup_ardupilot_wsl.sh
+  mode                         : execute
+  WSL command                  : wsl.exe -d "Ubuntu" -- bash "/mnt/d/WORK/AI_SOLUTION/universal-mr-uav/tools/ardupilot/wsl/setup_ardupilot_wsl.sh" --execute
+
+Executing WSL setup command:
+  Подготовка внешнего каталога ArduPilot внутри WSL
+    целевой каталог: /home/oaleg/src/ardupilot
+    режим выполнения: execute
+  Предупреждение: сценарий запущен из каталога на смонтированном диске Windows.
+  Рекомендуется хранить ArduPilot внутри файловой системы WSL, например в /home/oaleg/src/ardupilot.
+  Каталог ArduPilot уже существует, повторное клонирование не требуется.
+  Инициализация подмодулей.
+  Подготовка зависимостей ArduPilot.

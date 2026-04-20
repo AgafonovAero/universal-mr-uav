@@ -222,6 +222,17 @@ else
 end
 
 if strlength(cfg.wsl_distro_name) > 0
+    if ~any(strcmpi(distros, cfg.wsl_distro_name))
+        [probe_status, probe_output] = local_run_command( ...
+            "wsl.exe -d " + cfg.wsl_distro_name + " -- bash -lc ""printf ok""");
+        probe_output = erase(string(probe_output), char(0));
+        if probe_status == 0 && contains(probe_output, "ok")
+            distros = unique([distros; cfg.wsl_distro_name], "stable");
+            messages(end + 1, 1) = ...
+                "Предпочтительный дистрибутив WSL подтвержден прямым вызовом: " + cfg.wsl_distro_name;
+        end
+    end
+
     messages(end + 1, 1) = ...
         "Предпочтительный дистрибутив WSL: " + cfg.wsl_distro_name;
 end
@@ -230,7 +241,8 @@ end
 function names = local_parse_wsl_distro_names(output)
 %LOCAL_PARSE_WSL_DISTRO_NAMES Разобрать имена дистрибутивов WSL.
 
-lines = splitlines(string(output));
+output = erase(string(output), char(0));
+lines = splitlines(output);
 names = strings(0, 1);
 
 for idx = 1:numel(lines)

@@ -1,0 +1,7 @@
+Запуск наземной станции управления
+  выбранная станция                       : Mission Planner
+  исполняемый файл                        : C:\Program Files (x86)\Mission Planner\MissionPlanner.exe
+  процесс Mission Planner запущен         : да
+  PID Mission Planner                     : 12416
+  процесс запуска ArduPilot               : 18252
+  инструкция оператора                    : Mission Planner -> UDP -> Connect -> port 14550

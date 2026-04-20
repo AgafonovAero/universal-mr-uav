@@ -8,6 +8,7 @@ function cfg = default_json_config()
 %   - соглашения по системам координат;
 %   - ограничения по длительности импульсов ШИМ;
 %   - параметры запуска `ArduPilot SITL`;
+%   - параметры потока `MAVLink` к наземной станции управления;
 %   - пути к сценариям подготовки внешней среды Windows/WSL.
 %
 % Входы:
@@ -34,6 +35,8 @@ cfg.udp_local_ip = "127.0.0.1";
 cfg.udp_local_port = 9002;
 cfg.udp_remote_ip = "127.0.0.1";
 cfg.udp_remote_port = 9003;
+cfg.mavlink_udp_ip = "127.0.0.1";
+cfg.mavlink_udp_port = 14550;
 cfg.udp_timeout_s = 0.01;
 cfg.udp_receive_pause_s = 0.02;
 cfg.udp_max_rx_bytes = 4096;
@@ -60,6 +63,8 @@ cfg.expected_servo_channels = 16;
 cfg.sitl_vehicle = "ArduCopter";
 cfg.sitl_frame = "quad";
 cfg.ardupilot_vehicle = cfg.sitl_vehicle;
+cfg.sitl_enable_console = true;
+cfg.sitl_enable_map = true;
 
 cfg.ardupilot_root = "~/src/ardupilot";
 cfg.wsl_distro_name = "Ubuntu";

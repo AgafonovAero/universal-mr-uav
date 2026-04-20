@@ -1,31 +1,28 @@
 function [transport, rx_out, diag] = json_udp_step(transport, json_text, cfg)
-%JSON_UDP_STEP Выполнить один шаг приема и передачи по UDP.
+%JSON_UDP_STEP Выполнить один неблокирующий шаг обмена по UDP.
 % Назначение:
-%   Выполняет один неблокирующий шаг обмена по `UDP`. Сначала функция
-%   пытается принять двоичный пакет от `ArduPilot SITL`, затем при
-%   наличии строки `JSON` выполняет передачу. Диагностика шага явно
-%   различает три состояния:
-%   1. прием не подтвержден;
-%   2. исходящая пробная передача без принятого пакета;
-%   3. ответная передача после принятого и разобранного пакета.
+%   Принимает все доступные входные UDP-датаграммы от `ArduPilot SITL`,
+%   разбирает их, выбирает последний валидный двоичный пакет и после этого
+%   выполняет передачу строки `JSON`. Если отправитель уже известен по
+%   принятому пакету, ответная строка направляется именно на его адрес и
+%   порт.
 %
 % Входы:
 %   transport - структура транспортного уровня
-%   json_text - строка JSON для передачи
+%   json_text - строка `JSON` для передачи
 %   cfg       - конфигурация средства сопряжения
 %
 % Выходы:
 %   transport - обновленная структура транспортного уровня
-%   rx_out    - результат разбора входного двоичного пакета
+%   rx_out    - результат разбора последнего валидного входного пакета
 %   diag      - структура диагностических признаков шага обмена
 %
 % Единицы измерения:
 %   объем принятого пакета задается в байтах
 %
 % Допущения:
-%   Функция не должна зависать и использует только уже открытое средство
-%   обмена. При отсутствии пакета от `ArduPilot` допускается только
-%   исходящая пробная передача строки `JSON`.
+%   Функция работает только с уже открытым средством обмена и не должна
+%   зависать при отсутствии входящих датаграмм.
 
 if nargin < 3 || isempty(cfg)
     cfg = uav.ardupilot.default_json_config();
@@ -52,30 +49,17 @@ if ~transport.is_open || isempty(transport.handle)
     return;
 end
 
-[raw_bytes, transport, diag] = local_receive_bytes(transport, diag, cfg);
-
-if ~isempty(raw_bytes)
-    rx_out = uav.ardupilot.decode_sitl_output_packet(raw_bytes, cfg);
-    diag.rx_received = true;
-    diag.rx_bytes_count = numel(raw_bytes);
-    diag.rx_valid = logical(rx_out.valid);
-    diag.rx_message = string(rx_out.message);
-else
-    diag.rx_message = "Входящий двоичный пакет от ArduPilot не получен.";
-end
+[transport, rx_out, diag] = local_receive_and_decode(transport, rx_out, diag, cfg);
 
 if strlength(json_text) > 0
-    [transport, diag] = local_send_json_text( ...
-        transport, ...
-        json_text, ...
-        diag, ...
-        cfg);
+    [transport, diag] = local_send_json_text(transport, json_text, diag, cfg);
 else
     diag.tx_kind = "none";
     diag.tx_message = "Строка JSON не была передана.";
 end
 
-diag.handshake_confirmed = logical(diag.rx_valid && diag.tx_ok);
+diag.handshake_confirmed = logical(diag.tx_ok && diag.tx_kind == "reply");
+diag.response_tx_count = double(diag.handshake_confirmed);
 
 if diag.handshake_confirmed
     diag.status = "ответная передача";
@@ -165,13 +149,22 @@ diag.rx_received = false;
 diag.rx_valid = false;
 diag.rx_bytes_count = 0;
 diag.rx_message = "";
+diag.rx_datagram_count = 0;
+diag.rx_valid_count = 0;
+diag.rx_invalid_count = 0;
 diag.tx_attempted = false;
 diag.tx_ok = false;
+diag.tx_count = 0;
+diag.response_tx_count = 0;
 diag.tx_kind = "none";
 diag.tx_message = "";
 diag.handshake_confirmed = false;
 diag.used_remote_ip = string(cfg.udp_remote_ip);
 diag.used_remote_port = double(cfg.udp_remote_port);
+diag.last_sender_address = "";
+diag.last_sender_port = 0;
+diag.last_magic = 0;
+diag.last_frame_count = 0;
 
 if isfield(transport, 'remote_ip')
     diag.used_remote_ip = string(transport.remote_ip);
@@ -182,20 +175,52 @@ if isfield(transport, 'remote_port')
 end
 end
 
-function [raw_bytes, transport, diag] = local_receive_bytes(transport, diag, cfg)
-%LOCAL_RECEIVE_BYTES Принять один пакет байтов, если он доступен.
+function [transport, rx_out, diag] = local_receive_and_decode(transport, rx_out, diag, cfg)
+%LOCAL_RECEIVE_AND_DECODE Принять все доступные датаграммы и выбрать последнюю валидную.
 
-raw_bytes = uint8([]);
+last_invalid = uav.ardupilot.decode_sitl_output_packet([], cfg);
+last_invalid_bytes = 0;
 
 try
     switch string(transport.method)
         case "udpport"
-            bytes_available = double(transport.handle.NumBytesAvailable);
-            if bytes_available > 0
-                bytes_to_read = min(bytes_available, double(cfg.udp_max_rx_bytes));
-                raw_bytes = read(transport.handle, bytes_to_read, "uint8");
-                raw_bytes = uint8(raw_bytes(:));
+            while double(transport.handle.NumDatagramsAvailable) > 0
+                datagram = read(transport.handle, 1, "uint8");
+                if isempty(datagram)
+                    break;
+                end
+
+                raw_bytes = uint8(datagram.Data(:));
+                sender_address = string(datagram.SenderAddress);
+                sender_port = double(datagram.SenderPort);
+
+                transport.remote_ip = sender_address;
+                transport.remote_port = sender_port;
                 transport.rx_count = transport.rx_count + 1;
+
+                diag.rx_datagram_count = diag.rx_datagram_count + 1;
+                diag.last_sender_address = sender_address;
+                diag.last_sender_port = sender_port;
+                diag.used_remote_ip = sender_address;
+                diag.used_remote_port = sender_port;
+
+                decoded = uav.ardupilot.decode_sitl_output_packet(raw_bytes, cfg);
+                diag.last_magic = double(decoded.magic);
+                diag.last_frame_count = double(decoded.frame_count);
+
+                if decoded.valid
+                    rx_out = decoded;
+                    diag.rx_received = true;
+                    diag.rx_valid = true;
+                    diag.rx_valid_count = diag.rx_valid_count + 1;
+                    diag.rx_bytes_count = numel(raw_bytes);
+                    diag.rx_message = string(decoded.message);
+                    transport.has_valid_remote = true;
+                else
+                    last_invalid = decoded;
+                    last_invalid_bytes = numel(raw_bytes);
+                    diag.rx_invalid_count = diag.rx_invalid_count + 1;
+                end
             end
         case "udp"
             bytes_available = double(get(transport.handle, 'BytesAvailable'));
@@ -203,14 +228,42 @@ try
                 bytes_to_read = min(bytes_available, double(cfg.udp_max_rx_bytes));
                 raw_bytes = fread(transport.handle, bytes_to_read, 'uint8');
                 raw_bytes = uint8(raw_bytes(:));
+
                 transport.rx_count = transport.rx_count + 1;
+                diag.rx_datagram_count = 1;
+
+                decoded = uav.ardupilot.decode_sitl_output_packet(raw_bytes, cfg);
+                diag.last_magic = double(decoded.magic);
+                diag.last_frame_count = double(decoded.frame_count);
+
+                if decoded.valid
+                    rx_out = decoded;
+                    diag.rx_received = true;
+                    diag.rx_valid = true;
+                    diag.rx_valid_count = 1;
+                    diag.rx_bytes_count = numel(raw_bytes);
+                    diag.rx_message = string(decoded.message);
+                    transport.has_valid_remote = true;
+                else
+                    last_invalid = decoded;
+                    last_invalid_bytes = numel(raw_bytes);
+                    diag.rx_invalid_count = 1;
+                end
             end
         otherwise
             diag.rx_message = "Метод UDP не поддерживается.";
     end
 catch rx_error
-    raw_bytes = uint8([]);
     diag.rx_message = "Ошибка приема UDP: " + string(rx_error.message);
+end
+
+if ~diag.rx_valid && diag.rx_invalid_count > 0
+    rx_out = last_invalid;
+    diag.rx_received = true;
+    diag.rx_bytes_count = last_invalid_bytes;
+    diag.rx_message = string(last_invalid.message);
+elseif ~diag.rx_received
+    diag.rx_message = "Входящий двоичный пакет от ArduPilot не получен.";
 end
 end
 
@@ -220,7 +273,20 @@ function [transport, diag] = local_send_json_text(transport, json_text, diag, cf
 diag.tx_attempted = true;
 diag.tx_kind = "probe";
 
-if diag.rx_valid
+target_ip = string(cfg.udp_remote_ip);
+target_port = double(cfg.udp_remote_port);
+
+has_valid_remote = false;
+if isfield(transport, 'has_valid_remote')
+    has_valid_remote = logical(transport.has_valid_remote);
+end
+
+if strlength(string(transport.remote_ip)) > 0 && double(transport.remote_port) > 0
+    target_ip = string(transport.remote_ip);
+    target_port = double(transport.remote_port);
+end
+
+if diag.rx_valid || has_valid_remote
     diag.tx_kind = "reply";
 end
 
@@ -228,19 +294,20 @@ warn_state = warning;
 cleanup_obj = onCleanup(@() warning(warn_state));
 warning('off', 'all');
 
-bytes_to_send = reshape(uint8(char(json_text)), 1, []);
+payload_text = char(json_text);
+payload_bytes = uint8(payload_text);
 
 try
     switch string(transport.method)
         case "udpport"
             write( ...
                 transport.handle, ...
-                bytes_to_send, ...
+                payload_bytes, ...
                 "uint8", ...
-                char(cfg.udp_remote_ip), ...
-                double(cfg.udp_remote_port));
+                char(target_ip), ...
+                target_port);
         case "udp"
-            fwrite(transport.handle, bytes_to_send, 'uint8');
+            fwrite(transport.handle, payload_bytes, 'uint8');
         otherwise
             error( ...
                 'uav:ardupilot:json_udp_step:UnsupportedMethod', ...
@@ -250,20 +317,29 @@ try
 
     transport.tx_count = transport.tx_count + 1;
     diag.tx_ok = true;
+    diag.tx_count = 1;
+    diag.used_remote_ip = target_ip;
+    diag.used_remote_port = target_port;
 
-    if diag.rx_valid
-        diag.tx_message = [ ...
-            "Ответная передача строки JSON выполнена после " ...
-            + "принятого двоичного пакета ArduPilot."];
+    if diag.tx_kind == "reply"
+        diag.tx_message = append( ...
+            "Ответная передача строки JSON выполнена после принятого двоичного пакета ArduPilot на адрес ", ...
+            target_ip, ...
+            ":", ...
+            string(target_port), ...
+            ".");
     else
-        diag.tx_message = [ ...
-            "Исходящая пробная строка JSON была сформирована " ...
-            + "и отправлена без принятого пакета ArduPilot."];
+        diag.tx_message = append( ...
+            "Исходящая пробная строка JSON была сформирована и отправлена без принятого пакета ArduPilot на адрес ", ...
+            target_ip, ...
+            ":", ...
+            string(target_port), ...
+            ".");
     end
 catch tx_error
     diag.tx_ok = false;
 
-    if diag.rx_valid
+    if diag.tx_kind == "reply"
         diag.tx_message = [ ...
             "Не удалось выполнить ответную передачу строки JSON " ...
             + "после принятого пакета ArduPilot: " ...

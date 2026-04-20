@@ -1,10 +1,11 @@
 [CmdletBinding()]
 param(
-    [string]$DistroName = 'Ubuntu',
-    [switch]$Execute
+    [string]$DistroName = "Ubuntu",
+    [switch]$Execute,
+    [string]$LogPath
 )
 
-$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = "Stop"
 
 function Get-RepoRoot {
     return (Split-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) -Parent)
@@ -18,8 +19,8 @@ function Convert-ToWslPath {
 
     $fullPath = [System.IO.Path]::GetFullPath($WindowsPath)
     $drive = $fullPath.Substring(0, 1).ToLowerInvariant()
-    $tail = $fullPath.Substring(2).Replace('\', '/')
-    if ($tail.StartsWith('/')) {
+    $tail = $fullPath.Substring(2).Replace("\", "/")
+    if ($tail.StartsWith("/")) {
         $tail = $tail.Substring(1)
     }
 
@@ -44,10 +45,17 @@ function Write-Utf8NoBomFile {
 }
 
 $repoRoot = Get-RepoRoot
-$logPath = Join-Path $repoRoot 'artifacts/logs/task_13_invoke_ardupilot_wsl_setup.txt'
-$scriptPath = Join-Path $repoRoot 'tools/ardupilot/wsl/setup_ardupilot_wsl.sh'
+if ([string]::IsNullOrWhiteSpace($LogPath)) {
+    $logPath = Join-Path $repoRoot "artifacts/logs/task_13_invoke_ardupilot_wsl_setup.txt"
+}
+else {
+    $logPath = [System.IO.Path]::GetFullPath($LogPath)
+}
+
+$scriptPath = Join-Path $repoRoot "tools/ardupilot/wsl/setup_ardupilot_wsl.sh"
 $scriptPathWsl = Convert-ToWslPath -WindowsPath $scriptPath
-$wslCommand = 'wsl.exe -d "{0}" -- bash "{1}"' -f $DistroName, $scriptPathWsl
+$modeArgument = $(if ($Execute) { "--execute" } else { "--dry-run" })
+$wslCommand = "wsl.exe -d `"$DistroName`" -- bash `"$scriptPathWsl`" $modeArgument"
 
 $lines = New-Object System.Collections.Generic.List[string]
 
@@ -57,22 +65,22 @@ function Add-Line {
     Write-Host $Text
 }
 
-Add-Line 'ArduPilot preparation inside WSL'
-Add-Line ("  distro                               : {0}" -f $DistroName)
-Add-Line ("  Bash script                          : {0}" -f $scriptPathWsl)
-Add-Line ("  execution mode                       : {0}" -f $(if ($Execute) { 'execute' } else { 'check' }))
-Add-Line ("  WSL command                          : {0}" -f $wslCommand)
+Add-Line "ArduPilot WSL setup wrapper"
+Add-Line ("  distro                       : {0}" -f $DistroName)
+Add-Line ("  bash script                  : {0}" -f $scriptPathWsl)
+Add-Line ("  mode                         : {0}" -f $(if ($Execute) { "execute" } else { "check" }))
+Add-Line ("  WSL command                  : {0}" -f $wslCommand)
 
 if ($Execute) {
-    Add-Line ''
-    Add-Line 'Executing WSL preparation command:'
-    & wsl.exe -d $DistroName -- bash $scriptPathWsl 2>&1 | ForEach-Object {
+    Add-Line ""
+    Add-Line "Executing WSL setup command:"
+    & wsl.exe -d $DistroName -- bash $scriptPathWsl --execute 2>&1 | ForEach-Object {
         Add-Line ("  {0}" -f $_)
     }
 }
 else {
-    Add-Line ''
-    Add-Line 'Check mode: Bash preparation script was not executed.'
+    Add-Line ""
+    Add-Line "Dry-run mode: the WSL setup script was not executed."
 }
 
 $logText = ($lines -join [Environment]::NewLine) + [Environment]::NewLine

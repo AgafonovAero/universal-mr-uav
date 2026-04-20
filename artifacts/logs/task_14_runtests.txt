@@ -1,0 +1,388 @@
+Running test_actuator_cmd_to_motor_radps
+..
+Done test_actuator_cmd_to_motor_radps
+__________
+
+Running test_altitude_filter_step
+..
+Done test_altitude_filter_step
+__________
+
+Running test_ardupilot_decode_sitl_output_packet
+...
+Done test_ardupilot_decode_sitl_output_packet
+__________
+
+Running test_ardupilot_default_json_config
+.
+Done test_ardupilot_default_json_config
+__________
+
+Running test_ardupilot_encode_json_fdm_text
+.
+Done test_ardupilot_encode_json_fdm_text
+__________
+
+Running test_ardupilot_environment_bootstrap_check
+.
+Done test_ardupilot_environment_bootstrap_check
+__________
+
+Running test_ardupilot_handshake_status_semantics
+..
+Done test_ardupilot_handshake_status_semantics
+__________
+
+Running test_ardupilot_json_udp_availability
+.
+Done test_ardupilot_json_udp_availability
+__________
+
+Running test_ardupilot_loopback_runner
+.
+Done test_ardupilot_loopback_runner
+__________
+
+Running test_ardupilot_make_sitl_start_command
+.
+Done test_ardupilot_make_sitl_start_command
+__________
+
+Running test_ardupilot_pack_json_fdm_packet
+.
+Done test_ardupilot_pack_json_fdm_packet
+__________
+
+Running test_ardupilot_pwm_to_motor_radps
+.
+Done test_ardupilot_pwm_to_motor_radps
+__________
+
+Running test_ardupilot_setup_commands
+.
+Done test_ardupilot_setup_commands
+__________
+
+Running test_ardupilot_sitl_setup_commands
+.
+Done test_ardupilot_sitl_setup_commands
+__________
+
+Running test_ardupilot_stand_scripts_presence
+..
+Done test_ardupilot_stand_scripts_presence
+__________
+
+Running test_ardupilot_wait_for_sitl_output_packet
+.
+Done test_ardupilot_wait_for_sitl_output_packet
+__________
+
+Running test_ardupilot_windows_script_presence
+...
+Done test_ardupilot_windows_script_presence
+__________
+
+Running test_attitude_cf_step
+....
+Done test_attitude_cf_step
+__________
+
+Running test_baro_measure
+..
+Done test_baro_measure
+__________
+
+Running test_build_mil_top
+Built thin MIL model: D:\WORK\AI_SOLUTION\universal-mr-uav\models\mil_top.slx
+.
+Done test_build_mil_top
+__________
+
+Running test_build_sil_top
+Built thin SIL-prep model: D:\WORK\AI_SOLUTION\universal-mr-uav\models\sil_top.slx
+.
+Done test_build_sil_top
+__________
+
+Running test_demo_pitch_step_minus10deg
+Demo pitch step -10 deg diagnostics:
+  final pitch [deg]             : -12.121453
+  final estimated pitch [deg]   : -10.003234
+  final pitch estimation err [deg]: -2.118220
+  peak pitch tracking err [deg] : 10.000000
+  min accel weight [-]          : 0.000000
+  max consistency metric [m/s^2]: 1.855700
+  final altitude [m]            : 19.844794
+  quat norms [-]                : true=1.000000000000 est=1.000000000000
+  saved MAT                     : D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\reports\demo_pitch_step_minus10deg.mat
+  saved CSV                     : D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\reports\demo_pitch_step_minus10deg.csv
+.
+Done test_demo_pitch_step_minus10deg
+__________
+
+Running test_demo_takeoff_to_50m
+Demo takeoff to 50 m diagnostics:
+  final altitude [m]          : 49.992157
+  peak altitude error [m]     : 3.988082
+  final estimated altitude [m]: 49.991800
+  final accel weight [-]      : 1.000000
+  final quat norms [-]        : true=1.000000000000 est=1.000000000000
+  saved MAT                   : D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\reports\demo_takeoff_to_50m.mat
+  saved CSV                   : D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\reports\demo_takeoff_to_50m.csv
+.
+Done test_demo_takeoff_to_50m
+__________
+
+Running test_estimator_step
+.
+Done test_estimator_step
+__________
+
+Running test_forces_moments_sum
+.
+Done test_forces_moments_sum
+__________
+
+Running test_gnss_measure
+.
+Done test_gnss_measure
+__________
+
+Running test_ground_station_install_scripts
+..
+Done test_ground_station_install_scripts
+__________
+
+Running test_hover_balance
+.
+Done test_hover_balance
+__________
+
+Running test_imu_measure
+.
+Done test_imu_measure
+__________
+
+Running test_inspect_ardupilot_sitl_environment
+.
+Done test_inspect_ardupilot_sitl_environment
+__________
+
+Running test_mag_measure
+.
+Done test_mag_measure
+__________
+
+Running test_make_bus_defs
+.
+Done test_make_bus_defs
+__________
+
+Running test_make_sil_bus_defs
+.
+Done test_make_sil_bus_defs
+__________
+
+Running test_mixer_quad_x
+....
+Done test_mixer_quad_x
+__________
+
+Running test_motor_esc_step
+..
+Done test_motor_esc_step
+__________
+
+Running test_onekey_config
+..
+Done test_onekey_config
+__________
+
+Running test_plant_step
+.
+Done test_plant_step
+__________
+
+Running test_plant_step_struct
+.
+Done test_plant_step_struct
+__________
+
+Running test_quat_tools
+..
+Done test_quat_tools
+__________
+
+Running test_run_ardupilot_full_stand_dryrun
+.
+Done test_run_ardupilot_full_stand_dryrun
+__________
+
+Running test_run_ardupilot_json_udp_selfcheck
+Project paths added from repository root.
+
+Next MATLAB commands:
+  params = uav.sim.default_params_quad_x250();
+  run('scripts/run_case_hover.m');
+  run('scripts/run_case_yaw_step.m');
+  results = runtests('tests');
+  table(results)
+�����஢�ઠ �।�⢠ ������ ArduPilot �� JSON � UDP
+  ����㯭���� UDP                        : ��
+  �ᯮ��㥬� ��堭���                  : udpport
+  ����஢���� JSON �믮�����             : ��
+  ࠧ��� ����筮�� ����� �믮����       : ��
+  magic                                  : 18458
+  frame_rate_hz                          : 100
+  frame_count                            : 7
+  ���� ���� ���祭�� ��� [us]        : [1615.000000 1615.000000 1615.000000 1615.000000]
+  ������� ����� ��饭�� [rad/s]       : [553.500000 553.500000 553.500000 553.500000]
+  ������� ����� UDP �믮����           : ��
+  ᮮ�饭�� �࠭ᯮ�⭮� �஢�ન        : ������� ����� �� UDP �믮���� �ᯥ譮.
+.
+Done test_run_ardupilot_json_udp_selfcheck
+__________
+
+Running test_run_case_closed_loop_with_estimator
+..
+Done test_run_case_closed_loop_with_estimator
+__________
+
+Running test_run_case_hover
+.
+Done test_run_case_hover
+__________
+
+Running test_run_case_with_estimator
+.
+Done test_run_case_with_estimator
+__________
+
+Running test_run_case_with_sensors
+.
+Done test_run_case_with_sensors
+__________
+
+Running test_run_case_yaw_step
+.
+Done test_run_case_yaw_step
+__________
+
+Running test_run_mil_top_hover
+Built thin MIL model: D:\WORK\AI_SOLUTION\universal-mr-uav\models\mil_top.slx
+Thin MIL hover diagnostics:
+  final position NED [m]      : [0.000000 0.000000 1.186404]
+  final altitude [m]          : -1.186404
+  final estimated altitude [m]: -1.159642
+  final estimated Euler [rad] : [0.000000 0.000000 0.000000]
+  final true quat norm [-]    : 1.000000000000
+  final estimated quat norm[-]: 1.000000000000
+.
+Done test_run_mil_top_hover
+__________
+
+Running test_run_sil_stub_hover
+Built thin SIL-prep model: D:\WORK\AI_SOLUTION\universal-mr-uav\models\sil_top.slx
+Thin SIL-prep hover diagnostics:
+  final true position NED [m]      : [0.000000 0.000000 0.791605]
+  final true altitude [m]          : -0.791605
+  final estimated altitude [m]     : -0.785766
+  final true quat norm [-]         : 1.000000000000
+  final estimated quat norm [-]    : 1.000000000000
+  final hover actuator cmd [-]     : [0.631033 0.631033 0.631033 0.631033]
+.
+Done test_run_sil_stub_hover
+__________
+
+Running test_sensors_step
+.
+Done test_sensors_step
+__________
+
+Running test_stage15_sil_bridge
+.
+Done test_stage15_sil_bridge
+__________
+
+Running test_state_pack_unpack
+..
+Done test_state_pack_unpack
+__________
+
+                                                          Name                                                           Passed    Failed    Incomplete    Duration       Details   
+    _________________________________________________________________________________________________________________    ______    ______    __________    _________    ____________
+
+    {'test_actuator_cmd_to_motor_radps/testLinearNorm01Mapping'                                                     }    true      false       false          0.3627    {11 struct}
+    {'test_actuator_cmd_to_motor_radps/testInputSaturationHonorsMotorLimits'                                        }    true      false       false        0.036229    {11 struct}
+    {'test_altitude_filter_step/testAltitudeEstimateConvergesToBaro'                                                }    true      false       false         0.10713    {11 struct}
+    {'test_altitude_filter_step/testZeroVerticalAccelerationKeepsVzBounded'                                         }    true      false       false        0.067494    {11 struct}
+    {'test_ardupilot_decode_sitl_output_packet/testDecodePacketWith16Channels'                                      }    true      false       false        0.099181    {11 struct}
+    {'test_ardupilot_decode_sitl_output_packet/testDecodePacketWith32Channels'                                      }    true      false       false       0.0073781    {11 struct}
+    {'test_ardupilot_decode_sitl_output_packet/testDecodeShortPacketReturnsInvalidWithoutThrow'                     }    true      false       false        0.017482    {11 struct}
+    {'test_ardupilot_default_json_config/testDefaultConfigContainsRequiredFields'                                   }    true      false       false        0.071008    {11 struct}
+    {'test_ardupilot_encode_json_fdm_text/testJsonContainsRequiredFieldsAndNewline'                                 }    true      false       false         0.11366    {11 struct}
+    {'test_ardupilot_environment_bootstrap_check/testBootstrapCheckRunsWithoutError'                                }    true      false       false         0.80967    {11 struct}
+    {'test_ardupilot_handshake_status_semantics/testRealHandshakeScenarioDoesNotClaimConfirmedExchangeWithoutPacket'}    true      false       false          1.1374    {11 struct}
+    {'test_ardupilot_handshake_status_semantics/testReplyStatusAppearsOnlyAfterReceivedPacket'                      }    true      false       false         0.40817    {11 struct}
+    {'test_ardupilot_json_udp_availability/testAvailabilityReturnsStructuredResult'                                 }    true      false       false        0.068205    {11 struct}
+    {'test_ardupilot_loopback_runner/testLoopbackRunnerReturnsPacketsAndBoundedQuatNorms'                           }    true      false       false         0.39099    {11 struct}
+    {'test_ardupilot_make_sitl_start_command/testCommandContainsJsonModel'                                          }    true      false       false        0.077872    {11 struct}
+    {'test_ardupilot_pack_json_fdm_packet/testPacketContainsRequiredTruthAndSensorFields'                           }    true      false       false        0.073739    {11 struct}
+    {'test_ardupilot_pwm_to_motor_radps/testLinearMappingAndSaturation'                                             }    true      false       false        0.065724    {11 struct}
+    {'test_ardupilot_setup_commands/testSetupCommandsReturnScriptPaths'                                             }    true      false       false         0.58368    {11 struct}
+    {'test_ardupilot_sitl_setup_commands/testSetupCommandsAreFormed'                                                }    true      false       false         0.60074    {11 struct}
+    {'test_ardupilot_stand_scripts_presence/testStandScriptsExist'                                                  }    true      false       false       0.0034199    {11 struct}
+    {'test_ardupilot_stand_scripts_presence/testStandScriptsExposeSafeMode'                                         }    true      false       false       0.0033958    {11 struct}
+    {'test_ardupilot_wait_for_sitl_output_packet/testWaitReturnsTimeoutWithoutArduPilot'                            }    true      false       false         0.30146    {11 struct}
+    {'test_ardupilot_windows_script_presence/testWindowsAndWslScriptsExist'                                         }    true      false       false       0.0029727    {11 struct}
+    {'test_ardupilot_windows_script_presence/testPowerShellScriptsExposeSafeExecutionMode'                          }    true      false       false       0.0023021    {11 struct}
+    {'test_ardupilot_windows_script_presence/testBashScriptsUseExternalArduPilotRoot'                               }    true      false       false       0.0020079    {11 struct}
+    {'test_attitude_cf_step/testIdentityZeroGyroPreservesOrientation'                                               }    true      false       false        0.076187    {11 struct}
+    {'test_attitude_cf_step/testQuaternionNormRemainsNearUnity'                                                     }    true      false       false        0.025963    {11 struct}
+    {'test_attitude_cf_step/testLevelHoverKeepsRollPitchNearZero'                                                   }    true      false       false        0.026619    {11 struct}
+    {'test_attitude_cf_step/testAcceleratedPitchDoesNotCollapseBackToLevel'                                         }    true      false       false        0.022743    {11 struct}
+    {'test_baro_measure/testBaroAltitudeMatchesNegativeNedZ'                                                        }    true      false       false        0.073485    {11 struct}
+    {'test_baro_measure/testPressureDecreasesWithAltitude'                                                          }    true      false       false       0.0019007    {11 struct}
+    {'test_build_mil_top/testBuildMilTopCreatesThinShellModel'                                                      }    true      false       false          14.171    {11 struct}
+    {'test_build_sil_top/testBuildSilTopCreatesThinBridgeModel'                                                     }    true      false       false          3.1833    {11 struct}
+    {'test_demo_pitch_step_minus10deg/testPitchDemoProducesArtifactsAndTracksCommand'                               }    true      false       false          3.5558    {11 struct}
+    {'test_demo_takeoff_to_50m/testTakeoffDemoProducesArtifactsAndBoundedState'                                     }    true      false       false          3.4105    {11 struct}
+    {'test_estimator_step/testEstimatorStepReturnsRequiredFields'                                                   }    true      false       false        0.097602    {11 struct}
+    {'test_forces_moments_sum/testEqualRotorSpeedsProducePureNegativeZForce'                                        }    true      false       false        0.092599    {11 struct}
+    {'test_gnss_measure/testGnssReturnsPositionAndRotatedVelocityInNed'                                             }    true      false       false        0.091299    {11 struct}
+    {'test_ground_station_install_scripts/testInstallScriptsExistAndExposeExecute'                                  }    true      false       false       0.0041757    {11 struct}
+    {'test_ground_station_install_scripts/testInstallScriptsDefaultToSafeMode'                                      }    true      false       false       0.0026034    {11 struct}
+    {'test_hover_balance/testBaselineHoverThrustBalancesWeight'                                                     }    true      false       false          0.1068    {11 struct}
+    {'test_imu_measure/testLevelHoverSpecificForceAndGyro'                                                          }    true      false       false        0.094256    {11 struct}
+    {'test_inspect_ardupilot_sitl_environment/testInspectionReturnsStructuredStatusWithoutThrowing'                 }    true      false       false         0.56498    {11 struct}
+    {'test_mag_measure/testIdentityQuaternionKeepsNedField'                                                         }    true      false       false        0.081768    {11 struct}
+    {'test_make_bus_defs/testMakeBusDefsCreatesTopLevelBuses'                                                       }    true      false       false         0.13787    {11 struct}
+    {'test_make_sil_bus_defs/testMakeSilBusDefsCreatesTopLevelBuses'                                                }    true      false       false          0.1076    {11 struct}
+    {'test_mixer_quad_x/testHoverMixDistributesThrustEqually'                                                       }    true      false       false        0.091584    {11 struct}
+    {'test_mixer_quad_x/testMixerGeometryMatchesPresetParameters'                                                   }    true      false       false        0.027368    {11 struct}
+    {'test_mixer_quad_x/testMixerReproducesRequestedMoments'                                                        }    true      false       false       0.0081125    {11 struct}
+    {'test_mixer_quad_x/testPureRollCommandIsSymmetricAcrossFrontAndRear'                                           }    true      false       false       0.0078651    {11 struct}
+    {'test_motor_esc_step/testMotorEscStepConvergesMonotonically'                                                   }    true      false       false         0.14989    {11 struct}
+    {'test_motor_esc_step/testMotorEscStepSaturatesAtMaximum'                                                       }    true      false       false       0.0068104    {11 struct}
+    {'test_onekey_config/testDefaultStandConfigContainsRequiredFields'                                              }    true      false       false          0.2781    {11 struct}
+    {'test_onekey_config/testOneKeyEntryPointsExist'                                                                }    true      false       false       0.0021863    {11 struct}
+    {'test_plant_step/testTrimLikeHoverAccelerationIsNearZeroAfterSpool'                                            }    true      false       false         0.09965    {11 struct}
+    {'test_plant_step_struct/testPlantStepStructMatchesPackedPlantStep'                                             }    true      false       false        0.097668    {11 struct}
+    {'test_quat_tools/testQuatNormalizeReturnsUnitNorm'                                                             }    true      false       false        0.080584    {11 struct}
+    {'test_quat_tools/testQuatToDcmProducesProperRotation'                                                          }    true      false       false        0.032931    {11 struct}
+    {'test_run_ardupilot_full_stand_dryrun/testFullStandDryRunDoesNotFail'                                          }    true      false       false          5.5372    {11 struct}
+    {'test_run_ardupilot_json_udp_selfcheck/testSelfcheckScriptReturnsStructuredResult'                             }    true      false       false          1.0029    {11 struct}
+    {'test_run_case_closed_loop_with_estimator/testClosedLoopRunnerReturnsDiagnosticsAndBoundedQuatNorms'           }    true      false       false         0.86799    {11 struct}
+    {'test_run_case_closed_loop_with_estimator/testDemoControllersUseEstimatorSensorInputsOnly'                     }    true      false       false       0.0070633    {11 struct}
+    {'test_run_case_hover/testHoverCaseKeepsQuatNormAndNearZeroVerticalAccel'                                       }    true      false       false         0.15371    {11 struct}
+    {'test_run_case_with_estimator/testHoverCaseReturnsEstimatorHistoryAndBoundedAltitude'                          }    true      false       false          0.2541    {11 struct}
+    {'test_run_case_with_sensors/testHoverCaseReturnsSensorHistoryAndBoundedDrift'                                  }    true      false       false         0.18351    {11 struct}
+    {'test_run_case_yaw_step/testYawStepProducesPositiveYawRate'                                                    }    true      false       false         0.13183    {11 struct}
+    {'test_run_mil_top_hover/testMilHoverRunMatchesCodeCentricKernel'                                               }    true      false       false          2.4791    {11 struct}
+    {'test_run_sil_stub_hover/testSilHoverRunCompletesAndKeepsQuatNormsNearOne'                                     }    true      false       false          2.0429    {11 struct}
+    {'test_sensors_step/testAggregatorContainsAllSensorsAndMatchesIndividualCalls'                                  }    true      false       false         0.09795    {11 struct}
+    {'test_stage15_sil_bridge/testBridgeMatchesCodeCentricReferenceLoop'                                            }    true      false       false         0.38311    {11 struct}
+    {'test_state_pack_unpack/testPackUnpackRoundTripIsConsistent'                                                   }    true      false       false        0.097991    {11 struct}
+    {'test_state_pack_unpack/testStateValidateRejectsWrongQuaternionSize'                                           }    true      false       false         0.13616    {11 struct}
+

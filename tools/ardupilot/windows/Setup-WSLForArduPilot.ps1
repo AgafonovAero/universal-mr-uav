@@ -1,11 +1,12 @@
 [CmdletBinding()]
 param(
     [switch]$Execute,
-    [string]$DistroName = 'Ubuntu',
-    [int]$PreferWSLVersion = 2
+    [string]$DistroName = "Ubuntu",
+    [int]$PreferWSLVersion = 2,
+    [string]$LogPath
 )
 
-$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = "Stop"
 
 function Get-RepoRoot {
     return (Split-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) -Parent)
@@ -28,6 +29,12 @@ function Write-Utf8NoBomFile {
     [System.IO.File]::WriteAllText($Path, $Text, $encoding)
 }
 
+function Test-IsAdministrator {
+    $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
+    $principal = New-Object Security.Principal.WindowsPrincipal($identity)
+    return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+}
+
 function Get-WslDistroInfo {
     $result = [ordered]@{
         HasWslCommand = $false
@@ -44,27 +51,27 @@ function Get-WslDistroInfo {
     try {
         $output = & wsl.exe -l -v 2>&1
         foreach ($line in $output) {
-            $text = [string]$line
+            $text = ([string]$line).Replace([string][char]0, '')
             if ([string]::IsNullOrWhiteSpace($text)) {
                 continue
             }
 
-            if ($text -match 'NAME\s+STATE\s+VERSION') {
+            if ($text -match "NAME\s+STATE\s+VERSION") {
                 continue
             }
 
-            if ($text -match 'Windows Subsystem for Linux') {
+            if ($text -match "Windows Subsystem for Linux") {
                 continue
             }
 
-            $isDefault = $false
             $trimmed = $text.Trim()
-            if ($trimmed.StartsWith('*')) {
+            $isDefault = $false
+            if ($trimmed.StartsWith("*")) {
                 $isDefault = $true
                 $trimmed = $trimmed.Substring(1).Trim()
             }
 
-            if ($trimmed -match '^(?<Name>.+?)\s{2,}(?<State>\S+)\s+(?<Version>\d+)$') {
+            if ($trimmed -match "^(?<Name>.+?)\s{2,}(?<State>\S+)\s+(?<Version>\d+)$") {
                 $result.Distros += [pscustomobject]@{
                     Name      = $Matches.Name.Trim()
                     State     = $Matches.State
@@ -80,14 +87,30 @@ function Get-WslDistroInfo {
     return [pscustomobject]$result
 }
 
-function Test-IsAdministrator {
-    $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
-    $principal = New-Object Security.Principal.WindowsPrincipal($identity)
-    return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+function Test-WslTargetDistro {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$DistroName
+    )
+
+    try {
+        $output = & wsl.exe -d $DistroName -- bash -lc "printf ok" 2>&1
+        $text = (($output | ForEach-Object { ([string]$_).Replace([string][char]0, '') }) -join "")
+        return $text.Contains('ok')
+    }
+    catch {
+        return $false
+    }
 }
 
 $repoRoot = Get-RepoRoot
-$logPath = Join-Path $repoRoot 'artifacts/logs/task_13_setup_wsl_for_ardupilot.txt'
+if ([string]::IsNullOrWhiteSpace($LogPath)) {
+    $logPath = Join-Path $repoRoot "artifacts/logs/task_13_setup_wsl_for_ardupilot.txt"
+}
+else {
+    $logPath = [System.IO.Path]::GetFullPath($LogPath)
+}
+
 $lines = New-Object System.Collections.Generic.List[string]
 
 function Add-Line {
@@ -98,42 +121,45 @@ function Add-Line {
 
 $isAdmin = Test-IsAdministrator
 $wslInfo = Get-WslDistroInfo
-$commands = New-Object System.Collections.Generic.List[string]
-
 $targetDistro = $wslInfo.Distros | Where-Object { $_.Name -eq $DistroName } | Select-Object -First 1
+$targetDistroAvailable = $null -ne $targetDistro
+if (-not $targetDistroAvailable -and $wslInfo.HasWslCommand) {
+    $targetDistroAvailable = Test-WslTargetDistro -DistroName $DistroName
+}
+$commands = New-Object System.Collections.Generic.List[string]
 
 if (-not $wslInfo.HasWslCommand) {
     $commands.Add("wsl --install -d $DistroName")
 }
-elseif ($null -eq $targetDistro) {
+elseif (-not $targetDistroAvailable) {
     $commands.Add("wsl --install -d $DistroName")
 }
-elseif ($targetDistro.Version -ne $PreferWSLVersion) {
+elseif (($null -ne $targetDistro) -and ($targetDistro.Version -ne $PreferWSLVersion)) {
     $commands.Add("wsl --set-version $DistroName $PreferWSLVersion")
 }
 
-Add-Line 'WSL preparation for ArduPilot SITL'
-Add-Line ("  execution mode                       : {0}" -f $(if ($Execute) { 'execute' } else { 'check' }))
-Add-Line ("  target distro                        : {0}" -f $DistroName)
-Add-Line ("  preferred WSL version                : {0}" -f $PreferWSLVersion)
-Add-Line ("  administrator rights                 : {0}" -f $(if ($isAdmin) { 'yes' } else { 'no' }))
-Add-Line ("  wsl.exe available                    : {0}" -f $(if ($wslInfo.HasWslCommand) { 'yes' } else { 'no' }))
+Add-Line "WSL setup check for ArduPilot SITL"
+Add-Line ("  mode                         : {0}" -f $(if ($Execute) { "execute" } else { "check" }))
+Add-Line ("  target distro                : {0}" -f $DistroName)
+Add-Line ("  preferred WSL version        : {0}" -f $PreferWSLVersion)
+Add-Line ("  administrator rights         : {0}" -f $(if ($isAdmin) { "yes" } else { "no" }))
+Add-Line ("  wsl.exe available            : {0}" -f $(if ($wslInfo.HasWslCommand) { "yes" } else { "no" }))
 
 if ($wslInfo.Distros.Count -gt 0) {
-    Add-Line '  discovered distros:'
+    Add-Line "  detected distros:"
     foreach ($distro in $wslInfo.Distros) {
-        Add-Line ("    - {0}, WSL version: {1}, state: {2}" -f $distro.Name, $distro.Version, $distro.State)
+        Add-Line ("    - {0}, version {1}, state {2}" -f $distro.Name, $distro.Version, $distro.State)
     }
 }
 else {
-    Add-Line '  discovered distros                   : none'
+    Add-Line "  detected distros             : none"
 }
 
 if ($commands.Count -eq 0) {
-    Add-Line '  additional preparation commands are not required.'
+    Add-Line "  follow-up commands           : not required"
 }
 else {
-    Add-Line '  recommended commands:'
+    Add-Line "  recommended commands:"
     foreach ($commandText in $commands) {
         Add-Line ("    {0}" -f $commandText)
     }
@@ -141,20 +167,20 @@ else {
 
 if ($Execute) {
     if (-not $isAdmin -and $commands.Count -gt 0) {
+        Add-Line ""
+        Add-Line "Administrator rights are required for the requested WSL changes."
         $selfCommand = @(
-            '-ExecutionPolicy Bypass'
-            ('-File "{0}"' -f $MyInvocation.MyCommand.Path)
-            '-Execute'
-            ('-DistroName "{0}"' -f $DistroName)
-            ('-PreferWSLVersion {0}' -f $PreferWSLVersion)
-        ) -join ' '
-        Add-Line ''
-        Add-Line 'Administrator rights are required for the requested actions.'
+            "-ExecutionPolicy Bypass"
+            ("-File ""{0}""" -f $MyInvocation.MyCommand.Path)
+            "-Execute"
+            ("-DistroName ""{0}""" -f $DistroName)
+            ("-PreferWSLVersion {0}" -f $PreferWSLVersion)
+        ) -join " "
         Add-Line ("Suggested elevated command: Start-Process powershell -Verb RunAs -ArgumentList '{0}'" -f $selfCommand)
     }
     elseif ($commands.Count -gt 0) {
-        Add-Line ''
-        Add-Line 'Executing allowed commands:'
+        Add-Line ""
+        Add-Line "Executing approved WSL preparation commands:"
         foreach ($commandText in $commands) {
             Add-Line ("  > {0}" -f $commandText)
             cmd /c $commandText | ForEach-Object {
@@ -162,10 +188,14 @@ if ($Execute) {
             }
         }
     }
+    else {
+        Add-Line ""
+        Add-Line "No additional WSL preparation command is required."
+    }
 }
 else {
-    Add-Line ''
-    Add-Line 'Check mode: no system changes were executed.'
+    Add-Line ""
+    Add-Line "Dry-run mode: no system changes were applied."
 }
 
 $logText = ($lines -join [Environment]::NewLine) + [Environment]::NewLine

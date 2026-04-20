@@ -1,0 +1,37 @@
+OneKeyArduPilotStand(start)
+============================================================
+Порт MAVLink UDP: 14550
+Порт JSON/UDP приема MATLAB: 9002
+Порт JSON/UDP передачи MATLAB: 9003
+PowerShell-сценарий: tools/ardupilot/windows/Start-ArduPilotStand.ps1
+  код завершения: 0
+  пояснение: PowerShell-сценарий завершился успешно.
+  команда: powershell -ExecutionPolicy Bypass -File "tools/ardupilot/windows/Start-ArduPilotStand.ps1" -DistroName Ubuntu -Ip 127.0.0.1 -MavlinkPort 14550 -StatePath "D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\reports\task_14_stand_state.json" -LogPath "D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\logs\task_14_start_ardupilot_stand.txt" -LaunchMissionPlanner -LaunchQGroundControl
+  журнал:
+    ArduPilot stand start command
+      mode                         : check
+      WSL distro                   : Ubuntu
+      JSON endpoint                : JSON:127.0.0.1
+      MAVLink UDP port             : 14550
+      Mission Planner found        : no
+      QGroundControl found         : yes
+      WSL command                  : wsl.exe -d Ubuntu -- bash /mnt/d/WORK/AI_SOLUTION/universal-mr-uav/tools/ardupilot/wsl/start_arducopter_json_sitl.sh --ip 127.0.0.1 --mavlink-port 14550 --dry-run
+    
+    Dry-run mode: the stand was not started.
+      Mission Planner manual path  : UDP -> Connect -> port 14550
+      QGroundControl normally auto-detects MAVLink when HEARTBEAT messages appear.
+    
+
+Запуск стенда выполнен в безопасном режиме без фактического старта.
+Двоичный пакет от ArduPilot: не проверялся.
+Ответная строка JSON: не проверялась.
+Подключение наземной станции управления: не проверялось.
+Mission Planner -> UDP -> Connect -> port 14550.
+QGroundControl при наличии пакетов HEARTBEAT обычно обнаруживает аппарат автоматически.
+
+Требуется действие оператора:
+Для фактического запуска стенда повторите режим start с разрешенным выполнением.
+  - Подготовьте внешнюю среду через режим install или соответствующие PowerShell-сценарии.
+  - После фактического запуска SITL используйте Mission Planner -> UDP -> Connect -> port 14550.
+  - Если запущен QGroundControl, убедитесь, что поток MAVLink HEARTBEAT действительно появился на UDP-порту.
+  - Для фактического старта повторите режим start с разрешенным выполнением.

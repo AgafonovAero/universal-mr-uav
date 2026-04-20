@@ -121,11 +121,10 @@ raw_bytes = uint8([]);
 try
     switch string(transport.method)
         case "udpport"
-            bytes_available = double(transport.handle.NumBytesAvailable);
-            if bytes_available > 0
-                bytes_to_read = min(bytes_available, double(cfg.udp_max_rx_bytes));
-                raw_bytes = read(transport.handle, bytes_to_read, "uint8");
-                raw_bytes = uint8(raw_bytes(:));
+            datagrams_available = double(transport.handle.NumDatagramsAvailable);
+            if datagrams_available > 0
+                datagram = read(transport.handle, 1, "uint8");
+                raw_bytes = uint8(datagram.Data(:));
             end
         case "udp"
             bytes_available = double(get(transport.handle, 'BytesAvailable'));

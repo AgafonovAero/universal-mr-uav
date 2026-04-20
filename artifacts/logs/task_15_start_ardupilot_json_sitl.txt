@@ -1,0 +1,76 @@
+Project paths added from repository root.
+
+Next MATLAB commands:
+  params = uav.sim.default_params_quad_x250();
+  run('scripts/run_case_hover.m');
+  run('scripts/run_case_yaw_step.m');
+  results = runtests('tests');
+  table(results)
+OneKeyArduPilotStand(start)
+============================================================
+���� MAVLink UDP: 14550
+���� JSON/UDP �ਥ�� MATLAB: 9002
+���� JSON/UDP ��।�� MATLAB: 9003
+PowerShell-�業�਩: tools/ardupilot/windows/Start-ArduPilotStand.ps1
+  ��� �����襭��: 0
+  ���᭥���: PowerShell-�業�਩ �����訫�� �ᯥ譮.
+  �������: powershell -ExecutionPolicy Bypass -File "tools/ardupilot/windows/Start-ArduPilotStand.ps1" -DistroName Ubuntu -Ip 127.0.0.1 -MavlinkPort 14550 -StatePath "D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\reports\task_14_stand_state.json" -LogPath "D:\WORK\AI_SOLUTION\universal-mr-uav\artifacts\logs\task_14_start_ardupilot_stand.txt" -Execute
+  ��ୠ�:
+    ArduPilot stand start command
+      mode                         : execute
+      WSL distro                   : Ubuntu
+      JSON endpoint                : JSON:127.0.0.1
+      MAVLink UDP port             : 14550
+      Mission Planner found        : yes
+      QGroundControl found         : yes
+      WSL command                  : wsl.exe -d Ubuntu -- bash /mnt/d/WORK/AI_SOLUTION/universal-mr-uav/tools/ardupilot/wsl/start_arducopter_json_sitl.sh --ip 127.0.0.1 --mavlink-port 14550 --execute
+    
+    Executing ArduPilot SITL start through WSL.
+      WSL process id               : 8948
+    
+
+MATLAB-�業�਩: scripts/run_ardupilot_wait_for_packet.m
+  �����: MATLAB-�業�਩ �����訫�� �ᯥ譮.
+�������� ��ࢮ�� ����筮�� ����� �� ArduPilot
+  ��⮢����� �����쭮� �।�                : ���
+  ������� ����᪠                           : sim_vehicle.py -v ArduCopter -f quad --model JSON:127.0.0.1 --out udp:127.0.0.1:14550 --console --map
+  ����� ����祭                             : ��
+  ⠩�-��� �������� [s]                     : 2.000
+  䠪��᪮� �६� �������� [s]            : 0.067
+  magic                                     : 18458
+  ���� ���஢ [Hz]                       : 1200
+  ���稪 ���஢                            : 0
+  ���� ���� ���祭�� ��� [us]           : [0.000000 0.000000 0.000000 0.000000]
+  ���᭥���                                 : �室�騩 ������ ����� ArduPilot ����祭 � ࠧ��࠭.
+
+
+MATLAB-�業�਩: scripts/run_ardupilot_json_udp_handshake.m
+  �����: MATLAB-�業�਩ �����訫�� �ᯥ譮.
+�஢�ઠ ������ � ArduPilot �� JSON � UDP
+  ��⮢����� UDP                           : ��
+  ��⮢����� �����쭮� �।�               : ���
+  ����� �� ArduPilot ����祭               : ��
+  magic                                    : 18458
+  frame_rate_hz                            : 1200
+  frame_count                              : 0
+  ���� ���� ���祭�� ��� [us]          : [0.000000 0.000000 0.000000 0.000000]
+  �⢥⭠� ��।�� JSON �믮�����         : ��
+  ����� ������                            : �⢥⭠� ��।��
+  ���᭥���                                : �室�騩 ������ ����� ArduPilot �ਭ�� � ࠧ��࠭. ��᫥ �⮣� �믮����� �⢥⭠� ��।�� ��ப� JSON.
+
+
+MATLAB-�業�਩: scripts/check_ground_station_connection.m
+  �����: MATLAB-�業�਩ �����訫�� �ᯥ譮.
+�������⨪� �������� �⠭樨 �ࠢ�����
+  Mission Planner ��⠭�����            : ��
+  Mission Planner ����饭               : ���
+  QGroundControl ��⠭�����             : ��
+  QGroundControl ����饭                : ���
+  ���� MAVLink UDP 14550 �����             : ���
+  ������� JSON/UDP ���� 9002 �����      : ���
+  㤠����� JSON/UDP ���� 9003 �����      : ���
+  �������� Mission Planner            : ������� Mission Planner � �롥�� UDP-������祭�� �� ����� 14550
+  �������� QGroundControl             : �� ����᪥ ��������� ��⮬���᪮� �����㦥��� ��⮪� MAVLink UDP �� ����稨 HEARTBEAT
+
+   1
+

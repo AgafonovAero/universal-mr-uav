@@ -58,7 +58,7 @@ function Get-WslDistroInfo {
     try {
         $output = & wsl.exe -l -v 2>&1
         foreach ($line in $output) {
-            $text = [string]$line
+            $text = ([string]$line).Replace([string][char]0, '')
             if ([string]::IsNullOrWhiteSpace($text)) {
                 continue
             }
@@ -103,6 +103,22 @@ function Get-WslDistroInfo {
     return [pscustomobject]$result
 }
 
+function Test-WslTargetDistro {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$DistroName
+    )
+
+    try {
+        $output = & wsl.exe -d $DistroName -- bash -lc "printf ok" 2>&1
+        $text = (($output | ForEach-Object { ([string]$_).Replace([string][char]0, '') }) -join "")
+        return $text.Contains('ok')
+    }
+    catch {
+        return $false
+    }
+}
+
 $repoRoot = Get-RepoRoot
 $jsonReportPath = Join-Path $repoRoot 'artifacts/reports/task_13_windows_environment.json'
 $pathHintFile = Join-Path $repoRoot 'tools/ardupilot/windows/ardupilot_root_wsl.txt'
@@ -119,6 +135,12 @@ $wslInfo = Get-WslDistroInfo
 $hasUbuntu = $false
 if ($wslInfo.Distros.Count -gt 0) {
     $hasUbuntu = ($wslInfo.Distros | Where-Object { $_.Name -like 'Ubuntu*' }).Count -gt 0
+}
+if (-not $hasUbuntu -and $wslInfo.HasWslCommand) {
+    $hasUbuntu = Test-WslTargetDistro -DistroName 'Ubuntu'
+    if ($hasUbuntu) {
+        $wslInfo.Messages += 'Ubuntu was confirmed by a direct WSL probe.'
+    }
 }
 
 $gitPath = Get-ToolPath -Names @('git.exe', 'git')
