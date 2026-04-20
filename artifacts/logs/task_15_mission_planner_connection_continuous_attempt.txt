@@ -1,18 +1,9 @@
-Project paths added from repository root.
-
-Next MATLAB commands:
-  params = uav.sim.default_params_quad_x250();
-  run('scripts/run_case_hover.m');
-  run('scripts/run_case_yaw_step.m');
-  results = runtests('tests');
-  table(results)
-�������⨪� �������� �⠭樨 �ࠢ�����
-  Mission Planner ��⠭�����            : ��
-  Mission Planner ����饭               : ��
-  QGroundControl ��⠭�����             : ��
-  QGroundControl ����饭                : ���
-  ���� MAVLink UDP 14550 �����             : ���
-  ������� JSON/UDP ���� 9002 �����      : ���
-  㤠����� JSON/UDP ���� 9003 �����      : ���
-  �������� Mission Planner            : Mission Planner -> UDP -> Connect -> port 14550
-  �������� QGroundControl             : �� ����᪥ ��������� ��⮬���᪮� �����㦥��� ��⮪� MAVLink UDP �� ����稨 HEARTBEAT
+Проверка Mission Planner после устойчивого прогона обмена
+============================================================
+Mission Planner запущен                    : да
+PID процесса Mission Planner               : 512
+Порт MAVLink 14550 занят                   : да
+Порт MAVLink 14551 занят                   : да
+Автоматическое подтверждение HEARTBEAT     : нет
+Пояснение                                  : процесс Mission Planner запущен, порты 14550 и 14551 принадлежат Mission Planner; программное подтверждение приема HEARTBEAT средствами текущего проекта не получено.
+Операторская инструкция                    : Mission Planner -> UDP -> Connect -> port 14550.

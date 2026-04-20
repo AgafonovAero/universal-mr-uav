@@ -1,0 +1,52 @@
+Диагностика управляемого запуска ArduPilot SITL
+============================================================
+Windows IP для WSL2              : 172.19.208.1
+Команда запуска ArduPilot SITL   : cd ~/src/ardupilot/ArduCopter && ../build/sitl/bin/arducopter --model JSON:172.19.208.1 --speedup 1 --slave 0 --serial0=udpclient:172.19.208.1:14550 --defaults ../Tools/autotest/default_params/copter.parm --sim-address=172.19.208.1 -I0
+PID оболочки wsl.exe             : 12028
+PID процесса arducopter          : 1438
+Процесс жив после запуска        : да
+Процесс жив после handshake      : да
+Процесс жив после 20 секунд      : да
+Код завершения процесса          : не зафиксирован
+Первый пакет получен             : да
+Magic первого пакета             : 18458
+Единичная ответная передача      : да
+valid_rx_count за 20 секунд      : 515
+json_tx_count за 20 секунд       : 1723
+response_tx_count за 20 секунд   : 512
+last_frame_count                 : 510
+last_exchange_status             : устойчивый обмен подтвержден
+NaN/Inf в первых JSON-кадрах     : нет
+timestamp монотонен              : да
+Признаки missing field           : нет
+Признаки invalid JSON            : нет
+Признаки panic/assert            : нет
+
+Последние строки журнала ArduPilot:
+Setting SIM_SPEEDUP=1.000000
+Starting SITL: JSON
+JSON control interface set to 172.19.208.1:9002
+Starting sketch 'ArduCopter'
+Starting SITL input
+Using Irlock at port : 9005
+UDP connection 172.19.208.1:14550
+Loaded defaults from ../Tools/autotest/default_params/copter.parm
+bind port 5762 for SERIAL1
+SERIAL1 on TCP port 5762
+bind port 5763 for SERIAL2
+SERIAL2 on TCP port 5763
+Loaded defaults from ../Tools/autotest/default_params/copter.parm
+Home: -35.363262 149.165237 alt=584.000000m hdg=353.000000
+No JSON sensor message received, resending servos
+JSON received:
+	timestamp
+	imu: gyro
+	imu: accel_body
+	position
+	quaternion
+	velocity
+	no_time_sync
+	no_lockstep
+
+Forcing use_time_sync=0
+Lockstep mode changed: no_lockstep=1 (lockstep DISABLED)
