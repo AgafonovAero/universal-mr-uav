@@ -37,6 +37,7 @@ cfg.udp_remote_ip = "127.0.0.1";
 cfg.udp_remote_port = 9003;
 cfg.mavlink_udp_ip = "127.0.0.1";
 cfg.mavlink_udp_port = 14550;
+cfg.mavlink_monitor_udp_port = 14552;
 cfg.udp_timeout_s = 0.01;
 cfg.udp_receive_pause_s = 0.02;
 cfg.udp_max_rx_bytes = 4096;

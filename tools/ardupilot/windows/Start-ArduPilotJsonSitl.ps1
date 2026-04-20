@@ -5,6 +5,7 @@ param(
     [switch]$NoMap,
     [string]$Ip = '127.0.0.1',
     [int]$MavlinkPort = 14550,
+    [int]$SecondaryMavlinkPort = 14552,
     [switch]$Execute,
     [string]$LogPath
 )
@@ -94,6 +95,11 @@ $argList.Add($effectiveIp)
 $argList.Add('--mavlink-port')
 $argList.Add($MavlinkPort.ToString())
 
+if ($SecondaryMavlinkPort -gt 0) {
+    $argList.Add('--secondary-mavlink-port')
+    $argList.Add($SecondaryMavlinkPort.ToString())
+}
+
 if ($NoConsole) {
     $argList.Add('--no-console')
 }
@@ -126,6 +132,9 @@ Add-Line ("  mode                           : {0}" -f $(if ($Execute) { 'execute
 Add-Line ("  requested IP                   : {0}" -f $Ip)
 Add-Line ("  effective Windows host IP      : {0}" -f $effectiveIp)
 Add-Line ("  MAVLink UDP port               : {0}" -f $MavlinkPort)
+if ($SecondaryMavlinkPort -gt 0) {
+    Add-Line ("  дополнительный MAVLink порт   : {0}" -f $SecondaryMavlinkPort)
+}
 Add-Line ("  arguments                      : {0}" -f $displayArgs)
 
 if ($Execute) {

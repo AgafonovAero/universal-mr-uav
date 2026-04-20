@@ -7,6 +7,7 @@ IP_ADDRESS="127.0.0.1"
 VEHICLE="ArduCopter"
 FRAME="quad"
 MAVLINK_PORT="14550"
+SECONDARY_MAVLINK_PORT="14552"
 USE_CONSOLE=1
 USE_MAP=1
 
@@ -54,6 +55,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         --mavlink-port)
             MAVLINK_PORT="$2"
+            shift 2
+            ;;
+        --secondary-mavlink-port)
+            SECONDARY_MAVLINK_PORT="$2"
             shift 2
             ;;
         --root)
@@ -110,10 +115,19 @@ COMMAND=(
     -I0
 )
 
+if [[ -n "${SECONDARY_MAVLINK_PORT}" && "${SECONDARY_MAVLINK_PORT}" != "0" ]]; then
+    COMMAND+=(
+        --serial1="udpclient:${IP_ADDRESS}:${SECONDARY_MAVLINK_PORT}"
+    )
+fi
+
 echo "Запуск ArduPilot SITL в режиме JSON"
 echo "  каталог ArduPilot: ${ARDUPILOT_ROOT}"
 echo "  транспорт JSON/UDP к MATLAB: ${IP_ADDRESS}:9002"
 echo "  поток MAVLink UDP к Windows: ${IP_ADDRESS}:${MAVLINK_PORT}"
+if [[ -n "${SECONDARY_MAVLINK_PORT}" && "${SECONDARY_MAVLINK_PORT}" != "0" ]]; then
+    echo "  дополнительный поток MAVLink: ${IP_ADDRESS}:${SECONDARY_MAVLINK_PORT}"
+fi
 echo "  тип аппарата: ${VEHICLE}"
 echo "  схема аппарата: ${FRAME}"
 

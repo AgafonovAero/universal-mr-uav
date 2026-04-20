@@ -17,9 +17,10 @@
 
 params = uav.sim.make_deterministic_demo_params();
 cfg = uav.ardupilot.default_json_config();
+cfg = local_apply_cfg_overrides(cfg);
 
 dt_s = 1.0 / cfg.update_rate_hz;
-duration_s = 20.0;
+duration_s = local_read_duration_override(20.0);
 max_steps = ceil(duration_s / dt_s) + 5;
 
 state = uav.core.state_unpack(params.demo.initial_state_plant);
@@ -317,6 +318,32 @@ if flag_value
     text_value = 'да';
 else
     text_value = 'нет';
+end
+end
+
+function duration_s = local_read_duration_override(default_value)
+%LOCAL_READ_DURATION_OVERRIDE Прочитать необязательное переопределение длительности.
+
+duration_s = default_value;
+
+if evalin('base', 'exist(''ardupilot_live_backend_duration_s'', ''var'')')
+    candidate_value = evalin('base', 'ardupilot_live_backend_duration_s');
+    validateattributes(candidate_value, {'numeric'}, ...
+        {'real', 'scalar', 'finite', 'positive'}, ...
+        mfilename, 'ardupilot_live_backend_duration_s');
+    duration_s = double(candidate_value);
+end
+end
+
+function cfg = local_apply_cfg_overrides(cfg)
+%LOCAL_APPLY_CFG_OVERRIDES Применить необязательное переопределение конфигурации обмена.
+
+if evalin('base', 'exist(''ardupilot_live_backend_update_rate_hz'', ''var'')')
+    candidate_value = evalin('base', 'ardupilot_live_backend_update_rate_hz');
+    validateattributes(candidate_value, {'numeric'}, ...
+        {'real', 'scalar', 'finite', 'positive'}, ...
+        mfilename, 'ardupilot_live_backend_update_rate_hz');
+    cfg.update_rate_hz = double(candidate_value);
 end
 end
 
