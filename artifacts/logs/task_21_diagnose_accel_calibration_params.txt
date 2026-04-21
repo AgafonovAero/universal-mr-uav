@@ -1,0 +1,30 @@
+TASK-21: диагностика параметров калибровки акселерометра
+============================================================
+Профиль TASK-20: D:\WORK\AI_SOLUTION\universal-mr-uav-task21\tools\ardupilot\wsl\task20_single_accel_enable_mask.parm
+Базовый обмен восстановлен: да
+Baseline valid_rx_count: 513
+Baseline response_tx_count: 510
+Baseline last_frame_count: 509
+Параметры считаны: 41
+HEARTBEAT по tcp:5763: да
+Отсутствующие ожидаемые параметры: AHRS_ORIENTATION, ARMING_CHECK, LOG_DISARMED
+Признаки незавершенной 3D-калибровки: да
+
+Ключевые фактические значения:
+  INS_ENABLE_MASK = 1
+  INS_USE = 1
+  INS_USE2 = 0
+  INS_USE3 = 0
+  INS_ACC_ID = 2753028
+  INS_ACCOFFS_X = 0.00100000004749745
+  INS_ACCOFFS_Y = 0.00100000004749745
+  INS_ACCOFFS_Z = 0.00100000004749745
+  INS_ACCSCAL_X = 1.00100004673004
+  INS_ACCSCAL_Y = 1.00100004673004
+  INS_ACCSCAL_Z = 1.00100004673004
+  INS_ACC2_ID = 0
+  INS_ACC3_ID = 0
+
+Инженерный вывод:
+  Коэффициенты калибровки основного акселерометра присутствуют, однако
+  ArduPilot в JSON-режиме продолжал требовать обязательную 3D-калибровку.

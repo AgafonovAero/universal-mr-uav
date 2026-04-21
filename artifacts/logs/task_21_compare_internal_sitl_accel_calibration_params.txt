@@ -1,0 +1,21 @@
+TASK-21: сравнение параметров внутреннего SITL и JSON-режима
+============================================================
+Команда внутреннего SITL:
+  ../build/sitl/bin/arducopter --model + --speedup 1 --defaults ../Tools/autotest/default_params/copter.parm --serial0 tcp:0 -I0
+Взведение штатного внутреннего SITL: да
+Считано параметров внутреннего SITL: 19
+Число различающихся строк: 24
+
+Ключевые различия:
+  AHRS_ORIENTATION: JSON = отсутствует, internal = 0
+  INS_ENABLE_MASK: JSON = 1, internal = 127
+  INS_USE2: JSON = 0, internal = 1
+  INS_ACC2_ID: JSON = 0, internal = 2753036
+  INS_ACC_ID: JSON = 2753028, internal = 2753028
+  INS_ACCOFFS_X/Y/Z и INS_ACCSCAL_X/Y/Z: совпадают в пределах машинной точности
+
+Вывод:
+  Отказ JSON-режима не объясняется потерей коэффициентов калибровки
+  основного акселерометра. Штатный SITL использует более полную
+  конфигурацию ИНС, а JSON-режим после профиля TASK-20 работает с одним
+  активным акселерометром.

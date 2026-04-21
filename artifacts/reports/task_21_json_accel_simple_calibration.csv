@@ -1,0 +1,5 @@
+method_name,command_text,valid_rx_count,response_tx_count,last_frame_count,helper_completed,ack_result,failure_reason,output_excerpt
+mavproxy_accelcalsimple,accelcalsimple,758,757,1239,0,NaN,,
+mavproxy_ground,ground,773,772,2009,0,NaN,,
+mavlink_simple,prefight_calibration_p5_4,761,759,2765,1,0,,Initialising ArduPilot | PreArm: Gyro 0 rate 177Hz < loop rate*1.8 720Hz | EKF3 IMU0 tilt alignment complete | EKF3 IMU0 MAG0 initial yaw alignment complete
+,,0,0,0,0,NaN,,
