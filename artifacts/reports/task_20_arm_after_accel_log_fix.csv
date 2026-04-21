@@ -1,0 +1,2 @@
+parm_path,fix_profile_applied,valid_rx_count,response_tx_count,arm_succeeded,command_ack,failure_reason,motor_pwm_min_us,motor_pwm_max_us,motor_cmd_min_radps,motor_cmd_max_radps
+D:\WORK\AI_SOLUTION\universal-mr-uav-task20\tools\ardupilot\wsl\task20_single_accel_enable_mask.parm,1,1040,1039,0,4,Arm: 3D Accel calibration needed,1000,1000,0,0
