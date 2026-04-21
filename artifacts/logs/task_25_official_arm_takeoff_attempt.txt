@@ -1,0 +1,6 @@
+TASK-25: попытка arm/takeoff в официальном MATLAB backend
+arm: нет
+command_ack_arm: 4
+failure_reason: Arm: System not initialised
+valid_rx_count: 4763
+json_response_tx_count: 4762

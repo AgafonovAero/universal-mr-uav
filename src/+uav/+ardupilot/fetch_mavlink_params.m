@@ -45,11 +45,13 @@ parser = inputParser();
 parser.addParameter('ParamNames', strings(0, 1));
 parser.addParameter('FetchAll', []);
 parser.addParameter('Timeout_s', 25.0);
+parser.addParameter('Runtime', "wsl");
 parser.parse(varargin{:});
 
 param_names = string(parser.Results.ParamNames(:));
 fetch_all = parser.Results.FetchAll;
 timeout_s = double(parser.Results.Timeout_s);
+runtime_name = lower(string(parser.Results.Runtime));
 
 if isempty(fetch_all)
     fetch_all = isempty(param_names);
@@ -66,9 +68,20 @@ python_tmp_path = [tempname, '_fetch_mavlink_params.py'];
 json_tmp_path = [tempname, '_fetch_mavlink_params.json'];
 cleanup_tmp = onCleanup(@() local_cleanup_temp({python_tmp_path, json_tmp_path})); %#ok<NASGU>
 
-python_tmp_path_wsl = uav.ardupilot.windows_to_wsl_path(python_tmp_path);
-json_tmp_path_wsl = uav.ardupilot.windows_to_wsl_path(json_tmp_path);
-python_command_wsl = uav.ardupilot.resolve_wsl_python(cfg);
+switch runtime_name
+    case "wsl"
+        python_tmp_path_runtime = uav.ardupilot.windows_to_wsl_path(python_tmp_path);
+        json_tmp_path_runtime = uav.ardupilot.windows_to_wsl_path(json_tmp_path);
+        python_command = uav.ardupilot.resolve_wsl_python(cfg);
+    case "windows"
+        python_tmp_path_runtime = string(python_tmp_path);
+        json_tmp_path_runtime = string(json_tmp_path);
+        python_command = "python";
+    otherwise
+        error('uav:ardupilot:fetchMavlinkParams:BadRuntime', ...
+            'Неподдерживаемое окружение выполнения fetch_mavlink_params: %s', ...
+            char(runtime_name));
+end
 
 python_lines = strings(0, 1);
 python_lines(end + 1, 1) = "from pymavlink import mavutil";
@@ -76,7 +89,7 @@ python_lines(end + 1, 1) = "import json";
 python_lines(end + 1, 1) = "import math";
 python_lines(end + 1, 1) = "import time";
 python_lines(end + 1, 1) = "from pathlib import Path";
-python_lines(end + 1, 1) = "OUTPUT_PATH = Path(" + local_py(json_tmp_path_wsl) + ")";
+python_lines(end + 1, 1) = "OUTPUT_PATH = Path(" + local_py(json_tmp_path_runtime) + ")";
 python_lines(end + 1, 1) = "CONNECTION_STRING = " + local_py(connection_string);
 python_lines(end + 1, 1) = "FETCH_ALL = " + local_py_bool(fetch_all);
 python_lines(end + 1, 1) = "TIMEOUT_S = " + sprintf('%.6f', timeout_s);
@@ -133,10 +146,15 @@ python_lines(end + 1, 1) = "OUTPUT_PATH.write_text(json.dumps(result, ensure_asc
 
 uav.ardupilot.write_utf8_text_file(python_tmp_path, strjoin(python_lines, newline) + newline);
 
-command = sprintf('wsl -d %s -- bash -lc ''%s %s''', ...
-    char(cfg.wsl_distro_name), ...
-    char(python_command_wsl), ...
-    char(python_tmp_path_wsl));
+switch runtime_name
+    case "wsl"
+        command = sprintf('wsl -d %s -- bash -lc ''%s %s''', ...
+            char(cfg.wsl_distro_name), ...
+            char(python_command), ...
+            char(python_tmp_path_runtime));
+    case "windows"
+        command = sprintf('python "%s"', char(python_tmp_path_runtime));
+end
 [status_code, output_text] = system(command);
 
 if ~isfile(json_tmp_path)
@@ -164,6 +182,7 @@ result.status_code = double(status_code);
 result.output_text = string(output_text);
 result.connection_string = connection_string;
 result.fetch_all = fetch_all;
+result.runtime = runtime_name;
 end
 
 function value = local_read_json_field(data, field_name, default_value)
@@ -175,7 +194,9 @@ end
 end
 
 function literal = local_py(text_value)
-literal = "'" + replace(string(text_value), "'", "\\'") + "'";
+escaped = replace(string(text_value), "\", "\\");
+escaped = replace(escaped, "'", "\\'");
+literal = "'" + escaped + "'";
 end
 
 function literal = local_py_bool(flag_value)

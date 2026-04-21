@@ -7,6 +7,7 @@ param(
     [int]$MavlinkPort = 14550,
     [int]$SecondaryMavlinkPort = 14552,
     [string]$ExtraDefaultsParmPath = '',
+    [string]$SitlConsoleLogPath = '',
     [switch]$Execute,
     [string]$LogPath
 )
@@ -107,6 +108,12 @@ if (-not [string]::IsNullOrWhiteSpace($ExtraDefaultsParmPath)) {
     $argList.Add((Convert-ToWslPath -WindowsPath $resolvedExtraDefaults))
 }
 
+if (-not [string]::IsNullOrWhiteSpace($SitlConsoleLogPath)) {
+    $resolvedSitlConsoleLogPath = [System.IO.Path]::GetFullPath($SitlConsoleLogPath)
+    $argList.Add('--stdout-log')
+    $argList.Add((Convert-ToWslPath -WindowsPath $resolvedSitlConsoleLogPath))
+}
+
 if ($NoConsole) {
     $argList.Add('--no-console')
 }
@@ -144,6 +151,9 @@ if ($SecondaryMavlinkPort -gt 0) {
 }
 if (-not [string]::IsNullOrWhiteSpace($ExtraDefaultsParmPath)) {
     Add-Line ("  дополнительный defaults parm   : {0}" -f $ExtraDefaultsParmPath)
+}
+if (-not [string]::IsNullOrWhiteSpace($SitlConsoleLogPath)) {
+    Add-Line ("  журнал консоли SITL            : {0}" -f $SitlConsoleLogPath)
 }
 Add-Line ("  arguments                      : {0}" -f $displayArgs)
 

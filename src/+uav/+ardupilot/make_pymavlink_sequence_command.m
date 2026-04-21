@@ -28,21 +28,40 @@ seq_cfg = local_normalize_cfg(seq_cfg);
 
 python_path_win = string(seq_cfg.python_script_path);
 output_json_path_win = string(seq_cfg.output_json_path);
-python_path_wsl = local_windows_to_wsl_path(python_path_win);
-output_json_path_wsl = local_windows_to_wsl_path(output_json_path_win);
 
-local_write_utf8_text(python_path_win, local_make_python_text(seq_cfg, output_json_path_wsl));
+switch seq_cfg.runtime
+    case "wsl"
+        python_path_runtime = local_windows_to_wsl_path(python_path_win);
+        output_json_path_runtime = local_windows_to_wsl_path(output_json_path_win);
+    case "windows"
+        python_path_runtime = python_path_win;
+        output_json_path_runtime = output_json_path_win;
+    otherwise
+        error( ...
+            'uav:ardupilot:make_pymavlink_sequence_command:BadRuntime', ...
+            'Неподдерживаемое окружение выполнения: %s', ...
+            char(seq_cfg.runtime));
+end
+
+local_write_utf8_text(python_path_win, local_make_python_text(seq_cfg, output_json_path_runtime));
 
 command_info = struct();
+command_info.runtime = seq_cfg.runtime;
 command_info.wsl_distro_name = string(seq_cfg.wsl_distro_name);
 command_info.python_script_path_win = python_path_win;
-command_info.python_script_path_wsl = python_path_wsl;
+command_info.python_script_path_wsl = string(python_path_runtime);
 command_info.output_json_path_win = output_json_path_win;
-command_info.output_json_path_wsl = output_json_path_wsl;
-command_info.command_text = sprintf( ...
-    'wsl.exe -d "%s" -- bash --noprofile --norc -lc "python3 %s"', ...
-    char(seq_cfg.wsl_distro_name), ...
-    char(python_path_wsl));
+command_info.output_json_path_wsl = string(output_json_path_runtime);
+
+switch seq_cfg.runtime
+    case "wsl"
+        command_info.command_text = sprintf( ...
+            'wsl.exe -d "%s" -- bash --noprofile --norc -lc "python3 %s"', ...
+            char(seq_cfg.wsl_distro_name), ...
+            char(python_path_runtime));
+    case "windows"
+        command_info.command_text = sprintf('python "%s"', char(python_path_runtime));
+end
 end
 
 function seq_cfg = local_normalize_cfg(seq_cfg)
@@ -70,6 +89,7 @@ defaults.takeoff_alt_m = nan;
 defaults.sample_period_s = 0.5;
 defaults.python_script_path = string(tempname) + ".py";
 defaults.output_json_path = string(tempname) + ".json";
+defaults.runtime = "wsl";
 
 field_names = fieldnames(defaults);
 for idx = 1:numel(field_names)
@@ -84,6 +104,7 @@ seq_cfg.connection_candidates = string(seq_cfg.connection_candidates(:));
 seq_cfg.mode_name = string(seq_cfg.mode_name);
 seq_cfg.python_script_path = string(seq_cfg.python_script_path);
 seq_cfg.output_json_path = string(seq_cfg.output_json_path);
+seq_cfg.runtime = lower(string(seq_cfg.runtime));
 
 validateattributes(seq_cfg.wait_before_command_s, {'numeric'}, ...
     {'real', 'scalar', 'finite', 'nonnegative'}, ...

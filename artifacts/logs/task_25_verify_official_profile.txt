@@ -1,0 +1,26 @@
+TASK-25: проверка официального профиля
+============================================================
+launch_command: powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\O.Agaphonov\AppData\Local\Temp\task25_verify_profile_launch.ps1"
+profile_win_path: D:\WORK\AI_SOLUTION\universal-mr-uav-task25\tools\ardupilot\wsl\task25_official_matlab_json.parm
+valid_rx_count: 3186
+json_response_tx_count: 3185
+last_frame_count: 3185
+connection_string: udpin:0.0.0.0:14552
+heartbeat_received: да
+
+connection_attempts:
+  udpin:0.0.0.0:14550 -> HEARTBEAT=нет, error=Не получен HEARTBEAT по каналу udpin:0.0.0.0:14550
+  udpin:0.0.0.0:14552 -> HEARTBEAT=да, error=нет
+
+Примененные параметры:
+  INS_USE = 1.000000
+  INS_USE2 = 0.000000
+  INS_USE3 = 0.000000
+  INS_ENABLE_MASK = 1.000000
+  LOG_DISARMED = 1.000000
+  SCHED_LOOP_RATE = 150.000000
+  AHRS_EKF_TYPE = 10.000000
+  GPS1_TYPE = 100.000000
+  GPS_TYPE = не найден
+  SIM_MAG1_DEVID = 97539.000000
+  ARMING_CHECK = не найден
