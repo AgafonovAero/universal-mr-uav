@@ -1,0 +1,52 @@
+TASK-20: проверка параметров ИНС после загрузки ArduPilot
+============================================================
+Профиль: default
+  parm_path:
+  baseline_restored: да
+  valid_rx_count: 505
+  response_tx_count: 504
+  last_frame_count: 502
+  heartbeat_received: да
+  failure_reason:
+  requested_INS_USE: NaN
+  requested_INS_USE2: NaN
+  requested_INS_USE3: NaN
+  requested_INS_ENABLE_MASK: NaN
+  INS_USE: 1
+  INS_USE2: 1
+  INS_USE3: 1
+  INS_ENABLE_MASK: 127
+
+Профиль: task19_single_imu
+  parm_path: D:\WORK\AI_SOLUTION\universal-mr-uav-task20\tools\ardupilot\wsl\task19_single_imu_diagnostic.parm
+  baseline_restored: да
+  valid_rx_count: 532
+  response_tx_count: 514
+  last_frame_count: 528
+  heartbeat_received: да
+  failure_reason:
+  requested_INS_USE: 1
+  requested_INS_USE2: 0
+  requested_INS_USE3: 0
+  requested_INS_ENABLE_MASK: NaN
+  INS_USE: 1
+  INS_USE2: 0
+  INS_USE3: 0
+  INS_ENABLE_MASK: 127
+
+Профиль: task20_enable_mask
+  parm_path: D:\WORK\AI_SOLUTION\universal-mr-uav-task20\tools\ardupilot\wsl\task20_single_accel_enable_mask.parm
+  baseline_restored: да
+  valid_rx_count: 527
+  response_tx_count: 525
+  last_frame_count: 522
+  heartbeat_received: да
+  failure_reason:
+  requested_INS_USE: 1
+  requested_INS_USE2: 0
+  requested_INS_USE3: 0
+  requested_INS_ENABLE_MASK: 1
+  INS_USE: 1
+  INS_USE2: 0
+  INS_USE3: 0
+  INS_ENABLE_MASK: 1

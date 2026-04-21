@@ -1,0 +1,8 @@
+TASK-20: сравнение JSON accel_body и внутренних акселерометров ArduPilot
+============================================================
+JSONL: D:\WORK\AI_SOLUTION\universal-mr-uav-task20\artifacts\reports\task_19_first_json_frames.jsonl
+ACC CSV: D:\WORK\AI_SOLUTION\universal-mr-uav-task20\artifacts\reports\task_20_accel_instances.csv
+Instances: 0, 1
+Max JSON-to-instance diff: 0.004816
+Max instance norm diff: 0.002645
+Difference > 1 m/s^2: нет

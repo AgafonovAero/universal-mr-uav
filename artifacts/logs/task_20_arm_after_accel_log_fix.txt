@@ -1,0 +1,13 @@
+TASK-20: повторная попытка arm после исправления по акселерометрам
+============================================================
+Профиль: D:\WORK\AI_SOLUTION\universal-mr-uav-task20\tools\ardupilot\wsl\task20_single_accel_enable_mask.parm
+Профиль применен: да
+Baseline valid_rx_count: 513
+Baseline response_tx_count: 510
+valid_rx_count: 1040
+response_tx_count: 1039
+Arm succeeded: нет
+COMMAND_ACK: 4
+Failure reason: Arm: 3D Accel calibration needed
+motor_pwm_us range: [1000.000000 1000.000000]
+motor_cmd_radps range: [0.000000 0.000000]
