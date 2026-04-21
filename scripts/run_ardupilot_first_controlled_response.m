@@ -16,6 +16,12 @@ end
 result = struct();
 result.executed = false;
 result.arm_result = arm_result;
+mat_report_path = local_read_override_path( ...
+    'ardupilot_first_controlled_response_mat_path', ...
+    fullfile(reports_dir, 'task_16_first_controlled_response.mat'));
+csv_report_path = local_read_override_path( ...
+    'ardupilot_first_controlled_response_csv_path', ...
+    fullfile(reports_dir, 'task_16_first_controlled_response.csv'));
 
 if ~arm_result.arm_succeeded
     result.message = "Управляемый прогон не выполнен, так как автоматическое взведение не подтверждено.";
@@ -25,10 +31,10 @@ if ~arm_result.arm_succeeded
     fprintf('  выполнен                            : нет\n');
     fprintf('  причина                             : %s\n', char(arm_result.failure_reason));
 
-    save(fullfile(reports_dir, 'task_16_first_controlled_response.mat'), 'result');
+    save(mat_report_path, 'result');
     writetable( ...
         table(string(result.message), 'VariableNames', {'message'}), ...
-        fullfile(reports_dir, 'task_16_first_controlled_response.csv'));
+        csv_report_path);
     return;
 end
 
@@ -46,10 +52,10 @@ result.response_tx_count = double(live_result.response_tx_count);
 result.arducopter_alive_assumed = true;
 result.state_changed_finite = local_state_changed_finite(live_result);
 
-save(fullfile(reports_dir, 'task_16_first_controlled_response.mat'), 'result');
+save(mat_report_path, 'result');
 writetable( ...
     local_make_csv_table(live_result), ...
-    fullfile(reports_dir, 'task_16_first_controlled_response.csv'));
+    csv_report_path);
 
 assignin('base', 'ardupilot_first_controlled_response', result);
 
@@ -70,8 +76,12 @@ if evalin('base', 'exist(''ardupilot_arm_attempt'', ''var'')')
 end
 
 repo_root = fileparts(fileparts(mfilename('fullpath')));
-arm_attempt_path = fullfile(repo_root, 'artifacts', 'reports', 'task_16_arm_attempt.mat');
-arm_response_path = fullfile(repo_root, 'artifacts', 'reports', 'task_16_arm_pwm_response.mat');
+arm_attempt_path = local_read_override_path( ...
+    'ardupilot_first_controlled_response_arm_attempt_mat_path', ...
+    fullfile(repo_root, 'artifacts', 'reports', 'task_16_arm_attempt.mat'));
+arm_response_path = local_read_override_path( ...
+    'ardupilot_first_controlled_response_arm_response_mat_path', ...
+    fullfile(repo_root, 'artifacts', 'reports', 'task_16_arm_pwm_response.mat'));
 
 if isfile(arm_attempt_path)
     loaded = load(arm_attempt_path);
@@ -156,5 +166,17 @@ if flag_value
     text_value = 'да';
 else
     text_value = 'нет';
+end
+end
+
+function path_value = local_read_override_path(var_name, default_value)
+%LOCAL_READ_OVERRIDE_PATH Прочитать необязательное переопределение пути из base.
+
+path_value = char(string(default_value));
+if evalin('base', sprintf('exist(''%s'', ''var'')', var_name))
+    candidate = evalin('base', var_name);
+    if ~isempty(candidate)
+        path_value = char(string(candidate));
+    end
 end
 end

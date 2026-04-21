@@ -1,0 +1,67 @@
+Восстановление рабочего 20-секундного обмена TASK-15
+============================================================
+Адрес Windows-хоста для WSL2       : 127.0.0.1
+Команда запуска ArduPilot SITL     : cd ~/src/ardupilot/ArduCopter && ../build/sitl/bin/arducopter --model JSON:172.19.208.1 --speedup 1 --slave 0 --serial0=udpclient:172.19.208.1:14550 --defaults ../Tools/autotest/default_params/copter.parm,/mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task22/tools/ardupilot/wsl/task20_single_accel_enable_mask.parm --sim-address=172.19.208.1 -I0
+PID процесса arducopter            : 771
+Процесс жив после запуска          : да
+Процесс жив после handshake        : да
+Процесс жив после 20 секунд        : да
+Код завершения процесса            : 
+Первый пакет получен               : да
+Magic первого пакета               : 18458
+Первые четыре значения ШИМ [us]    : [0.000000 0.000000 0.000000 0.000000]
+Единичная ответная передача JSON   : да
+valid_rx_count                     : 520
+json_tx_count                      : 1736
+response_tx_count                  : 518
+Средняя частота valid_rx [Hz]      : 25.9333
+Средняя частота response_tx [Hz]   : 25.9333
+Средний период valid_rx [s]        : 0.038561
+95-процентиль valid_rx [s]         : 0.073812
+Последний frame_count              : 519
+Последний sender address           : 172.19.219.165
+Последний sender port              : 36677
+Последний magic                    : 18458
+Последние ШИМ [us]                 : [1000.000000 1000.000000 1000.000000 1000.000000]
+Последние motor_cmd [rad/s]        : [0.000000 0.000000 0.000000 0.000000]
+Норма истинного кватерниона конечна: да
+Норма оцененного кватерниона конечна: да
+Итоговый статус обмена             : устойчивый обмен подтвержден
+Baseline TASK-15 восстановлен      : да
+Первая причина отказа              : 
+
+Последние строки журнала ArduPilot:
+Setting SIM_SPEEDUP=1.000000
+Starting SITL: JSON
+JSON control interface set to 172.19.208.1:9002
+Starting sketch 'ArduCopter'
+Starting SITL input
+Using Irlock at port : 9005
+UDP connection 172.19.208.1:14550
+Loaded defaults from ../Tools/autotest/default_params/copter.parm,/mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task22/tools/ardupilot/wsl/task20_single_accel_enable_mask.parm
+bind port 5762 for SERIAL1
+SERIAL1 on TCP port 5762
+bind port 5763 for SERIAL2
+SERIAL2 on TCP port 5763
+Home: -35.363262 149.165237 alt=584.000000m hdg=353.000000
+No JSON sensor message received, resending servos
+No JSON sensor message received, resending servos
+No JSON sensor message received, resending servos
+No JSON sensor message received, resending servos
+No JSON sensor message received, resending servos
+No JSON sensor message received, resending servos
+
+JSON received:
+	timestamp
+	imu: gyro
+	imu: accel_body
+	position
+	quaternion
+	velocity
+	no_time_sync
+	no_lockstep
+
+Forcing use_time_sync=0
+Lockstep mode changed: no_lockstep=1 (lockstep DISABLED)
+validate_structures:538: Validating structures
+Loaded defaults from ../Tools/autotest/default_params/copter.parm,/mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task22/tools/ardupilot/wsl/task20_single_accel_enable_mask.parm

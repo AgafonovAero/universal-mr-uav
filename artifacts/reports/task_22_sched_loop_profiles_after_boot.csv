@@ -1,0 +1,4 @@
+profile_name,parm_path,requested_sched_loop_rate,actual_sched_loop_rate,actual_sim_rate_hz,actual_ins_use,actual_ins_use2,actual_ins_use3,actual_ins_enable_mask,actual_log_disarmed,actual_arming_check,heartbeat_received,profile_applied,baseline_restored,valid_rx_count,response_tx_count,last_frame_count,arducopter_alive,fetch_failure_reason,failure_reason
+sched_loop_250,D:\WORK\AI_SOLUTION\universal-mr-uav-task22\tools\ardupilot\wsl\task22_sched_loop_250.parm,250,250,1200,1,0,0,1,1,NaN,1,1,1,488,486,487,1,,
+sched_loop_200,D:\WORK\AI_SOLUTION\universal-mr-uav-task22\tools\ardupilot\wsl\task22_sched_loop_200.parm,200,200,1200,1,0,0,NaN,NaN,NaN,1,0,1,507,506,498,1,,
+sched_loop_100,D:\WORK\AI_SOLUTION\universal-mr-uav-task22\tools\ardupilot\wsl\task22_sched_loop_100.parm,100,100,1200,1,0,0,NaN,NaN,NaN,1,0,1,514,512,510,1,,

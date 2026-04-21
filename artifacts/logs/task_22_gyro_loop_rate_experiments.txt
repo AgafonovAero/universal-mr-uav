@@ -1,0 +1,82 @@
+TASK-22. Серия опытов по частоте гироскопа и главного цикла ArduPilot
+
+Дата фиксации результатов: 2026-04-21
+Рабочий каталог: D:\WORK\AI_SOLUTION\universal-mr-uav-task22
+
+Исходный диагностический вывод:
+- после TASK-21 простая калибровка акселерометра подтверждена;
+- на текущем профиле TASK-21 фактически наблюдается:
+  SCHED_LOOP_RATE = 400 Гц,
+  частота гироскопа по сообщению ArduPilot = 430 Гц,
+  требуемый минимум = 1.8 * 400 = 720 Гц;
+- максимальный допустимый SCHED_LOOP_RATE при наблюдаемой частоте гироскопа:
+  floor(430 / 1.8) = 238 Гц.
+
+Опыт A. Текущий профиль TASK-21
+- профиль: tools/ardupilot/wsl/task20_single_accel_enable_mask.parm
+- фактический SCHED_LOOP_RATE: 400 Гц
+- частота гироскопа: 430 Гц
+- требуемый минимум: 720 Гц
+- valid_rx_count: 642
+- response_tx_count: 641
+- last_frame_count: 1145
+- arm: нет
+- COMMAND_ACK: 4
+- первая причина отказа:
+  Arm: Gyro 0 rate 430Hz < loop rate*1.8 720Hz
+- диапазон motor_pwm_us: 1000..1000 us
+- диапазон motor_cmd_radps: 0..0 рад/с
+- arducopter_alive: да
+
+Опыт Б. SCHED_LOOP_RATE = 250
+- профиль: tools/ardupilot/wsl/task22_sched_loop_250.parm
+- фактический SCHED_LOOP_RATE: 250 Гц
+- частота гироскопа: 430 Гц
+- требуемый минимум: 450 Гц
+- valid_rx_count: 631
+- response_tx_count: 630
+- last_frame_count: 1127
+- arm: нет
+- COMMAND_ACK: 4
+- первая причина отказа:
+  Arm: Gyro 0 rate 430Hz < loop rate*1.8 450Hz
+- диапазон motor_pwm_us: 1000..1000 us
+- диапазон motor_cmd_radps: 0..0 рад/с
+- arducopter_alive: да
+
+Опыт В. SCHED_LOOP_RATE = 200
+- профиль: tools/ardupilot/wsl/task22_sched_loop_200.parm
+- фактический SCHED_LOOP_RATE: 200 Гц
+- частота гироскопа: прямым сообщением об ошибке не предъявлялась; по диагностике базового профиля ориентировочно 430 Гц
+- требуемый минимум: 360 Гц
+- valid_rx_count: 638
+- response_tx_count: 637
+- last_frame_count: 1147
+- arm: да
+- COMMAND_ACK: 0
+- последние сообщения ArduPilot:
+  Arming motors | GPS 1: probing for u-blox at 230400 baud | GPS 1: detected u-blox
+- диапазон motor_pwm_us: 1000..1100 us
+- диапазон motor_cmd_radps: 0..90 рад/с
+- arducopter_alive: да
+
+Опыт Г. SCHED_LOOP_RATE = 100
+- профиль: tools/ardupilot/wsl/task22_sched_loop_100.parm
+- фактический SCHED_LOOP_RATE: 100 Гц
+- частота гироскопа: прямым сообщением об ошибке не предъявлялась; по диагностике базового профиля ориентировочно 430 Гц
+- требуемый минимум: 180 Гц
+- valid_rx_count: 639
+- response_tx_count: 638
+- last_frame_count: 1127
+- arm: да
+- COMMAND_ACK: 0
+- последние сообщения ArduPilot:
+  Arming motors
+- диапазон motor_pwm_us: 1000..1100 us
+- диапазон motor_cmd_radps: 0..90 рад/с
+- arducopter_alive: да
+
+Выбранный профиль:
+- для штатного пути TASK-22 выбран profile с SCHED_LOOP_RATE = 200 Гц;
+- причина выбора: это наибольшее значение главного цикла, которое снимает блокер по частоте гироскопа и при этом подтверждает arm и ненулевой ШИМ;
+- профиль SCHED_LOOP_RATE = 100 Гц тоже допускает arm, но сильнее снижает частоту главного цикла без дополнительной инженерной необходимости.
