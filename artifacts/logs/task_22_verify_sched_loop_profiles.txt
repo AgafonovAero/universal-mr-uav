@@ -1,0 +1,59 @@
+TASK-22. Проверка применения профилей SCHED_LOOP_RATE после загрузки
+
+Дата фиксации результатов: 2026-04-21
+Рабочий каталог: D:\WORK\AI_SOLUTION\universal-mr-uav-task22
+
+Проверенные профили:
+
+1. tools/ardupilot/wsl/task22_sched_loop_250.parm
+   - запрошенный SCHED_LOOP_RATE: 250 Гц
+   - фактически считанный SCHED_LOOP_RATE: 250 Гц
+   - SIM_RATE_HZ: 1200 Гц
+   - INS_USE = 1
+   - INS_USE2 = 0
+   - INS_USE3 = 0
+   - INS_ENABLE_MASK = 1
+   - LOG_DISARMED = 1
+   - HEARTBEAT получен: да
+   - базовый обмен TASK-15 восстановлен: да
+   - valid_rx_count: 488
+   - response_tx_count: 486
+   - last_frame_count: 487
+   - процесс arducopter жив: да
+
+2. tools/ardupilot/wsl/task22_sched_loop_200.parm
+   - запрошенный SCHED_LOOP_RATE: 200 Гц
+   - фактически считанный SCHED_LOOP_RATE: 200 Гц
+   - SIM_RATE_HZ: 1200 Гц
+   - INS_USE = 1
+   - INS_USE2 = 0
+   - INS_USE3 = 0
+   - INS_ENABLE_MASK: в прямом чтении параметров не подтвержден числом, но базовый обмен и поведение профиля соответствуют загруженному файлу
+   - LOG_DISARMED: в прямом чтении параметров не подтвержден числом, но запуск выполнен с профилем TASK-22
+   - HEARTBEAT получен: да
+   - базовый обмен TASK-15 восстановлен: да
+   - valid_rx_count: 507
+   - response_tx_count: 506
+   - last_frame_count: 498
+   - процесс arducopter жив: да
+
+3. tools/ardupilot/wsl/task22_sched_loop_100.parm
+   - запрошенный SCHED_LOOP_RATE: 100 Гц
+   - фактически считанный SCHED_LOOP_RATE: 100 Гц
+   - SIM_RATE_HZ: 1200 Гц
+   - INS_USE = 1
+   - INS_USE2 = 0
+   - INS_USE3 = 0
+   - INS_ENABLE_MASK: в прямом чтении параметров не подтвержден числом, но базовый обмен и поведение профиля соответствуют загруженному файлу
+   - LOG_DISARMED: в прямом чтении параметров не подтвержден числом, но запуск выполнен с профилем TASK-22
+   - HEARTBEAT получен: да
+   - базовый обмен TASK-15 восстановлен: да
+   - valid_rx_count: 514
+   - response_tx_count: 512
+   - last_frame_count: 510
+   - процесс arducopter жив: да
+
+Вывод:
+- параметры SCHED_LOOP_RATE = 250, 200 и 100 фактически применяются после загрузки ArduPilot;
+- устойчивый обмен JSON/UDP сохраняется на всех трех профилях;
+- это позволяет переходить к серии опытов по взведению без изменения математической модели движения.

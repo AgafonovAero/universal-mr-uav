@@ -1,0 +1,25 @@
+TASK-22: диагностика частоты гироскопа и главного цикла
+============================================================
+Профиль TASK-20: D:\WORK\AI_SOLUTION\universal-mr-uav-task22\tools\ardupilot\wsl\task20_single_accel_enable_mask.parm
+Штатная простая калибровка выполнена: да
+COMMAND_ACK калибровки: 0
+Фактический SCHED_LOOP_RATE [Hz]: 400
+Фактический SIM_RATE_HZ [Hz]: 1200
+Фактическая частота гироскопа [Hz]: 430
+Требуемая минимальная частота [Hz]: 720
+Максимально допустимый SCHED_LOOP_RATE [Hz]: 238
+valid_rx_count: 632
+response_tx_count: 631
+json_tx_count: 2153
+last_frame_count: 1129
+ArduPilot жив после прогона: да
+Первая причина отказа: Arm: Gyro 0 rate 430Hz < loop rate*1.8 720Hz
+
+Последние STATUSTEXT:
+  GPS 1: probing for u-blox at 230400 baud
+  Arm: Gyro 0 rate 430Hz < loop rate*1.8 720Hz
+  GPS 1: detected u-blox
+  EKF3 IMU0 forced reset
+  EKF3 IMU0 initialised
+  EKF3 IMU0 tilt alignment complete
+  EKF3 IMU0 MAG0 initial yaw alignment complete

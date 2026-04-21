@@ -32,8 +32,15 @@ log_lines(end + 1, 1) = "  motor_cmd_span_radps                : [" + local_form
 log_lines(end + 1, 1) = "  yaw_pair_delta_us                   : [" + local_format_vector(analysis.yaw_pair_delta_us) + "]";
 log_lines(end + 1, 1) = "  пояснение                           : " + string(analysis.message);
 
-local_write_utf8_text(fullfile(logs_dir, 'task_16_motor_order_analysis.txt'), strjoin(log_lines, newline) + newline);
-local_write_utf8_text(fullfile(reports_dir, 'task_16_motor_order_analysis_ru.md'), local_make_report(analysis));
+log_path = local_read_override_path( ...
+    'ardupilot_motor_order_log_path', ...
+    fullfile(logs_dir, 'task_16_motor_order_analysis.txt'));
+report_path = local_read_override_path( ...
+    'ardupilot_motor_order_report_path', ...
+    fullfile(reports_dir, 'task_16_motor_order_analysis_ru.md'));
+
+local_write_utf8_text(log_path, strjoin(log_lines, newline) + newline);
+local_write_utf8_text(report_path, local_make_report(analysis));
 
 fprintf('%s\n', char(strjoin(log_lines, newline)));
 
@@ -41,8 +48,12 @@ function source_data = local_load_best_source()
 %LOCAL_LOAD_BEST_SOURCE Выбрать лучший источник данных для анализа.
 
 repo_root = fileparts(fileparts(mfilename('fullpath')));
-arm_response_path = fullfile(repo_root, 'artifacts', 'reports', 'task_16_arm_pwm_response.mat');
-pwm_observation_path = fullfile(repo_root, 'artifacts', 'reports', 'task_16_pwm_observation.mat');
+arm_response_path = local_read_override_path( ...
+    'ardupilot_motor_order_source_arm_response_mat_path', ...
+    fullfile(repo_root, 'artifacts', 'reports', 'task_16_arm_pwm_response.mat'));
+pwm_observation_path = local_read_override_path( ...
+    'ardupilot_motor_order_source_pwm_observation_mat_path', ...
+    fullfile(repo_root, 'artifacts', 'reports', 'task_16_pwm_observation.mat'));
 
 if isfile(arm_response_path)
     loaded = load(arm_response_path);
@@ -59,6 +70,18 @@ loaded = load(pwm_observation_path);
 source_data = struct();
 source_data.motor_pwm_us = loaded.observation.motor_pwm_us;
 source_data.motor_cmd_radps = loaded.observation.motor_cmd_radps;
+end
+
+function path_value = local_read_override_path(var_name, default_value)
+%LOCAL_READ_OVERRIDE_PATH Прочитать необязательное переопределение пути из base.
+
+path_value = char(string(default_value));
+if evalin('base', sprintf('exist(''%s'', ''var'')', var_name))
+    candidate = evalin('base', var_name);
+    if ~isempty(candidate)
+        path_value = char(string(candidate));
+    end
+end
 end
 
 function pwm_matrix = local_extract_pwm_matrix(result_struct)
