@@ -32,6 +32,8 @@ sensors.imu = struct( ...
 
 verifyEqual(testCase, sample.imu.accel_body, [0.0, 0.0, -params.gravity_mps2], ...
     'AbsTol', 1.0e-9);
+ground_rest_delta_norm = norm(sample.imu.accel_body - [0.0, 0.0, -params.gravity_mps2]);
+verifyLessThanOrEqual(testCase, ground_rest_delta_norm, 1.0e-9);
 end
 
 function testHoverSpecificForceMatchesOfficialFormula(testCase)

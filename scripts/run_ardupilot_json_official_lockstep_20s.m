@@ -25,6 +25,7 @@ cfg = uav.ardupilot.default_json_config();
 cfg.udp_timeout_s = 1.0;
 cfg.physics_max_timestep_s = 1.0 / 50.0;
 cfg.json_send_quaternion = false;
+cfg.json_diagnostic_ground_clamp = false;
 cfg.udp_remote_ip = local_resolve_windows_host_ip(cfg.wsl_distro_name, cfg.udp_remote_ip);
 cfg.mavlink_udp_ip = cfg.udp_remote_ip;
 cfg.mavlink_monitor_udp_port = 14552;

@@ -2,9 +2,9 @@ TASK-25: проверка официального профиля
 ============================================================
 launch_command: powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\O.Agaphonov\AppData\Local\Temp\task25_verify_profile_launch.ps1"
 profile_win_path: D:\WORK\AI_SOLUTION\universal-mr-uav-task25\tools\ardupilot\wsl\task25_official_matlab_json.parm
-valid_rx_count: 3186
-json_response_tx_count: 3185
-last_frame_count: 3185
+valid_rx_count: 3112
+json_response_tx_count: 3111
+last_frame_count: 3111
 connection_string: udpin:0.0.0.0:14552
 heartbeat_received: да
 

@@ -1,6 +1,23 @@
-TASK-25: попытка arm/takeoff в официальном MATLAB backend
-arm: нет
-command_ack_arm: 4
+TASK-25: попытки arm в официальном MATLAB backend
+============================================================
+launch_command: powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\O.Agaphonov\AppData\Local\Temp\task25_launch_official_arm.ps1"
+profile_win_path: D:\WORK\AI_SOLUTION\universal-mr-uav-task25\tools\ardupilot\wsl\task25_official_matlab_json.parm
+diagnostic_ground_clamp: нет
+valid_rx_count: 5855
+json_response_tx_count: 5854
+missed_frame_count: 0
+duplicate_frame_count: 0
+last_frame_count: 5854
+arm_after_20_s: нет
+arm_after_60_s: нет
+arm_after_120_s: нет
 failure_reason: Arm: System not initialised
-valid_rx_count: 4763
-json_response_tx_count: 4762
+motor_pwm_us: 0 .. 1058
+motor_cmd_radps: 0.000000 .. 52.200000
+attempts:
+  arm_after_20_s: arm=нет, command_ack_arm=4, failure_reason=Arm: System not initialised
+  arm_after_60_s: arm=нет, command_ack_arm=4, failure_reason=Arm: System not initialised
+  arm_after_120_s: arm=нет, command_ack_arm=0, failure_reason=Arming motors
+ground_clamp_ab_test: выполнен
+  A: clamp=да, arm=нет, command_ack_arm=4, failure_reason=Arm: System not initialised
+  B: clamp=нет, arm=нет, command_ack_arm=4, failure_reason=Arm: System not initialised

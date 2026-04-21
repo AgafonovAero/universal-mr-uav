@@ -50,7 +50,7 @@ c_nb = uav.core.quat_to_dcm(state.q_nb);
 velocity_ned_mps = c_nb * state.v_b_mps;
 attitude_rpy_rad = local_quat_to_euler_rpy(state.q_nb);
 [accel_body_mps2, accel_diag] = local_compute_official_accel_body( ...
-    state, snapshot_diag, params, sensors);
+    state, snapshot_diag, params, sensors, cfg);
 
 sample = struct();
 sample.timestamp = double(time_s);
@@ -83,7 +83,7 @@ validateattributes(sensors.imu.accel_b_mps2, {'numeric'}, {'real', 'finite', 'nu
     mfilename, 'sensors.imu.accel_b_mps2');
 end
 
-function [accel_body_mps2, diag] = local_compute_official_accel_body(state, snapshot_diag, params, sensors)
+function [accel_body_mps2, diag] = local_compute_official_accel_body(state, snapshot_diag, params, sensors, cfg)
 if isfield(snapshot_diag, 'forces_b_N') && ~isempty(snapshot_diag.forces_b_N)
     forces_b_N = double(snapshot_diag.forces_b_N(:));
 else
@@ -103,11 +103,20 @@ end
 
 accel_body_mps2 = c_nb.' * (accel_ned_mps2 + [0.0; 0.0; -double(params.gravity_mps2)]);
 
+diagnostic_ground_clamped = false;
+if isfield(cfg, 'json_diagnostic_ground_clamp') ...
+        && logical(cfg.json_diagnostic_ground_clamp) ...
+        && double(state.p_ned_m(3)) >= 0.0
+    accel_body_mps2 = [0.0; 0.0; 0.0];
+    diagnostic_ground_clamped = true;
+end
+
 diag = struct();
 diag.forces_b_N = forces_b_N;
 diag.specific_force_body_mps2 = specific_force_body_mps2;
 diag.accel_ned_mps2 = accel_ned_mps2;
 diag.ground_clamped = ground_clamped;
+diag.diagnostic_ground_clamped = diagnostic_ground_clamped;
 end
 
 function euler_rpy_rad = local_quat_to_euler_rpy(q_nb)

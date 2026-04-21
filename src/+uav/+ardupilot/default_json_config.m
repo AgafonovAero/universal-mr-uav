@@ -58,6 +58,7 @@ cfg.use_ardupilot_json = true;
 cfg.json_accel_mode = "current";
 cfg.json_send_quaternion = false;
 cfg.json_reply_only_on_valid_rx = true;
+cfg.json_diagnostic_ground_clamp = false;
 cfg.json_ground_contact_window_s = 60.0;
 cfg.json_ground_contact_alt_tol_m = 0.25;
 cfg.json_ground_contact_speed_tol_mps = 1.0;
