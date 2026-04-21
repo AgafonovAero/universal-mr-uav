@@ -1,0 +1,18 @@
+TASK-23: диагностический throttle step
+============================================================
+Профиль запуска: D:\WORK\AI_SOLUTION\universal-mr-uav-task23\tools\ardupilot\wsl\task22_sched_loop_200.parm
+precalibration ready: да
+precalibration method: mavlink_simple
+precalibration ACK: 0
+baseline valid_rx_count: 503
+baseline response_tx_count: 502
+valid_rx_count during throttle step: 856
+response_tx_count during throttle step: 855
+arm succeeded: нет
+COMMAND_ACK: 4
+failure reason: Arm: Gyro 0 rate 348Hz < loop rate*1.8 360Hz
+STATUSTEXT tail: Arm: Gyro 0 rate 348Hz < loop rate*1.8 360Hz | EKF3 IMU0 forced reset | EKF3 IMU0 initialised | PreArm: Gyro 0 rate 254Hz < loop rate*1.8 360Hz | EKF3 IMU0 tilt alignment complete | EKF3 IMU0 MAG0 initial yaw alignment complete | EKF3 IMU0 origin set
+motor_pwm_us range: 1000.000000 .. 1000.000000
+motor_cmd_radps range: 0.000000 .. 0.000000
+max total thrust / weight: 0.000000
+max altitude [m]: -0.000000

@@ -1,0 +1,42 @@
+TASK-23: фактические параметры выходов ArduPilot
+============================================================
+Профиль запуска: D:\WORK\AI_SOLUTION\universal-mr-uav-task23\tools\ardupilot\wsl\task22_sched_loop_200.parm
+baseline restored: да
+baseline valid_rx_count: 490
+baseline response_tx_count: 488
+baseline last_frame_count: 489
+arducopter alive after baseline: да
+fetch heartbeat received: да
+fetch status code: 0
+fetch failure reason: нет
+missing parameter count: 14
+
+MOT_PWM_MIN = 1000
+MOT_PWM_MAX = 2000
+MOT_PWM_TYPE = 0
+MOT_SPIN_ARM = 0.100000001490116
+MOT_SPIN_MIN = 0.150000005960464
+MOT_SPIN_MAX = 0.949999988079071
+MOT_THST_HOVER = 0.389999985694885
+MOT_THST_EXPO = 0.649999976158142
+MOT_SAFE_DISARM = 0
+MOT_SAFE_TIME = 1
+SERVO1_FUNCTION = NaN
+SERVO2_FUNCTION = NaN
+SERVO3_FUNCTION = NaN
+SERVO4_FUNCTION = NaN
+SERVO1_MIN = NaN
+SERVO1_MAX = NaN
+SERVO2_MIN = NaN
+SERVO2_MAX = NaN
+SERVO3_MIN = NaN
+SERVO3_MAX = NaN
+SERVO4_MIN = NaN
+SERVO4_MAX = NaN
+ARMING_CHECK = NaN
+SCHED_LOOP_RATE = NaN
+
+Примечание:
+текущий путь чтения параметров через MAVLink подтвердил параметры группы MOT_*,
+но не вернул значения SERVO*, ARMING_CHECK и SCHED_LOOP_RATE. Для TASK-23
+рабочее значение SCHED_LOOP_RATE подтверждено отдельно в TASK-22 и равно 200 Гц.

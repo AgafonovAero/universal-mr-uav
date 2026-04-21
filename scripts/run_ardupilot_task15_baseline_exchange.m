@@ -293,13 +293,7 @@ end
 function local_stop_existing_sitl(distro_name, host_ip, mavlink_port)
 %LOCAL_STOP_EXISTING_SITL Остановить только экземпляры текущего стенда.
 
-pattern = sprintf( ...
-    'build/sitl/bin/arducopter.*JSON:%s.*udpclient:%s:%d', ...
-    char(host_ip), ...
-    char(host_ip), ...
-    mavlink_port);
-local_wsl_command(distro_name, sprintf('pkill -f ''%s'' >/dev/null 2>&1 || true', pattern)); %#ok<NASGU>
-pause(1.0);
+uav.ardupilot.stop_existing_sitl(distro_name, host_ip, mavlink_port);
 end
 
 function local_remove_wsl_files(distro_name, files_expr)

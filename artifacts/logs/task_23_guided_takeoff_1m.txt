@@ -1,0 +1,23 @@
+TASK-23: GUIDED takeoff 1 м
+============================================================
+Профиль запуска: D:\WORK\AI_SOLUTION\universal-mr-uav-task23\tools\ardupilot\wsl\task22_sched_loop_200.parm
+precalibration ready: да
+precalibration method: mavlink_simple
+precalibration ACK: 0
+baseline valid_rx_count: 510
+baseline response_tx_count: 508
+valid_rx_count during guided: 765
+response_tx_count during guided: 765
+last_frame_count: 1264
+guided observed: да
+arm accepted: нет
+arm COMMAND_ACK: 4
+takeoff COMMAND_ACK: NaN
+takeoff accepted: нет
+failure reason: Arm: GPS 1: Bad fix
+motor_pwm_us range: 1000 .. 1000
+motor_cmd_radps range: 0 .. 0
+max total thrust / weight: 0.000000
+altitude changed upward: нет
+max altitude [m]: -0.000000
+STATUSTEXT tail: PreArm: GPS 1: Bad fix | EKF3 IMU0 origin set
