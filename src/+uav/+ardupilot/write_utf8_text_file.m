@@ -30,8 +30,21 @@ if fid < 0
         'Не удалось открыть файл %s для записи.', file_path);
 end
 
-cleanup_obj = onCleanup(@() fclose(fid)); %#ok<NASGU>
 string_value = string(text_value);
 string_value(ismissing(string_value)) = "";
-fprintf(fid, '%s', char(join(string_value(:), "")));
+payload = char(join(string_value(:), ""));
+
+try
+    byte_count = fwrite(fid, unicode2native(payload, 'UTF-8'), 'uint8');
+    fclose(fid);
+catch write_error
+    fclose(fid);
+    rethrow(write_error);
+end
+
+if byte_count == 0 && strlength(string(payload)) > 0
+    error('uav:ardupilot:write_utf8_text_file:WriteFailed', ...
+        'РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РїРёСЃР°С‚СЊ РЅРµРїСѓСЃС‚РѕР№ С‚РµРєСЃС‚ РІ С„Р°Р№Р» %s.', ...
+        file_path);
+end
 end
