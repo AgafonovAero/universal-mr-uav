@@ -1,0 +1,23 @@
+Setting SIM_SPEEDUP=1.000000
+Starting SITL: JSON
+JSON control interface set to 172.19.208.1:9002
+Starting sketch 'ArduCopter'
+Starting SITL input
+Using Irlock at port : 9005
+UDP connection 172.19.208.1:14550
+Loaded defaults from ../Tools/autotest/default_params/copter.parm,/mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task25/tools/ardupilot/wsl/task25_official_matlab_json.parm
+UDP connection 172.19.208.1:14552
+bind port 5763 for SERIAL2
+SERIAL2 on TCP port 5763
+Home: -35.363262 149.165237 alt=584.000000m hdg=353.000000
+
+JSON received:
+	timestamp
+	imu: gyro
+	imu: accel_body
+	position
+	attitude
+	velocity
+
+validate_structures:538: Validating structures
+Loaded defaults from ../Tools/autotest/default_params/copter.parm,/mnt/d/WORK/AI_SOLUTION/universal-mr-uav-task25/tools/ardupilot/wsl/task25_official_matlab_json.parm

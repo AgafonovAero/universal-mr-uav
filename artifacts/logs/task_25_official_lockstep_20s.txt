@@ -1,0 +1,14 @@
+Официальный lockstep-прогон TASK-25
+============================================================
+launch_command: powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\O.Agaphonov\AppData\Local\Temp\task25_launch_official_lockstep.ps1"
+profile_win_path: D:\WORK\AI_SOLUTION\universal-mr-uav-task25\tools\ardupilot\wsl\task25_official_matlab_json.parm
+valid_rx_count: 3188
+json_response_tx_count: 3187
+missed_frame_count: 0
+duplicate_frame_count: 0
+invalid_rx_count: 0
+last_frame_count: 3187
+arducopter_alive: нет
+has_nan_inf: нет
+max_altitude_m: 0.000000
+last_status: Средство обмена UDP закрыто.

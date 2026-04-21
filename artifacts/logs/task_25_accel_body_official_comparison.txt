@@ -1,0 +1,7 @@
+Сравнение accel_body с официальным MATLAB-примером ArduPilot
+============================================================
+ground_rest: current=[0.000000 0.000000 -9.810000], official=[0.000000 0.000000 -9.810000], delta_norm=0.000000, ground_clamped=да
+hover: current=[0.000000 0.000000 -9.810000], official=[0.000000 0.000000 -9.810000], delta_norm=0.000000, ground_clamped=нет
+vertical_accel_up: current=[0.000000 0.000000 -10.810000], official=[0.000000 0.000000 -10.810000], delta_norm=0.000000, ground_clamped=нет
+vertical_accel_down: current=[0.000000 0.000000 -8.810000], official=[0.000000 0.000000 -8.810000], delta_norm=0.000000, ground_clamped=нет
+small_roll_pitch_hover: current=[-0.513416 -0.853826 -9.759277], official=[-0.513416 -0.853826 -9.759277], delta_norm=0.000000, ground_clamped=нет

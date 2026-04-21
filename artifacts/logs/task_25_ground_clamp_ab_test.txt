@@ -1,0 +1,4 @@
+TASK-25: A/B-проверка влияния ground clamp на arm
+============================================================
+A: diagnostic_ground_clamp=да, valid_rx_count=5895, json_response_tx_count=5894, command_ack_arm=4, failure_reason=Arm: System not initialised
+B: diagnostic_ground_clamp=нет, valid_rx_count=5862, json_response_tx_count=5861, command_ack_arm=4, failure_reason=Arm: System not initialised

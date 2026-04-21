@@ -9,6 +9,7 @@ FRAME="quad"
 MAVLINK_PORT="14550"
 SECONDARY_MAVLINK_PORT="14552"
 EXTRA_DEFAULTS=""
+STDOUT_LOG=""
 USE_CONSOLE=1
 USE_MAP=1
 
@@ -66,6 +67,10 @@ while [[ $# -gt 0 ]]; do
             EXTRA_DEFAULTS="$2"
             shift 2
             ;;
+        --stdout-log)
+            STDOUT_LOG="$2"
+            shift 2
+            ;;
         --root)
             ARDUPILOT_ROOT="$2"
             shift 2
@@ -85,7 +90,7 @@ fi
 cd "${ARDUPILOT_ROOT}"
 
 if [[ ! -f "Tools/autotest/sim_vehicle.py" ]]; then
-    echo "Ошибка: sim_vehicle.py не найден в ${ARDUPILOT_ROOT}/Tools/autotest/."
+    echo "Ошибка: sim_vehicle.py не найден в ${ARDUPILOT_ROOT}/Tools/autotest."
     exit 1
 fi
 
@@ -141,6 +146,9 @@ fi
 if [[ -n "${EXTRA_DEFAULTS}" ]]; then
     echo "  дополнительный файл параметров: ${EXTRA_DEFAULTS}"
 fi
+if [[ -n "${STDOUT_LOG}" ]]; then
+    echo "  журнал stdout/stderr SITL: ${STDOUT_LOG}"
+fi
 echo "  тип аппарата: ${VEHICLE}"
 echo "  схема аппарата: ${FRAME}"
 
@@ -155,7 +163,12 @@ fi
 echo "  команда: ${COMMAND[*]}"
 
 if [[ "${EXECUTE}" -eq 1 ]]; then
-    exec "${COMMAND[@]}"
+    if [[ -n "${STDOUT_LOG}" ]]; then
+        mkdir -p "$(dirname "${STDOUT_LOG}")"
+        exec "${COMMAND[@]}" >"${STDOUT_LOG}" 2>&1
+    else
+        exec "${COMMAND[@]}"
+    fi
 else
     echo "Режим проверки: команда не выполнялась."
 fi
