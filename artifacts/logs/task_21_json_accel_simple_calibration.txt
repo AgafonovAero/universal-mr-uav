@@ -1,0 +1,36 @@
+TASK-21: штатная простая калибровка акселерометра
+============================================================
+Профиль TASK-20:
+  D:\WORK\AI_SOLUTION\universal-mr-uav-task21\tools\ardupilot\wsl\task20_single_accel_enable_mask.parm
+Базовый обмен перед калибровкой: восстановлен
+  valid_rx_count = 491
+  response_tx_count = 488
+  last_frame_count = 485
+
+Проверенные попытки:
+  mavproxy_accelcalsimple:
+    valid_rx_count = 758
+    response_tx_count = 757
+    helper_completed = нет
+    ACK = не получен
+  mavproxy_ground:
+    valid_rx_count = 773
+    response_tx_count = 772
+    helper_completed = нет
+    ACK = не получен
+  mavlink_simple:
+    valid_rx_count = 761
+    response_tx_count = 759
+    helper_completed = да
+    COMMAND_ACK = 0
+    STATUSTEXT: Initialising ArduPilot | PreArm: Gyro 0 rate 177Hz < loop rate*1.8 720Hz | EKF3 IMU0 tilt alignment complete | EKF3 IMU0 MAG0 initial yaw alignment complete
+
+Выбранный метод:
+  mavlink_simple
+Простая калибровка выполнена: да
+Force-save не применялся.
+
+Повторный обмен после перезапуска:
+  valid_rx_count = 520
+  response_tx_count = 518
+  last_frame_count = 516

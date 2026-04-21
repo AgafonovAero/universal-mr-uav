@@ -1,0 +1,16 @@
+TASK-21: повторная попытка arm после калибровки акселерометра
+============================================================
+arm выполнен: нет
+Выбранный вариант: нет
+
+[after_simple_calibration]
+Профиль: D:\WORK\AI_SOLUTION\universal-mr-uav-task21\tools\ardupilot\wsl\task20_single_accel_enable_mask.parm
+valid_rx_count: 502
+response_tx_count: 501
+last_frame_count: 989
+arm: нет
+COMMAND_ACK: 4
+Причина: Arm: Gyro 0 rate 478Hz < loop rate*1.8 720Hz
+STATUSTEXT: GPS 1: probing for u-blox at 230400 baud | GPS 1: detected u-blox | EKF3 IMU0 forced reset | EKF3 IMU0 initialised | EKF3 IMU0 tilt alignment complete
+motor_pwm_us range: [1000.000000 1000.000000]
+motor_cmd_radps range: [0.000000 0.000000]

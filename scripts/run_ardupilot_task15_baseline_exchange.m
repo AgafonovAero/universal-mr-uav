@@ -620,6 +620,11 @@ if fid < 0
 end
 
 cleanup_obj = onCleanup(@() fclose(fid)); %#ok<NASGU>
+text_value = string(text_value);
+text_value(ismissing(text_value)) = "";
+if numel(text_value) > 1
+    text_value = strjoin(text_value, newline);
+end
 fprintf(fid, '%s', char(text_value));
 end
 
