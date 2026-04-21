@@ -109,11 +109,15 @@ for k = 1:n_steps
 
     if k < n_steps
         if sitl_output_k.valid
-            [state_hist(k + 1), ~] = uav.sim.plant_step_struct( ...
-                state_k, ...
-                motor_cmd_k_radps, ...
-                case_cfg.dt_s, ...
-                case_cfg.params);
+            if local_is_prearm_hold_active(case_cfg.ardupilot_cfg, sitl_output_k.motor_pwm_us)
+                state_hist(k + 1) = state_k;
+            else
+                [state_hist(k + 1), ~] = uav.sim.plant_step_struct( ...
+                    state_k, ...
+                    motor_cmd_k_radps, ...
+                    case_cfg.dt_s, ...
+                    case_cfg.params);
+            end
         else
             state_hist(k + 1) = state_k;
         end
@@ -291,4 +295,24 @@ diag.rx_elapsed_s = 0.0;
 diag.tx_elapsed_s = 0.0;
 diag.step_elapsed_s = 0.0;
 diag.tx_payload_bytes = 0;
+end
+
+function is_hold = local_is_prearm_hold_active(cfg, motor_pwm_us)
+%LOCAL_IS_PREARM_HOLD_ACTIVE Detect whether the plant should stay on the ground.
+
+is_hold = false;
+if ~isfield(cfg, 'json_prearm_hold_enabled') || ~logical(cfg.json_prearm_hold_enabled)
+    return;
+end
+
+if isempty(motor_pwm_us) || ~all(isfinite(motor_pwm_us))
+    return;
+end
+
+threshold_us = 1005.0;
+if isfield(cfg, 'json_prearm_pwm_threshold_us')
+    threshold_us = double(cfg.json_prearm_pwm_threshold_us);
+end
+
+is_hold = max(double(motor_pwm_us(:))) <= threshold_us;
 end

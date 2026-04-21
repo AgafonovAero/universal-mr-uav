@@ -1,0 +1,34 @@
+Диагностика согласованности ИНС ArduPilot JSON
+============================================================
+Режим accel_body: current
+Удержание модели до arm: да
+Задержка перед arm [s]: 30.000
+baseline valid_rx_count: 522
+baseline response_tx_count: 520
+baseline json_tx_count: 1754
+baseline last_frame_count: 516
+arducopter жив после baseline: да
+valid_rx_count во время arm-прогона: 1030
+response_tx_count во время arm-прогона: 1024
+last_frame_count во время arm-прогона: 1536
+arm выполнен: нет
+COMMAND_ACK: 4
+Причина отказа: Arm: Accels inconsistent
+Обязательные поля присутствуют во всех разобранных кадрах: да
+timestamp строго возрастает: да
+Все числовые поля конечны: да
+Норма quaternion, min: 1.000000
+Норма quaternion, max: 1.000000
+Норма accel_body, min [m/s^2]: 0.000000
+Норма accel_body, max [m/s^2]: 0.000000
+Файл JSONL первых кадров: D:\WORK\AI_SOLUTION\universal-mr-uav-task19\artifacts\reports\task_19_first_json_frames.jsonl
+CSV-таблица диагностики: D:\WORK\AI_SOLUTION\universal-mr-uav-task19\artifacts\reports\task_19_json_imu_consistency.csv
+
+STATUSTEXT:
+  Arm: Accels inconsistent
+  GPS 1: probing for u-blox at 230400 baud
+  GPS 1: detected u-blox
+  EKF3 IMU0 forced reset
+  EKF3 IMU0 initialised
+  EKF3 IMU1 forced reset
+  EKF3 IMU1 initialised
